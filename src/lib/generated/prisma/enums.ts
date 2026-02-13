@@ -46,3 +46,21 @@ export const DeliveryStatus = {
 } as const
 
 export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus]
+
+
+export const CouponStatus = {
+  ACTIVE: 'ACTIVE',
+  USED: 'USED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type CouponStatus = (typeof CouponStatus)[keyof typeof CouponStatus]
+
+
+export const Sentiment = {
+  POSITIVE: 'POSITIVE',
+  NEUTRAL: 'NEUTRAL',
+  NEGATIVE: 'NEGATIVE'
+} as const
+
+export type Sentiment = (typeof Sentiment)[keyof typeof Sentiment]

@@ -26,6 +26,7 @@ model User {
   accounts      Account[]
   cart          Cart?
   orders        Order[]
+  coupons       Coupon[]
 
   @@unique([email])
   @@map("user")
@@ -80,8 +81,6 @@ model Verification {
   @@map("verification")
 }
 
-// ─── E-Commerce Models ───────────────────────────────────────
-
 model Cart {
   id        String     @id @default(cuid())
   userId    String     @unique
@@ -133,8 +132,26 @@ model OrderItem {
   @@map("order_item")
 }
 
-// ─── Enums ───────────────────────────────────────────────────
+model Coupon {
+  id                 String       @id @default(cuid())
+  code               String       @unique
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discountPercentage Float
+  currency           String       @default("Rs.")
+  reason             String
+  sentiment          Sentiment    @default(POSITIVE)
+  status             CouponStatus @default(ACTIVE)
+  expiresAt          DateTime
+  usedAt             DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
+  @@index([code])
+  @@index([userId])
+  @@index([status])
+  @@map("coupon")
+}
 enum UserRole {
   USER
   ADMIN
@@ -160,4 +177,15 @@ enum DeliveryStatus {
   SHIPPED
   DELIVERED
   RETURNED
+}
+enum CouponStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+enum Sentiment {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
 }

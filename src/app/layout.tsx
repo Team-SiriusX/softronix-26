@@ -24,6 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/cwg6wqv.css" />
+      </head>
       <body
         className={`${spaceGrotesk.variable} font-sans antialiased`}
         style={{ fontFamily: 'var(--font-space-grotesk)' }}

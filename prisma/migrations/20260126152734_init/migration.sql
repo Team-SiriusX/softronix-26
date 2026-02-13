@@ -1,4 +1,4 @@
--- CreateEnum
+cls-- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN');
 
 -- CreateTable

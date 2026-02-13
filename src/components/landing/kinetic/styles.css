@@ -1,0 +1,366 @@
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+
+:root {
+	--color-text: #292725;
+	--color-text-alt: #555;
+	--color-bg: #dad4d1;
+	--color-link: #292725;
+	--color-link-hover: #ffffff;
+	--color-link-alt: #292725;
+	--color-type: #292725;
+	--type-line-opacity: 0.1;
+    --color-accent: #A99C90;
+}
+
+.kinetic-container {
+    color: var(--color-text);
+	background-color: var(--color-bg);
+	font-family: "halyard-display", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+    opacity: 0; /* Initially hidden for entrance */
+    transition: opacity 0.5s ease;
+}
+
+.kinetic-container.visible {
+    opacity: 1;
+}
+
+.k-unbutton {
+	background: none;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+}
+
+.k-unbutton:focus {
+	outline: none;
+}
+
+.k-frame {
+	padding: 1rem;
+	margin-bottom: 2rem;
+	display: flex;
+	flex-wrap: wrap;
+	position: relative;
+	z-index: 1000;
+	text-transform: uppercase;
+    background-color: transparent; 
+}
+
+.k-frame__title {
+	font-size: 1rem;
+	margin: 0 0 1rem;
+}
+
+.k-frame__tagline {
+	color: var(--color-text-alt);
+}
+
+.k-frame__links {
+	display: inline;
+}
+
+.k-frame__links a:not(:last-child) {
+	margin-right: 1rem;
+}
+
+.k-frame__author {
+	display: block;
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+.k-item-wrap {
+	text-transform: uppercase;
+	display: grid;
+    width: 100%;
+	grid-template-columns: 50% 50%;
+}
+
+.k-item {
+	--base: 5vh; /* Reduced slightly for better fit */
+	--interval: 7vh;
+	padding: 1rem;
+	margin: 1rem 0;
+	cursor: pointer;
+	width: 100%;
+	position: relative;
+	flex: none;
+	will-change: transform, opacity;
+}
+
+.k-item__img {
+	width: 100%;
+	border-radius: 12px;
+	will-change: transform;
+    display: block;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.k-item__caption-title {
+	font-size: inherit;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+
+.k-item__caption-description {
+	display: none;
+}
+
+.k-type {
+	position: fixed;
+	height: 100vmax;
+	text-transform: uppercase;
+	width: 100vmax;
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	text-align: center;
+	top: 50%;
+    left: 50%;
+	margin-top: -50vmax;
+    margin-left: -50vmax;
+	will-change: transform;
+    pointer-events: none;
+    z-index: 0;
+    color: var(--color-type);
+}
+
+.k-type__line {
+	white-space: nowrap;
+	font-size: clamp(7rem, 18.75vh, 15rem);
+	line-height: 0.75;
+	font-weight: bold;
+	font-family: "quiche-sans", sans-serif;
+	color: var(--color-type);
+	opacity: var(--type-line-opacity);
+	user-select: none;
+	will-change: transform, opacity;
+}
+
+.k-article-wrap {
+	position: absolute;
+	top: 5vh;
+	width: 100%;
+	justify-self: center;
+	align-self: end;
+	padding: 1rem;
+	pointer-events: none;
+    z-index: 50;
+}
+
+.k-article {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+	display: grid;
+	grid-template-columns: 1rem 1fr;
+	width: 100%;
+	align-items: start;
+	grid-template-areas: 'img img'
+						'number title'
+						'intro intro'
+						'desc desc';
+
+}
+
+.k-article.k-article--current {
+	opacity: 1;
+	pointer-events: auto;
+	position: relative;
+    z-index: 200;
+}
+
+.k-article__img-wrap {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    grid-area: img;
+    transform-origin: 50% 100%;
+    margin-bottom: 1rem;
+	border-radius: 17px 17px 0 0;
+}
+
+.k-article__img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: 50% 35%;
+}
+
+.k-article__number {
+	grid-area: number;
+	font-weight: bold;
+}
+
+.k-article__title {
+	grid-area: title;
+	line-height: 0.85;
+	font-size: 8vw;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: "quiche-sans", sans-serif;
+	color: var(--color-type);
+	position: relative;
+	margin: 1rem 0 0.5rem;
+	pointer: default;
+}
+
+.k-article__intro {
+	grid-area: intro;
+	font-weight: bold;
+	padding-right: 2rem;
+    margin-bottom: 1rem;
+}
+
+.k-article__description {
+	grid-area: desc;
+	overflow: hidden;
+	padding-right: 2rem;
+}
+
+.k-back {
+	background: none;
+	border: 0;
+	padding: 0;
+	margin: 0 0 1rem 0;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    fill: none;
+    stroke: #000;
+    z-index: 1000;
+    cursor: pointer;
+    width: 50px;
+}
+
+.k-back svg {
+	stroke-linecap: round;
+    stroke-width: 1px;
+    display: block;
+}
+
+.k-back:hover,
+.k-back:focus {
+	outline: none;
+	stroke: #823725;
+}
+
+@media screen and (min-width: 53em) {
+	.k-frame {
+		position: fixed;
+		text-align: left;
+		z-index: 100;
+		top: 0;
+		left: 0;
+		display: grid;
+		align-content: space-between;
+		width: 100%;
+		max-width: none;
+		margin: 0;
+		padding: 1rem 2vw;
+		grid-template-columns: 40% 20% 40%;
+		grid-template-areas: 'title author links';
+	}
+	.k-frame__title-wrap {
+		grid-area: title;
+		text-align: left;
+	}
+	.k-frame__title {
+		margin: 0;
+	}
+	.k-frame__tagline {
+		position: relative;
+	}
+	.k-frame__author {
+		grid-area: author;
+		justify-self: center;
+	}
+	.k-frame__links {
+		grid-area: links;
+		padding: 0;
+		justify-self: end;
+	}
+	.k-item-wrap {
+		height: 100vh;
+		display: flex;
+		overflow: hidden;
+		width: 100vw;
+		position: relative;
+		justify-content: flex-start;
+		align-items: center;
+	}
+	.k-item {
+		width: 22vw;
+		padding: 0;
+		margin: auto 2vw var(--base);
+	}
+	.k-item:nth-child(2) {
+		margin-bottom: calc(var(--base) + var(--interval));
+	}
+
+	.k-item:nth-child(3) {
+		margin-bottom: calc(var(--base) + var(--interval) * 2);
+	}
+
+	.k-item:nth-child(4) {
+		margin-bottom: calc(var(--base) + var(--interval) * 3);
+	}
+
+	.k-item__caption-description {
+		display: block;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
+	}
+
+	.k-back {
+		position: absolute;
+		left: calc(((100vw - (38vw + 280px)) / 2) + 1.5rem);
+	}
+	.k-article-wrap {
+		top: 20vh;
+		height: 80vh;
+		padding: 0;
+	}
+	.k-article {
+		height: 100%;
+		width: calc(38vw + 280px);
+		margin: 0 auto;
+		grid-template-rows: 10vw 2rem 12vw auto auto;
+		grid-template-columns: 1.5rem 30% 1fr 1.5rem;
+		grid-template-areas: '... ... img ...'
+							'number ... img ...'
+							'... title img ...'
+							'... intro img ...'
+							'... desc img ...';
+	}
+	.k-article__title {
+		grid-column-end: 4; 
+		margin: 0;
+	}
+	.k-article__intro {
+		margin: 1.5rem 0;
+	}
+	.k-article__img-wrap {
+		align-self: end;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+    .k-article__img {
+    	background-position: 50% 50%;
+    }
+}

@@ -270,6 +270,40 @@ export type EnumDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumDeliveryStatusFilter<$PrismaModel>
 }
 
+export type EnumSentimentFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentFilter<$PrismaModel> | $Enums.Sentiment
+}
+
+export type EnumCouponStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel> | $Enums.CouponStatus
+}
+
+export type EnumSentimentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentWithAggregatesFilter<$PrismaModel> | $Enums.Sentiment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+}
+
+export type EnumCouponStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCouponStatusWithAggregatesFilter<$PrismaModel> | $Enums.CouponStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -526,6 +560,40 @@ export type NestedEnumDeliveryStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDeliveryStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDeliveryStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSentimentFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentFilter<$PrismaModel> | $Enums.Sentiment
+}
+
+export type NestedEnumCouponStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel> | $Enums.CouponStatus
+}
+
+export type NestedEnumSentimentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentWithAggregatesFilter<$PrismaModel> | $Enums.Sentiment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+}
+
+export type NestedEnumCouponStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCouponStatusWithAggregatesFilter<$PrismaModel> | $Enums.CouponStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCouponStatusFilter<$PrismaModel>
 }
 
 

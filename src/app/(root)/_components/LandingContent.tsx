@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import Image from "next/image";
-import { Products } from "@/components/product/products";
 
 const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
     const elementsRef = useRef<(HTMLElement | null)[]>([]);
@@ -240,7 +239,6 @@ export default function LandingContent() {
                 </div>
 
             </div>
-            <Products />
         </section>
     );
 }
