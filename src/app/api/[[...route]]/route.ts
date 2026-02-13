@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import { handle } from "hono/vercel";
 import { sample } from "./controllers/(base)";
 import { clerk } from "./controllers/(clerk)";
+import { products, cart, orders } from "./controllers/(store)";
 
 const app = new Hono().basePath("/api");
 
@@ -18,7 +19,10 @@ app.onError((err, c) => {
 
 const routes = app
   .route("/sample", sample)
-  .route("/clerk", clerk);
+  .route("/clerk", clerk)
+  .route("/products", products)
+  .route("/cart", cart)
+  .route("/orders", orders);
 
 export const GET = handle(app);
 export const POST = handle(app);
