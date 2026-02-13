@@ -1,5 +1,6 @@
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import Providers from "@/components/providers";
+import FloatingChatButton from "@/components/chat/floating-chat-button";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
@@ -13,8 +14,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "",
-  description: "",
+  title: "Echo - AI Shopping Assistant",
+  description: "Your intelligent grooming companion powered by AI",
 };
 
 export default function RootLayout({
@@ -30,9 +31,13 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} font-sans antialiased`}
         style={{ fontFamily: 'var(--font-space-grotesk)' }}
+        suppressHydrationWarning
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <FloatingChatButton />
+        </Providers>
       </body>
     </html>
   );

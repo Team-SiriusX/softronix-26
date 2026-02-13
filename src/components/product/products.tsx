@@ -4,10 +4,20 @@ import { useRef, useEffect } from "react";
 import { ProductCard } from "./productCard";
 import { Loader2, PackageSearch } from "lucide-react";
 import { useProducts } from "@/services/queries/products";
+<<<<<<< HEAD
 import { useCartStore } from "@/hooks/use-cart-store";
 
 export function Products() {
     const sentinelRef = useRef<HTMLDivElement>(null);
+=======
+import { useAddToCart } from "@/services/queries/cart";
+import { useProductFilters } from "@/components/providers/chat-provider";
+
+export function Products() {
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const session = useSession();
+    const { filters } = useProductFilters();
+>>>>>>> d2bca92b9ed5287aff10a83178020c8897e78bef
 
     // ─── Queries & cart store ────────────────────────────────
     const {
@@ -17,7 +27,7 @@ export function Products() {
         isFetchingNextPage,
         isLoading,
         isError,
-    } = useProducts();
+    } = useProducts(filters);
 
     const { isInCart, addItem, isMutating, mutatingProductId } = useCartStore();
 

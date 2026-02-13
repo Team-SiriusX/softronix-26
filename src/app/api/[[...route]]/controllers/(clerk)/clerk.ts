@@ -99,6 +99,21 @@ const app = new Hono()
         }
         const response = cleanResponseForChat(rawResponse);
 
+        // If user is not logged in and the response mentions signing in,
+        // push a requireAuth RPC so the frontend can show a sign-in button
+        if (!user) {
+          const lower = response.toLowerCase();
+          if (lower.includes("sign in") || lower.includes("log in") || lower.includes("logged in") || lower.includes("sign up")) {
+            const alreadyHasAuth = functions.some((fn) => fn.name === "requireAuth");
+            if (!alreadyHasAuth) {
+              functions.push({
+                name: "requireAuth",
+                args: { reason: "coupon_generation" },
+              });
+            }
+          }
+        }
+
         const result: Record<string, unknown> = {
           success: true,
           response,
