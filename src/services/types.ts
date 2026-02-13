@@ -3,29 +3,12 @@
  * These mirror the API response shapes.
  */
 
-// ─── Product ───────────────────────────────────────────────
+import { Product } from "@/constants/store";
 
-export type Product = {
-  id: string;
-  name: string;
-  brand: string;
-  price: {
-    current: number;
-    original?: number;
-    currency: string;
-    formatted: string;
-    discount_percentage?: number;
-  };
-  category: string[];
-  images: string[];
-  stock_status: string;
-  reviews: {
-    count: number;
-    average_rating: number | null;
-    summary: string;
-  };
-  description: string;
-};
+// Re-export Product for convenience
+export type { Product };
+
+// ─── Product ───────────────────────────────────────────────
 
 export type ProductsResponse = {
   data: Product[];

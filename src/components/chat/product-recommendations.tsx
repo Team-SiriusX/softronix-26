@@ -4,23 +4,17 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Product {
-  id: string;
-  name: string;
-  price?: {
-    formatted?: string;
-  } | string;
-  images?: string[];
-  url?: string;
-}
+import { Product } from "@/constants/store";
 
 interface ProductRecommendationsProps {
   products: Product[];
   isLatest: boolean;
 }
 
-export default function ProductRecommendations({ products, isLatest }: ProductRecommendationsProps) {
+export default function ProductRecommendations({
+  products,
+  isLatest,
+}: ProductRecommendationsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,6 +22,7 @@ export default function ProductRecommendations({ products, isLatest }: ProductRe
 
     const ctx = gsap.context(() => {
       const cards = containerRef.current?.querySelectorAll(".product-card");
+      if (!cards) return;
       gsap.from(cards, {
         opacity: 0,
         y: 30,
@@ -48,17 +43,17 @@ export default function ProductRecommendations({ products, isLatest }: ProductRe
       <p className="text-xs uppercase tracking-wider text-[#555] mb-4 font-medium">
         Recommended Products
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {products.map((product, index) => {
-          const priceFormatted = typeof product.price === 'object' 
-            ? product.price?.formatted 
-            : product.price;
-          
+          const priceFormatted =
+            typeof product.price === "object"
+              ? product.price?.formatted
+              : product.price;
+
           return (
             <Link
               key={product.id || index}
-              href={product.url || "#"}
-              target="_blank"
+              href={`/product?id=${product.id}`}
               className="product-card group block"
             >
               <div className="bg-white/60 backdrop-blur-sm rounded-xl overflow-hidden border border-[#292725]/10 hover:border-[#292725]/30 transition-all duration-300 hover:shadow-lg">

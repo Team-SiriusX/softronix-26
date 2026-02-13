@@ -1,11 +1,15 @@
-"use client";
-
+import { ProductFilterPanel } from "@/components/product/product-filter-panel";
 import { Products } from "@/components/product/products";
 
 export default function ProductsPage() {
-    return (
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-            <Products />
-        </div>
-    );
+  return (
+    <div className="flex gap-6">
+      <aside className="w-80">
+        <ProductFilterPanel />
+      </aside>
+      <main className="flex-1">
+        <Products />
+      </main>
+    </div>
+  );
 }

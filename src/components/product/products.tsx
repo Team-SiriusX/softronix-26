@@ -6,10 +6,12 @@ import { Loader2, PackageSearch } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { useProducts } from "@/services/queries/products";
 import { useAddToCart } from "@/services/queries/cart";
+import { useProductFilters } from "@/components/providers/chat-provider";
 
 export function Products() {
     const sentinelRef = useRef<HTMLDivElement>(null);
     const session = useSession();
+    const { filters } = useProductFilters();
 
     // ─── Queries & mutations from service layer ──────────────
     const {
@@ -19,7 +21,7 @@ export function Products() {
         isFetchingNextPage,
         isLoading,
         isError,
-    } = useProducts();
+    } = useProducts(filters);
 
     const addToCartMutation = useAddToCart();
 

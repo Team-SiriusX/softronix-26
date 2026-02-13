@@ -23,6 +23,15 @@ export function lookupProductUrl(name: string): string | null {
   return match?.url ?? null;
 }
 
+export function lookupProductId(name: string): string | null {
+  const normalized = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const match = store.products.find((p) => {
+    const pNormalized = p.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return pNormalized === normalized || pNormalized.includes(normalized) || normalized.includes(pNormalized);
+  });
+  return match?.id ?? null;
+}
+
 export function extractFromTable(responseText: string): ChatbotProduct[] {
   const lines = responseText.split("\n").map((l) => l.trim());
 
@@ -41,30 +50,9 @@ export function extractFromTable(responseText: string): ChatbotProduct[] {
     })
     .map((cells): ChatbotProduct | null => {
       const name = cells[0].replace(/\*\*/g, "").trim();
-
-      let url: string | null = null;
-      for (const cell of cells) {
-        const found = extractUrl(cell);
-        if (found) { url = found; break; }
-      }
-
-      let price = "";
-      for (const cell of cells) {
-        if (/(?:Rs|₹|\$|€|£)[\s.]*[\d,]+/.test(cell)) { price = cell; break; }
-      }
-
-      let rating: number | null = null;
-      let reviewCount: number | null = null;
-      for (const cell of cells) {
-        const rm = cell.match(/([\d.]+)\s*[\/\s]+5/i);
-        const rvm = cell.match(/\(\s*(\d+)\s+reviews?\)/i);
-        const sc = cell.match(/^\s*(\d+)\s*$/);
-        if (rm && rating === null) rating = Number.parseFloat(rm[1]);
-        if (rvm && reviewCount === null) reviewCount = Number.parseInt(rvm[1], 10);
-        else if (sc && reviewCount === null && rating !== null) reviewCount = Number.parseInt(sc[1], 10);
-      }
-
-      return { name, price, rating, reviewCount, url };
+      const id = lookupProductId(name);
+      if (!id) return null;
+      return { id, name };
     })
     .filter((item): item is ChatbotProduct => item !== null);
 }
@@ -79,23 +67,10 @@ export function extractFromHeadingList(responseText: string): ChatbotProduct[] {
     if (!headerMatch) continue;
 
     const name = headerMatch[1].replace(/\*\*/g, "").trim();
-
-    // Price: match "**Price:** Rs. 899.00" or "Price: Rs 899"
-    const priceMatch = block.match(/\*\*Price[:\s]\*\*\s*([^\n]+)/i) || block.match(/Price[:\s]+([^\n]+)/i);
-    const price = priceMatch ? priceMatch[1].replace(/\*\*/g, "").trim() : "";
-
-    // Rating: match "4.5 / 5" or "4.5/5"
-    const ratingMatch = block.match(/([\d.]+)\s*[\/\s]+5/i);
-    const rating = ratingMatch ? Number.parseFloat(ratingMatch[1]) : null;
-
-    // Reviews: match "(68 reviews)" or "68 reviews"
-    const reviewMatch = block.match(/\(\s*(\d+)\s+reviews?\)/i);
-    const reviewCount = reviewMatch ? Number.parseInt(reviewMatch[1], 10) : null;
-
-    // URL: from block text or store lookup
-    const url = extractUrl(block) ?? lookupProductUrl(name);
-
-    products.push({ name, price, rating, reviewCount, url });
+    const id = lookupProductId(name);
+    if (id) {
+      products.push({ id, name });
+    }
   }
 
   return products;
@@ -110,13 +85,9 @@ export function extractFromNumberedList(responseText: string): ChatbotProduct[] 
       if (!m) return null;
 
       const name = m[1].trim();
-      return {
-        name,
-        price: m[2].trim(),
-        rating: Number.parseFloat(m[3]),
-        reviewCount: Number.parseInt(m[4], 10),
-        url: m[5]?.trim() ?? lookupProductUrl(name),
-      };
+      const id = lookupProductId(name);
+      if (!id) return null;
+      return { id, name };
     })
     .filter((item): item is ChatbotProduct => item !== null);
 }

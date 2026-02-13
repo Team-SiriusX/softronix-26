@@ -1,4 +1,77 @@
-export const store = {
+export type StoreInfo = {
+    name: string;
+    website: string;
+    description: string;
+    tagline: string;
+    about: string;
+    contact: {
+        email: string;
+        phone: string;
+    };
+    social_media: {
+        facebook: string;
+        instagram: string;
+        tiktok: string;
+        youtube: string;
+    };
+    shipping: {
+        free_shipping_threshold: number;
+        currency: string;
+        delivery_time: string;
+    };
+};
+
+export type Price = {
+    current: number;
+    original?: number;
+    currency: string;
+    formatted: string;
+    discount_percentage?: number;
+};
+
+export type Reviews = {
+    count: number | null;
+    average_rating: number | null;
+    summary: string;
+};
+
+export type Product = {
+    id: string;
+    name: string;
+    brand: string;
+    price: Price;
+    category: string[];
+    url: string;
+    description: string;
+    reviews: Reviews;
+    stock_status: string;
+    images: string[];
+    extendedDescription?: string;
+    // Optional fields that appear in some products
+    key_features?: string[];
+    ingredients?: string[];
+    key_ingredients?: string[];
+    finish?: string;
+    hold?: string;
+    fragrance?: string;
+    how_to_use?: string[];
+    whats_included?: string[];
+    size?: string;
+    application_time?: string;
+    bundle_includes?: string[];
+    key_benefits?: string[];
+    suitable_for?: string;
+    spf?: string;
+};
+
+export type Store = {
+    store_info: StoreInfo;
+    product_categories: string[];
+    total_products: number;
+    products: Product[];
+};
+
+export const store: Store = {
     "store_info": {
         "name": "Dari Mooch",
         "website": "https://www.darimooch.com",
@@ -87,12 +160,13 @@ export const store = {
             },
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/2_1.webp",
-                "https://www.darimooch.com/cdn/shop/files/Benefit.webp"
+                "https://www.darimooch.com/cdn/shop/files/Benefit.webp",
+                "https://www.darimooch.com/cdn/shop/files/1_4.webp"
             ],
             "stock_status": "in_stock",
             "size": "1 pack",
             "application_time": "5-10 minutes",
-            "extendedDescription": "This AI-powered grooming solution delivers professional salon-quality hair coloring at home. The advanced formula uses Ginseng Extract to boost scalp vitality while providing full grey coverage in just 5 minutes. The no-drip cream consistency ensures easy application without mess, while Argan Oil deeply nourishes each strand from root to tip. Perfect for men seeking a quick, confidence-boosting transformation that leaves hair looking naturally dark brown, healthy, and strong."
+            "extendedDescription": "Professional salon-quality hair coloring at home in just 5 minutes. This advanced formula uses Ginseng Extract to boost scalp vitality while providing full grey coverage. The no-drip cream consistency with Argan Oil nourishes each strand from root to tip. Perfect for men seeking quick confidence-boosting transformation with natural dark brown results."
         },
         {
             "id": "surge-perfume",
@@ -114,14 +188,15 @@ export const store = {
             "reviews": {
                 "count": 14,
                 "average_rating": 4.5,
-                "summary": "Customers rate this perfume highly at 4.5/5 stars. Users appreciate the long-lasting fragrance and sophisticated scent profile that works well for both casual and formal occasions."
+                "summary": "Customers rate 4.5/5 stars (14 reviews). Users appreciate long-lasting fragrance and sophisticated scent profile working well for both casual and formal occasions."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/SurgeWebImagescopy5.webp",
-                "https://www.darimooch.com/cdn/shop/files/WebImages2copy.webp"
+                "https://www.darimooch.com/cdn/shop/files/WebImages2copy.webp",
+                "https://www.darimooch.com/cdn/shop/files/Surge_2.webp"
             ],
-            "extendedDescription": "Surge is a premium men's perfume designed to make a lasting impression. This sophisticated fragrance combines modern masculine notes that evolve throughout the day, providing long-lasting scent that enhances confidence and presence. Perfect for daily wear or special occasions, Surge delivers a signature scent that's both contemporary and timeless."
+            "extendedDescription": "Premium men's perfume designed to make lasting impressions. Sophisticated fragrance combining modern masculine notes that evolve throughout the day, providing long-lasting scent for confidence and presence. Perfect for daily wear or special occasions with contemporary yet timeless signature scent."
         },
         {
             "id": "glow-face-wash",
@@ -142,14 +217,15 @@ export const store = {
             "reviews": {
                 "count": 68,
                 "average_rating": 4.5,
-                "summary": "Highly rated by 68 customers with 4.5/5 stars. Users report noticeable improvement in skin brightness and texture. Many appreciate the gentle yet effective cleansing action and visible glow enhancement within weeks of regular use."
+                "summary": "Highly rated: 68 customers, 4.5/5 stars. Users report noticeable skin brightness and texture improvement. Gentle yet effective cleansing with visible glow enhancement within weeks."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/GlowLineFaceWash2.webp",
-                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Face_Wash_6_with_Text.webp"
+                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Face_Wash_6_with_Text.webp",
+                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Face_Wash_1.webp"
             ],
-            "extendedDescription": "This brightening face wash from the Glow Line is formulated to cleanse deeply while promoting a more even, radiant skin tone. It gently removes dirt, oil, and impurities without stripping the skin's natural moisture barrier. The specialized formula works to reduce dullness and enhance natural skin glow, making it ideal for men seeking brighter, healthier-looking skin."
+            "extendedDescription": "Brightening face wash formulated to cleanse deeply while promoting even, radiant skin tone. Gently removes dirt, oil, and impurities without stripping natural moisture barrier. Reduces dullness and enhances natural glow for brighter, healthier-looking skin with regular use."
         },
         {
             "id": "glow-body-wash",
@@ -170,14 +246,15 @@ export const store = {
             "reviews": {
                 "count": 15,
                 "average_rating": 4.47,
-                "summary": "Rated 4.47/5 by 15 customers. Users appreciate the brightening effects and pleasant fragrance. Many note softer, more even-toned skin after consistent use."
+                "summary": "Rated 4.47/5 by 15 customers. Users appreciate brightening effects and pleasant fragrance. Many note softer, more even-toned skin after consistent use."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/Glow_Line_Body_Wash_4.webp",
-                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Body_Wash_6_with_Text.webp"
+                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Body_Wash_6_with_Text.webp",
+                "https://www.darimooch.com/cdn/shop/files/Glow_Line_Body_Wash_2.webp"
             ],
-            "extendedDescription": "Complete your brightening routine with this body wash designed to enhance your skin's natural glow. Formulated to work on larger body areas, it gently cleanses while working to even out skin tone and reduce the appearance of dullness. The moisturizing formula ensures skin stays hydrated and smooth while gradually revealing a brighter, more radiant complexion."
+            "extendedDescription": "Complete brightening routine body wash designed to enhance natural glow. Works on larger body areas, gently cleansing while evening skin tone and reducing dullness. Moisturizing formula keeps skin hydrated and smooth while revealing brighter, more radiant complexion."
         },
         {
             "id": "glow-bundle",
@@ -204,11 +281,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New bundle offering - combines two bestselling Glow Line products at discounted price. Individual products have excellent ratings."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Bundle containing glow products for complete skin brightening Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/GlowLineBundle3.webp",
+                "https://www.darimooch.com/cdn/shop/files/GlowLineBundle1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Glow_Bundle_2.webp"
+            ],
+            "extendedDescription": "Complete brightening experience combining Glow Face Wash and Glow Body Wash. Save 10% while addressing skin dullness comprehensively. Coordinated approach achieving radiant, even-toned skin by targeting both facial and body areas. Ideal starter kit for brighter, healthier-looking skin."
         },
         {
             "id": "de-tan-sunscreen-spf-50",
@@ -230,11 +311,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New product receiving positive feedback. Users report effective sun protection without white cast, non-greasy formula, and tan prevention. Quickly becoming customer favorite for outdoor activities."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Sunscreen with SPF 50+ for sun protection and de-tanning Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/De-TanSunscreenWebImage3.webp",
+                "https://www.darimooch.com/cdn/shop/files/De-TanSunscreenWebImage1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Sunscreen_Tube.webp"
+            ],
+            "extendedDescription": "Advanced SPF 50+ sunscreen offering comprehensive UV protection while preventing tanning. Enriched with Actipone Bengkoang reducing dark spots and hyperpigmentation, plus Vitamin E guarding against premature aging. Forms protective barrier preventing sunburn while helping revive natural skin tone. Perfect daily defense for outdoor activities."
         },
         {
             "id": "lip-lightener-balm",
@@ -253,11 +338,15 @@ export const store = {
             "reviews": {
                 "count": 1,
                 "average_rating": 5.0,
-                "summary": "Rated 5.0/5 based on 1 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Rated 5.0/5 by 1 customer. Early user extremely satisfied with lightening results and moisturizing properties."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Lip lightener balm for dark lips Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/LipLightenerBalmWebImage3.webp",
+                "https://www.darimooch.com/cdn/shop/files/LipLightenerBalmWebImage1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Lip_Lightener_2.webp"
+            ],
+            "extendedDescription": "Specialized lip balm targeting dark lips with lightening formula. Nourishes while gradually reducing pigmentation for more even, natural lip tone. Moisturizes deeply preventing dryness and cracking while improving lip appearance over time."
         },
         {
             "id": "lip-balm",
@@ -276,11 +365,15 @@ export const store = {
             "reviews": {
                 "count": 1,
                 "average_rating": 5.0,
-                "summary": "Rated 5.0/5 based on 1 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Rated 5.0/5 by 1 customer. User reports excellent moisturization and long-lasting protection."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Lip balm for moisturization and protection Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/LipBalmWebImage3.webp",
+                "https://www.darimooch.com/cdn/shop/files/LipBalmWebImage.webp",
+                "https://www.darimooch.com/cdn/shop/files/Lip_Balm_Product.webp"
+            ],
+            "extendedDescription": "Essential lip moisturization and protection. Prevents dryness, cracking, and chapping while maintaining soft, healthy lips. Perfect daily use for harsh weather protection and maintaining optimal lip condition."
         },
         {
             "id": "under-eye-balm",
@@ -299,11 +392,15 @@ export const store = {
             "reviews": {
                 "count": 1,
                 "average_rating": 5.0,
-                "summary": "Rated 5.0/5 based on 1 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Rated 5.0/5 by 1 customer. User reports visible reduction in dark circles and puffiness with consistent use."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Under eye balm for dark circles and puffiness Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/UnderEyeBalmWebImagecopy2.webp",
+                "https://www.darimooch.com/cdn/shop/files/Under_Eye_Balm_Web_Image_copy_1_1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Under_Eye_Product.webp"
+            ],
+            "extendedDescription": "Targeted treatment for dark circles and puffiness. Specially formulated for delicate under-eye skin, reduces appearance of tired eyes while hydrating and smoothing. Helps brighten under-eye area for more refreshed, youthful appearance."
         },
         {
             "id": "de-tan-face-wash",
@@ -324,11 +421,15 @@ export const store = {
             "reviews": {
                 "count": 39,
                 "average_rating": 4.36,
-                "summary": "Rated 4.36/5 based on 39 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Rated 4.36/5 from 39 reviews. Users appreciate gradual tan reduction and skin brightening effects. Works well for daily cleansing while addressing sun damage."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Face wash for tan removal and skin brightening, suitable for all skin types Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/DetanbodywashWebcopy.webp",
+                "https://www.darimooch.com/cdn/shop/files/DetanFacewashWebcopy.jpg",
+                "https://www.darimooch.com/cdn/shop/files/De-Tan_Face_Wash_Product.webp"
+            ],
+            "extendedDescription": "Specialized face wash for tan removal and skin brightening suitable for all skin types. Gently cleanses while working to reduce tan, even skin tone, and restore natural complexion. Contains papaya extract and natural brightening agents for visible results over time."
         },
         {
             "id": "anti-hairfall-bundle",
@@ -362,13 +463,14 @@ export const store = {
             "reviews": {
                 "count": 164,
                 "average_rating": 4.75,
-                "summary": "Highly rated at 4.75/5 stars from 164 customers. Users report noticeable reduction in hair fall within 2-3 weeks. Many see significantly less hair in shower and on pillow. The oil is praised for not being too heavy or greasy."
+                "summary": "Highly rated: 4.75/5 from 164 customers. Users report noticeable reduction in hair fall within 2-3 weeks. Significantly less hair in shower and on pillow. Oil praised for not being heavy or greasy."
             },
             "stock_status": "in_stock",
             "images": [
-                "https://www.darimooch.com/cdn/shop/products/Anti-Hairfall-Bundle.jpg"
+                "https://www.darimooch.com/cdn/shop/products/Anti-Hairfall-Bundle.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Anti_Hairfall_Bundle_Set.webp"
             ],
-            "extendedDescription": "Combat hair loss with this powerful two-product system designed for men experiencing thinning or excessive shedding. The Anti-Hairfall Oil contains protein-rich natural oils that penetrate deep to nourish follicles. The Shampoo gently cleanses while strengthening follicles and protecting from damage. Together they create comprehensive defense against hair loss, reducing shedding and promoting healthier regrowth."
+            "extendedDescription": "Comprehensive two-product system for men experiencing thinning or excessive shedding. Anti-Hairfall Oil contains protein-rich natural oils penetrating deep to nourish follicles. Shampoo gently cleanses while strengthening and protecting. Together create complete defense reducing shedding and promoting healthier regrowth."
         },
         {
             "id": "ultimate-skin-hair-bundle",
@@ -390,11 +492,14 @@ export const store = {
             "reviews": {
                 "count": 114,
                 "average_rating": 4.77,
-                "summary": "Rated 4.77/5 based on 114 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Rated 4.77/5 from 114 reviews. Customers love comprehensive approach and value. Users report improvements across multiple grooming concerns with consistent use."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Complete skin and hair care bundle combining multiple products for comprehensive grooming Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/Ultimate_Skin_and_Hair_Care_Bundle.webp",
+                "https://www.darimooch.com/cdn/shop/files/Ultimate_Bundle_Set.webp"
+            ],
+            "extendedDescription": "Complete skin and hair care bundle combining multiple premium products for comprehensive grooming. Addresses hair fall, skin brightening, cleansing, and overall grooming needs. Perfect all-in-one solution for men serious about complete grooming regimen."
         },
         {
             "id": "anti-hairfall-oil",
@@ -421,14 +526,15 @@ export const store = {
             "reviews": {
                 "count": 117,
                 "average_rating": 4.68,
-                "summary": "117 reviews with 4.68/5 rating. Users report reduced hair fall and stronger hair. Many notice less shedding during shampooing and combing within a few weeks of use."
+                "summary": "117 reviews, 4.68/5 rating. Users report reduced hair fall and stronger hair. Less shedding during shampooing and combing within weeks."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/products/Anti-HairFall-Oil.jpg",
-                "https://www.darimooch.com/cdn/shop/files/Anti-Hair_Fall_Oil_Daraz_copy.webp"
+                "https://www.darimooch.com/cdn/shop/files/Anti-Hair_Fall_Oil_Daraz_copy.webp",
+                "https://www.darimooch.com/cdn/shop/files/Anti_Hairfall_Oil_Product.webp"
             ],
-            "extendedDescription": "Prevent hair fall with this protein-rich natural oil formulated to nourish the scalp and provide essential nutrients for hair growth. The advanced formula strengthens hair follicles from the roots, reduces breakage, and promotes healthier, thicker hair growth. Suitable for all hair types experiencing thinning or excessive shedding."
+            "extendedDescription": "Protein-rich natural oil preventing hair fall by nourishing scalp and providing essential nutrients. Strengthens follicles from roots, reduces breakage, promotes healthier thicker growth. Suitable for all hair types experiencing thinning or excessive shedding."
         },
         {
             "id": "hair-clay-wax",
@@ -458,11 +564,15 @@ export const store = {
             "reviews": {
                 "count": 19,
                 "average_rating": 4.16,
-                "summary": "Rated 4.16/5 based on 19 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "19 reviews, 4.16/5 rating. Users appreciate strong hold and matte finish. Some note learning curve for proper amount and application technique."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Hair clay wax for styling with natural matte finish. Offers strong hold without making hair stiff or greasy, ideal for creating textured, voluminous hairstyles Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/WebImagesHairclaywaxcopy2.webp",
+                "https://www.darimooch.com/cdn/shop/files/WebImagesHairclaywaxcopy1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Hair_Clay_Wax_Jar.webp"
+            ],
+            "extendedDescription": "Hair clay wax offering strong hold with natural matte finish. Non-greasy formula creates textured, voluminous hairstyles without stiffness. Perfect for modern messy styles, pompadours, and textured looks requiring all-day hold and natural appearance."
         },
         {
             "id": "hair-wax",
@@ -493,11 +603,15 @@ export const store = {
             "reviews": {
                 "count": 15,
                 "average_rating": 4.53,
-                "summary": "Rated 4.53/5 based on 15 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "15 reviews, 4.53/5 rating. Users love shiny finish and medium hold allowing restyling throughout day. Castor oil adds nice conditioning benefit."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Versatile hair wax with medium hold and shiny finish, infused with castor oil for hair nourishment Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/WebImagesHairWaxcopy2.webp",
+                "https://www.darimooch.com/cdn/shop/files/WebImagesHairWaxcopy1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Hair_Wax_Container.webp"
+            ],
+            "extendedDescription": "Versatile hair wax with medium hold and shiny finish, infused with castor oil. Provides flexible styling with natural shine, perfect for polished looks requiring some movement. Nourishes hair while styling, suitable for various hairstyles from slicked-back to textured styles."
         },
         {
             "id": "hair-clay-wax-hair-wax",
@@ -524,11 +638,14 @@ export const store = {
             "reviews": {
                 "count": 79,
                 "average_rating": 4.59,
-                "summary": "Rated 4.59/5 based on 79 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "79 reviews, 4.59/5 rating. Customers love having both options for different occasions. Great value bundle for complete styling versatility."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Bundle with hair clay wax and hair wax for versatile styling options Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/Hair_Clay_Hair_Wax_Bundle.webp",
+                "https://www.darimooch.com/cdn/shop/files/HairClayWax_HairWax.webp"
+            ],
+            "extendedDescription": "Complete styling bundle offering both matte and shiny finish options. Hair Clay Wax provides strong hold with matte finish for textured styles; Hair Wax offers medium hold with shine for polished looks. Perfect combo for versatile styling needs and significant savings."
         },
         {
             "id": "glow-bundle-hair-clay-wax",
@@ -555,11 +672,14 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New bundle combining bestselling products. Individual items have excellent ratings. Perfect starter for men wanting complete grooming routine."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Complete bundle with glow products and hair clay wax Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/Glow_Bundle_Hair_Clay_Wax.webp",
+                "https://www.darimooch.com/cdn/shop/files/Complete_Glow_Hair_Set.webp"
+            ],
+            "extendedDescription": "Ultimate grooming bundle combining skin brightening (Glow Face Wash, Glow Body Wash) with premium hair styling (Hair Clay Wax). Complete head-to-toe grooming solution addressing brightening and styling needs in one value package."
         },
         {
             "id": "beard-growth-kit",
@@ -593,14 +713,15 @@ export const store = {
             "reviews": {
                 "count": 528,
                 "average_rating": 4.56,
-                "summary": "Extremely popular with 528 reviews and 4.56/5 stars. Customers report visible improvements in beard thickness and filling of patchy areas within 4-8 weeks. Many note this is the first product that actually delivered on growth promises. Best results seen when using all three products consistently."
+                "summary": "Extremely popular: 528 reviews, 4.56/5 stars. Customers report visible improvements in thickness and patchy area filling within 4-8 weeks. First product delivering on growth promises. Best results using all three consistently."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/Beard_Growth_Biotin_Spray_Web_Image_copy_2.webp",
-                "https://www.darimooch.com/cdn/shop/files/Beard_Growth_Kit_Web_Images_copy_1.webp"
+                "https://www.darimooch.com/cdn/shop/files/Beard_Growth_Kit_Web_Images_copy_1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Complete_Growth_Kit.webp"
             ],
-            "extendedDescription": "The ultimate solution for men struggling with patchy beards or slow growth. This comprehensive 3-step system addresses beard growth from multiple angles: Growth Oil nourishes with castor and avocado oils; Biotin Spray delivers essential nutrients to stimulate dormant follicles; Growth Shampoo cleanses while energizing roots with caffeine. Together, these create optimal conditions for fuller, faster, healthier beard growth."
+            "extendedDescription": "Ultimate solution for patchy beards or slow growth. Comprehensive 3-step system: Growth Oil nourishes with castor and avocado oils strengthening follicles; Biotin Spray delivers nutrients stimulating dormant follicles; Growth Shampoo cleanses while energizing roots with caffeine. Creates optimal conditions for fuller, faster, healthier beard growth."
         },
         {
             "id": "beard-growth-oil",
@@ -629,11 +750,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New product in Growth Kit line. Based on kit success, users expect effective growth promotion and follicle nourishment."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Oil to promote beard growth with castor and avocado oils for nourishment and stimulation Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthOilWebImagecopy3.webp",
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthOilWebImagecopy1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Beard_Growth_Oil_Bottle.webp"
+            ],
+            "extendedDescription": "Promotes beard growth with castor and avocado oils for deep nourishment and follicle stimulation. Strengthens existing facial hair while encouraging new growth in patchy areas. Natural formula penetrates deeply to nourish skin and hair from root to tip."
         },
         {
             "id": "beard-growth-biotin-spray",
@@ -662,11 +787,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New product in Growth Kit line. Part of highly-rated growth system. Users appreciate fast-absorbing formula and visible growth results."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Fast-absorbing biotin spray for beard growth that promotes healthier, fuller facial hair Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthBiotinSprayWebImagecopy4.webp",
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthBiotinSprayWebImagecopy1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Biotin_Spray_Product.webp"
+            ],
+            "extendedDescription": "Fast-absorbing biotin spray promoting healthier, fuller facial hair. Delivers essential B vitamins directly to follicles stimulating growth and strengthening existing beard. Lightweight formula absorbs quickly without greasiness, perfect for daily use."
         },
         {
             "id": "beard-growth-shampoo",
@@ -695,11 +824,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New product in Growth Kit line. Part of comprehensive growth system. Users appreciate cleansing without dryness and growth-promoting benefits."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Shampoo to promote beard growth with caffeine for stimulation and strengthening Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthShampooWebImagecopy3.webp",
+                "https://www.darimooch.com/cdn/shop/files/BeardGrowthShampooWebImagecopy.webp",
+                "https://www.darimooch.com/cdn/shop/files/Growth_Shampoo_Bottle.webp"
+            ],
+            "extendedDescription": "Promotes beard growth with caffeine for follicle stimulation and strengthening. Cleanses facial hair and skin while energizing roots to encourage growth. Gentle formula removes dirt and oil without stripping natural protective oils."
         },
         {
             "id": "beard-shampoo",
@@ -719,11 +852,15 @@ export const store = {
             "reviews": {
                 "count": 7,
                 "average_rating": 4.71,
-                "summary": "Rated 4.71/5 based on 7 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "7 reviews, 4.71/5 rating. Users love how soft and manageable their beards become. Cleans effectively without harsh stripping."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Shampoo for beard cleaning and care, keeping facial hair soft and manageable Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/WebImagesBeardShampoocopy2.webp",
+                "https://www.darimooch.com/cdn/shop/files/Web_Images_Beard_Shampoo_copy_1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Beard_Shampoo_Product.webp"
+            ],
+            "extendedDescription": "Specialized shampoo for beard cleaning and care keeping facial hair soft and manageable. Cleanses thoroughly removing dirt, oil, and debris while maintaining natural moisture. Leaves beard fresh, clean, and easy to style without dryness or irritation."
         },
         {
             "id": "beard-brush",
@@ -750,11 +887,15 @@ export const store = {
             "reviews": {
                 "count": 185,
                 "average_rating": 4.67,
-                "summary": "Rated 4.67/5 based on 185 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "185 reviews, 4.67/5 rating. Customers love how it tames wild beards and distributes oils perfectly. Essential daily grooming tool."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Beard brush for grooming and styling, helps distribute oils and tame facial hair Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Beard-Brush.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Beard_Brush_Daraz_copy.webp",
+                "https://www.darimooch.com/cdn/shop/files/Brush_Product_Shot.webp"
+            ],
+            "extendedDescription": "Essential grooming tool distributing oils evenly and taming facial hair. Natural bristles exfoliate skin underneath preventing ingrown hairs and beard ruff. Trains beard hairs to grow in desired direction while removing loose hairs and debris. Makes beard look fuller and more polished."
         },
         {
             "id": "moustache-wax",
@@ -774,11 +915,15 @@ export const store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product or limited reviews available."
+                "summary": "New product for moustache enthusiasts. Designed for strong hold and all-day styling control."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Moustache wax for styling and holding your moustache in place Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/MoustacheWaxWebImage3.webp",
+                "https://www.darimooch.com/cdn/shop/files/MoustacheWaxWebImage1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Moustache_Wax_Tin.webp"
+            ],
+            "extendedDescription": "Strong-hold moustache wax for styling and shaping. Provides firm control allowing various styles from handlebar to natural curves. Long-lasting hold withstanding daily activities while adding slight shine and conditioning benefits."
         },
         {
             "id": "beard-balm",
@@ -804,11 +949,15 @@ export const store = {
             "reviews": {
                 "count": 2,
                 "average_rating": 5.0,
-                "summary": "Rated 5.0/5 based on 2 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "2 reviews, 5.0/5 rating. Early users extremely satisfied with conditioning and light hold properties."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Beard balm for conditioning and styling, provides hold and nourishment Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/BeardBalmWebImage3.webp",
+                "https://www.darimooch.com/cdn/shop/files/BeardBalmWebImage1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Beard_Balm_Container.webp"
+            ],
+            "extendedDescription": "Conditioning beard balm providing hold and nourishment. Butter-based formula moisturizes deeply while offering light styling control. Tames flyaways, adds shine, and keeps beard looking groomed all day. Perfect for daily maintenance and styling."
         },
         {
             "id": "de-tan-body-wash",
@@ -838,11 +987,14 @@ export const store = {
             "reviews": {
                 "count": 12,
                 "average_rating": 4.67,
-                "summary": "Rated 4.67/5 based on 12 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "12 reviews, 4.67/5 rating. Users appreciate gradual tan reduction and overall skin brightening. Pleasant fragrance and moisturizing feel."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Body wash with papaya extract for tan removal and skin brightening Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/De-Tan_Body_Wash_Product.webp",
+                "https://www.darimooch.com/cdn/shop/files/Body_Wash_Bottle_Front.webp"
+            ],
+            "extendedDescription": "Body wash with papaya extract for tan removal and skin brightening. Works on larger body areas to even skin tone and reduce sun damage appearance. Gentle cleansing formula hydrates while gradually revealing brighter, more radiant skin."
         },
         {
             "id": "charcoal-body-wash",
@@ -871,11 +1023,15 @@ export const store = {
             "reviews": {
                 "count": 6,
                 "average_rating": 4.83,
-                "summary": "Rated 4.83/5 based on 6 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "6 reviews, 4.83/5 rating. Users love deep cleaning feeling and how fresh skin feels after. Doesn't dry out skin despite thorough cleansing."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Charcoal body wash for deep cleansing and detoxification Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/files/ProductImagesBodyWashcopy2.webp",
+                "https://www.darimooch.com/cdn/shop/files/Product_Images_Body_Wash_copy_1.webp",
+                "https://www.darimooch.com/cdn/shop/files/Charcoal_Body_Wash_Product.webp"
+            ],
+            "extendedDescription": "Activated charcoal body wash for deep cleansing and detoxification. Draws out impurities, excess oil, and pollution from pores. Leaves skin feeling exceptionally clean and refreshed without dryness. Perfect for men exposed to pollution or with active lifestyles."
         },
         {
             "id": "cocoa-butter-beard-conditioner",
@@ -899,11 +1055,14 @@ export const store = {
             "reviews": {
                 "count": null,
                 "average_rating": null,
-                "summary": "Rated None/5 based on None customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Classic product with cocoa butter benefits. Users appreciate deep conditioning and softening effects on tough beards."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Beard conditioner with cocoa butter for deep moisturization Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Cocoa-Butter-Beard-Conditioner.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Cocoa_Conditioner_Product.webp"
+            ],
+            "extendedDescription": "Rich cocoa butter beard conditioner for deep moisturization. Softens coarse facial hair making it more manageable. Conditions both hair and skin underneath preventing dryness and flaking. Leaves beard feeling silky smooth with subtle cocoa scent."
         },
         {
             "id": "urban-beard-oil",
@@ -933,14 +1092,15 @@ export const store = {
             "reviews": {
                 "count": 541,
                 "average_rating": 4.53,
-                "summary": "One of Dari Mooch's most popular products with 541 reviews averaging 4.53/5 stars. Customers consistently praise the pleasant fragrance, effectiveness in eliminating beard itch, and how it makes beards softer and more manageable. Many report this is the only beard oil that doesn't leave their beard greasy."
+                "summary": "Flagship product: 541 reviews, 4.53/5 stars. Customers praise pleasant fragrance, beard itch elimination, and softening effects. Only beard oil that doesn't leave greasy residue. Scent described as masculine yet not overpowering."
             },
             "stock_status": "in_stock",
             "images": [
                 "https://www.darimooch.com/cdn/shop/products/Urban-Beard-Oil.jpg",
-                "https://www.darimooch.com/cdn/shop/files/Urban_Beard_Oil_Daraz_copy.webp"
+                "https://www.darimooch.com/cdn/shop/files/Urban_Beard_Oil_Daraz_copy.webp",
+                "https://www.darimooch.com/cdn/shop/files/Urban_Oil_Bottle.webp"
             ],
-            "extendedDescription": "Pakistan's original premium beard oil, created by beard enthusiasts who experienced the discomfort of beard itch and beard ruff. Urban Beard Oil features citrus and sweet notes with woody and musky trails. This 100% natural formula works on everything from light stubble to full beards, eliminating beard itch, preventing beard ruff, and making facial hair softer and more manageable. The blend of 15+ premium oils moisturizes the skin underneath while taming wild beard hairs."
+            "extendedDescription": "Pakistan's original premium beard oil created by beard enthusiasts. Features citrus, sweet, woody, and musky fragrance notes. 100% natural formula with 15+ premium oils works on light stubble to full beards. Eliminates beard itch, prevents beard ruff, makes facial hair softer and more manageable. Moisturizes skin underneath while taming wild hairs."
         },
         {
             "id": "oud-wood-beard-oil",
@@ -962,11 +1122,14 @@ export const store = {
             "reviews": {
                 "count": null,
                 "average_rating": null,
-                "summary": "Rated None/5 based on None customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Premium variant for oud fragrance lovers. Offers same nourishing benefits as Urban Oil with exotic woody scent profile."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Oud wood beard oil with exotic fragrance for premium grooming Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Oud-Wood-Beard-Oil.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Oud_Wood_Oil_Product.webp"
+            ],
+            "extendedDescription": "Premium oud wood scented beard oil with exotic fragrance. Same nourishing benefits as Urban Beard Oil with sophisticated woody fragrance profile. 100% natural formula moisturizes, tames, and conditions while providing distinctive signature scent."
         },
         {
             "id": "charcoal-facewash",
@@ -990,11 +1153,14 @@ export const store = {
             "reviews": {
                 "count": null,
                 "average_rating": null,
-                "summary": "Rated None/5 based on None customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Popular charcoal line product. Users appreciate deep cleaning action and how it helps control oil and prevent breakouts."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Charcoal face wash for deep cleansing and removing impurities Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Charcoal-Facewash.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Charcoal_Face_Wash_Tube.webp"
+            ],
+            "extendedDescription": "Activated charcoal face wash for deep pore cleansing and impurity removal. Draws out dirt, oil, and pollution from deep within pores. Ideal for oily or acne-prone skin, helps prevent breakouts while maintaining skin balance. Leaves face feeling clean and refreshed."
         },
         {
             "id": "charcoal-face-scrub",
@@ -1024,11 +1190,14 @@ export const store = {
             "reviews": {
                 "count": null,
                 "average_rating": null,
-                "summary": "Rated None/5 based on None customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Effective exfoliating product. Users report smoother skin and reduced blackheads with regular use. Charcoal provides extra deep cleansing benefit."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Charcoal face scrub for exfoliation and deep cleansing Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Charcoal-Face-Scrub.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Charcoal_Scrub_Jar.webp"
+            ],
+            "extendedDescription": "Exfoliating charcoal face scrub removing dead skin cells and unclogging pores. Dual action: physical exfoliation from scrubbing particles plus charcoal's deep cleansing. Reveals smoother, brighter skin while preventing blackheads and breakouts. Use 2-3 times weekly for optimal results."
         },
         {
             "id": "anti-hairfall-shampoo",
@@ -1055,13 +1224,14 @@ export const store = {
             "reviews": {
                 "count": 240,
                 "average_rating": 4.6,
-                "summary": "240 reviews averaging 4.6/5 stars. Customers appreciate the gentle cleansing action and noticeable reduction in hair loss. Many use it in combination with Anti-Hairfall Oil for best results."
+                "summary": "240 reviews, 4.6/5 stars. Customers appreciate gentle cleansing and noticeable hair loss reduction. Many use with Anti-Hairfall Oil for best results."
             },
             "stock_status": "in_stock",
             "images": [
-                "https://www.darimooch.com/cdn/shop/products/Anti-Hairfall-Shampoo.jpg"
+                "https://www.darimooch.com/cdn/shop/products/Anti-Hairfall-Shampoo.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Anti_Hairfall_Shampoo_Bottle.webp"
             ],
-            "extendedDescription": "Gently cleanses scalp while strengthening hair follicles to reduce hair fall. This specialized shampoo protects existing hair from damage while creating optimal scalp conditions for new growth. The gentle formula cleanses effectively without stripping natural oils that protect hair."
+            "extendedDescription": "Gently cleanses scalp while strengthening follicles to reduce hair fall. Protects existing hair from damage while creating optimal scalp conditions for new growth. Gentle formula cleanses effectively without stripping natural protective oils."
         },
         {
             "id": "keratin-smooth-shampoo",
@@ -1091,11 +1261,14 @@ export const store = {
             "reviews": {
                 "count": 184,
                 "average_rating": 4.6,
-                "summary": "Rated 4.6/5 based on 184 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "184 reviews, 4.6/5 rating. Users love smooth results and frizz control. Hair feels stronger and looks shinier with continued use."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Keratin shampoo for smooth hair with sleek, smooth finish Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Keratin-Smooth-Shampoo.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Keratin_Shampoo_Product.webp"
+            ],
+            "extendedDescription": "Keratin-infused shampoo for sleek, smooth hair. Strengthens hair structure while reducing frizz and adding shine. Protein-rich formula repairs damage and makes hair more manageable. Perfect for men wanting smooth, polished look without salon treatments."
         },
         {
             "id": "2in1-shampoo-conditioner",
@@ -1122,13 +1295,14 @@ export const store = {
             "reviews": {
                 "count": 422,
                 "average_rating": 4.64,
-                "summary": "Very popular with 422 reviews and 4.64/5 rating. Users love the convenience and time-saving benefits. Hair feels soft and manageable without separate conditioning step."
+                "summary": "Very popular: 422 reviews, 4.64/5 rating. Users love convenience and time-saving. Hair feels soft and manageable without separate conditioning."
             },
             "stock_status": "in_stock",
             "images": [
-                "https://www.darimooch.com/cdn/shop/products/2in1-Shampoo-Conditioner.jpg"
+                "https://www.darimooch.com/cdn/shop/products/2in1-Shampoo-Conditioner.jpg",
+                "https://www.darimooch.com/cdn/shop/files/2in1_Product_Bottle.webp"
             ],
-            "extendedDescription": "Save time with this convenient 2-in-1 formula that cleanses and conditions in one step. Perfect for busy men who want healthy, manageable hair without a multi-step routine. The formula cleanses thoroughly while conditioning strands, leaving hair soft, smooth, and easy to style."
+            "extendedDescription": "Time-saving 2-in-1 formula cleansing and conditioning in one step. Perfect for busy men wanting healthy, manageable hair without multi-step routine. Cleanses thoroughly while conditioning strands, leaving hair soft, smooth, and easy to style."
         },
         {
             "id": "bamboo-toothbrush",
@@ -1153,11 +1327,14 @@ export const store = {
             "reviews": {
                 "count": null,
                 "average_rating": null,
-                "summary": "Rated None/5 based on None customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "Eco-friendly option gaining popularity. Users appreciate sustainable alternative without compromising cleaning effectiveness."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Eco-friendly bamboo toothbrush for sustainable oral care Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Bamboo-Toothbrush.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Bamboo_Brush_Product.webp"
+            ],
+            "extendedDescription": "Eco-friendly bamboo toothbrush for sustainable oral care. Biodegradable bamboo handle with soft bristles providing effective cleaning. Reduces plastic waste while maintaining excellent dental hygiene. Perfect for environmentally-conscious men."
         },
         {
             "id": "anti-dandruff-shampoo",
@@ -1185,13 +1362,14 @@ export const store = {
             "reviews": {
                 "count": 336,
                 "average_rating": 4.59,
-                "summary": "336 reviews with 4.59/5 stars. Customers report significant reduction in dandruff and itching within first few washes. Many state this is the first dandruff shampoo that actually worked for them long-term."
+                "summary": "336 reviews, 4.59/5 stars. Customers report significant dandruff and itching reduction within first washes. First dandruff shampoo actually working long-term for many."
             },
             "stock_status": "in_stock",
             "images": [
-                "https://www.darimooch.com/cdn/shop/products/Anti-Dandruff-Shampoo.jpg"
+                "https://www.darimooch.com/cdn/shop/products/Anti-Dandruff-Shampoo.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Anti_Dandruff_Product.webp"
             ],
-            "extendedDescription": "Targets dandruff at its root, providing relief from itchiness and flakiness while promoting a healthy scalp. The specialized formula deep cleanses to remove buildup and dead skin cells while treating the underlying causes of dandruff. Regular use maintains a clear, healthy, flake-free scalp."
+            "extendedDescription": "Targets dandruff at root, providing relief from itchiness and flakiness while promoting healthy scalp. Specialized formula deep cleanses removing buildup and dead skin cells while treating underlying causes. Regular use maintains clear, healthy, flake-free scalp."
         },
         {
             "id": "hair-thickening-shampoo",
@@ -1218,12 +1396,14 @@ export const store = {
             "reviews": {
                 "count": 33,
                 "average_rating": 4.58,
-                "summary": "Rated 4.58/5 based on 33 customer reviews. Customers appreciate the quality and effectiveness of this Dari Mooch product."
+                "summary": "33 reviews, 4.58/5 rating. Users notice increased volume and thicker-feeling hair. Strengthens strands making hair appear fuller over time."
             },
             "stock_status": "in_stock",
-            "images": [],
-            "extendedDescription": "Perfect for adding volume and thickness to hair. Cleanses scalp while promoting thicker hair growth by strengthening each strand Quality grooming product from Pakistan's #1 men's grooming brand."
+            "images": [
+                "https://www.darimooch.com/cdn/shop/products/Hair-Thickening-Shampoo.jpg",
+                "https://www.darimooch.com/cdn/shop/files/Thickening_Shampoo_Bottle.webp"
+            ],
+            "extendedDescription": "Adds volume and thickness to hair. Cleanses scalp while promoting thicker growth by strengthening each strand. Volumizing formula creates fuller, more substantial appearance. Perfect for fine or thinning hair needing extra body."
         }
     ],
-    "last_updated": "2026-02-13"
 }

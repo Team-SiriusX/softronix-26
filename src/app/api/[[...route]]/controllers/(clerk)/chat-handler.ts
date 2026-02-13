@@ -37,8 +37,11 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
       });
     }
 
-    // Enhanced system prompt with RAG context
-    const enhancedSystemPrompt = systemPrompt + contextualInfo;
+    // Enhanced system prompt with RAG context and auth status
+    const authContext = userId
+      ? "\n\nUser Authentication: The user IS logged in. You may generate coupons for them."
+      : "\n\nUser Authentication: The user is NOT logged in. Do NOT attempt to generate coupons. If the user asks for a discount or coupon, politely tell them they need to sign in first to receive discounts, and let them know you'll help them get a great deal once they're logged in.";
+    const enhancedSystemPrompt = systemPrompt + authContext + contextualInfo;
 
     // Prepare messages for the API call
     const historyMessages = conversationHistory.reduce<Message[]>((accumulator, msg) => {
@@ -106,16 +109,15 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
           // Execute the function
           const functionResult = await executeFunctions(functionName, functionArgs, userId);
 
-          // Capture products from searchProducts tool calls
+          // Capture product IDs from searchProducts tool calls
           if (functionName === "searchProducts" && functionResult.success && Array.isArray(functionResult.results)) {
             for (const r of functionResult.results) {
-              toolProducts.push({
-                name: r.name ?? "Product",
-                price: r.price?.formatted ?? (typeof r.price === "string" ? r.price : ""),
-                rating: r.rating ?? null,
-                reviewCount: r.reviewCount ?? null,
-                url: r.url ?? null,
-              });
+              if (r.id) {
+                toolProducts.push({
+                  id: r.id as string,
+                  name: (r.name as string) ?? "Product",
+                });
+              }
             }
           }
 
@@ -142,6 +144,17 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
                 formattedDiscountedPrice: coupon.formattedDiscountedPrice,
               },
             });
+          }
+
+          // If coupon generation failed due to auth, push requireAuth RPC
+          if (functionName === "generateCoupon" && !functionResult.success) {
+            const errorMsg = (functionResult as Record<string, unknown>).error as string | undefined;
+            if (errorMsg?.toLowerCase().includes("logged in") || errorMsg?.toLowerCase().includes("sign in")) {
+              functions.push({
+                name: "requireAuth",
+                args: { reason: "coupon_generation" },
+              });
+            }
           }
 
           // Capture price adjustment as frontend RPC call

@@ -1,9 +1,6 @@
 export type ChatbotProduct = {
+  id: string;
   name: string;
-  price: string;
-  rating: number | null;
-  reviewCount: number | null;
-  url: string | null;
 };
 
 /**
