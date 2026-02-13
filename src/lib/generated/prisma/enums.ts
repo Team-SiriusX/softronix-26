@@ -24,3 +24,12 @@ export const CouponStatus = {
 } as const
 
 export type CouponStatus = (typeof CouponStatus)[keyof typeof CouponStatus]
+
+
+export const Sentiment = {
+  POSITIVE: 'POSITIVE',
+  NEUTRAL: 'NEUTRAL',
+  NEGATIVE: 'NEGATIVE'
+} as const
+
+export type Sentiment = (typeof Sentiment)[keyof typeof Sentiment]

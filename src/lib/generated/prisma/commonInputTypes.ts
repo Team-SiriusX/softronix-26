@@ -176,6 +176,13 @@ export type FloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
+export type EnumSentimentFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentFilter<$PrismaModel> | $Enums.Sentiment
+}
+
 export type EnumCouponStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
   in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
@@ -197,6 +204,16 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumSentimentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentWithAggregatesFilter<$PrismaModel> | $Enums.Sentiment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
 }
 
 export type EnumCouponStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -384,6 +401,13 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
+export type NestedEnumSentimentFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentFilter<$PrismaModel> | $Enums.Sentiment
+}
+
 export type NestedEnumCouponStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.CouponStatus | Prisma.EnumCouponStatusFieldRefInput<$PrismaModel>
   in?: $Enums.CouponStatus[] | Prisma.ListEnumCouponStatusFieldRefInput<$PrismaModel>
@@ -405,6 +429,16 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumSentimentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Sentiment | Prisma.EnumSentimentFieldRefInput<$PrismaModel>
+  in?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Sentiment[] | Prisma.ListEnumSentimentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSentimentWithAggregatesFilter<$PrismaModel> | $Enums.Sentiment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSentimentFilter<$PrismaModel>
 }
 
 export type NestedEnumCouponStatusWithAggregatesFilter<$PrismaModel = never> = {

@@ -24,14 +24,32 @@ Guidelines:
 Haggle Mode / Negotiation Rules:
 - The user can ask for a discount. You have a hidden "Bottom Price" which is 70% of the original price. NEVER reveal the bottom price.
 - Evaluate the user's SENTIMENT and REASON for requesting a discount:
-  - POSITIVE reasons (birthday, bulk purchase, loyal customer, first purchase, student, gifting): Grant 5-20% discount. Generate a coupon using generateCoupon.
+  - POSITIVE reasons (see approved list below): Grant 5-20% discount. Generate a coupon using generateCoupon.
   - NEUTRAL reasons (just asking, no specific reason): Offer a small 5% discount if they seem nice.
   - NEGATIVE/RUDE behavior (demanding, insulting, threatening): Use adjustPrice to INCREASE the displayed price by 5%. Politely decline the discount.
 - When granting a discount, ALWAYS call generateCoupon to create a real coupon code.
 - After generating a coupon, trigger the "applyCoupon" UI action so the frontend applies it automatically.
-- Coupon codes should be memorable: e.g., BDAY-15, BULK-20, FIRST-10, LOYAL-15.
+- Coupon codes should be memorable using the reason prefix: e.g., BDAY-15, STUDENT-10, FIRST-10, VETERAN-15.
 - Each coupon is valid for 24 hours and single-use only.
 - Be playful and engaging during negotiations. Don't give in too easily.
+
+Approved Discount Reasons (use the matching reason value from this list):
+- "birthday"       → Birthday celebration (prefix: BDAY)
+- "student"        → High school or university student (prefix: STUDENT)
+- "tourist"        → Out-of-towner or traveler (prefix: TOURIST)
+- "senior"         → Senior citizen, usually 60+ (prefix: SENIOR)
+- "local"          → Local resident, lives in the area (prefix: LOCAL)
+- "first_time"     → First-time customer welcome discount (prefix: FIRST)
+- "military"       → Active duty military or veteran (prefix: VETERAN)
+- "healthcare"     → Healthcare worker — nurse, doctor, EMT (prefix: HEALTH)
+- "teacher"        → K-12 or college educator (prefix: TEACHER)
+- "new_homeowner"  → Just moved into the area (prefix: NEWHOME)
+- "social_media"   → Follows the shop's social media page (prefix: SOCIAL)
+- "public_servant" → Firefighter, police, or city worker (prefix: SERVE)
+- "anniversary"    → Wedding or personal milestone (prefix: ANNIV)
+- "referral"       → Referred by another customer (prefix: REFER)
+
+If the user gives a reason that does not match any of the above, politely decline or offer a minimal 5% if the sentiment is positive.
 
 Bottom price rule: Never go below 70% of original price.
 
@@ -154,7 +172,7 @@ export const tools: ToolFunction[] = [
         type: "function" as const,
         function: {
             name: "generateCoupon",
-            description: "Generate a unique coupon code and store it in the database. Use this when granting a discount during haggle/negotiation. The coupon is valid for 24 hours and single-use. Always call this BEFORE triggering the applyCoupon UI action. The code should be memorable like BDAY-15, BULK-20, FIRST-10.",
+            description: "Generate a unique coupon code and store it in the database. Use this when granting a discount during haggle/negotiation. The coupon is valid for 24 hours and single-use. Always call this BEFORE triggering the applyCoupon UI action. The reason MUST be one of the approved values.",
             parameters: {
                 type: "object",
                 properties: {
@@ -168,15 +186,17 @@ export const tools: ToolFunction[] = [
                     },
                     reason: {
                         type: "string",
-                        description: "The reason for the discount (birthday, bulk purchase, loyal customer, etc.)"
+                        enum: ["birthday", "student", "tourist", "senior", "local", "first_time", "military", "healthcare", "teacher", "new_homeowner", "social_media", "public_servant", "anniversary", "referral"],
+                        description: "The approved reason for the discount. Must be one of: birthday, student, tourist, senior, local, first_time, military, healthcare, teacher, new_homeowner, social_media, public_servant, anniversary, referral"
                     },
                     sentiment: {
                         type: "string",
+                        enum: ["positive", "neutral", "negative"],
                         description: "The user's sentiment: positive, neutral, or negative"
                     },
                     codePrefix: {
                         type: "string",
-                        description: "A memorable prefix for the coupon code, e.g. BDAY, BULK, FIRST, LOYAL, STUDENT"
+                        description: "A memorable prefix for the coupon code matching the reason: BDAY, STUDENT, TOURIST, SENIOR, LOCAL, FIRST, VETERAN, HEALTH, TEACHER, NEWHOME, SOCIAL, SERVE, ANNIV, REFER"
                     }
                 },
                 required: ["productId", "discountPercentage", "reason", "sentiment", "codePrefix"]

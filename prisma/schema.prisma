@@ -79,24 +79,15 @@ model Verification {
   @@map("verification")
 }
 
-enum UserRole {
-  USER
-  ADMIN
-}
-
 model Coupon {
   id                 String       @id @default(cuid())
   code               String       @unique
   userId             String
   user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId          String
-  productName        String
   discountPercentage Float
-  originalPrice      Float
-  discountedPrice    Float
   currency           String       @default("Rs.")
   reason             String
-  sentiment          String       @default("positive") // positive, neutral, negative
+  sentiment          Sentiment    @default(POSITIVE)
   status             CouponStatus @default(ACTIVE)
   expiresAt          DateTime
   usedAt             DateTime?
@@ -109,8 +100,19 @@ model Coupon {
   @@map("coupon")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 enum CouponStatus {
   ACTIVE
   USED
   EXPIRED
+}
+
+enum Sentiment {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
 }

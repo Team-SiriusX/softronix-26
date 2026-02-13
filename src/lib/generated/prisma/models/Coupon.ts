@@ -28,28 +28,20 @@ export type AggregateCoupon = {
 
 export type CouponAvgAggregateOutputType = {
   discountPercentage: number | null
-  originalPrice: number | null
-  discountedPrice: number | null
 }
 
 export type CouponSumAggregateOutputType = {
   discountPercentage: number | null
-  originalPrice: number | null
-  discountedPrice: number | null
 }
 
 export type CouponMinAggregateOutputType = {
   id: string | null
   code: string | null
   userId: string | null
-  productId: string | null
-  productName: string | null
   discountPercentage: number | null
-  originalPrice: number | null
-  discountedPrice: number | null
   currency: string | null
   reason: string | null
-  sentiment: string | null
+  sentiment: $Enums.Sentiment | null
   status: $Enums.CouponStatus | null
   expiresAt: Date | null
   usedAt: Date | null
@@ -61,14 +53,10 @@ export type CouponMaxAggregateOutputType = {
   id: string | null
   code: string | null
   userId: string | null
-  productId: string | null
-  productName: string | null
   discountPercentage: number | null
-  originalPrice: number | null
-  discountedPrice: number | null
   currency: string | null
   reason: string | null
-  sentiment: string | null
+  sentiment: $Enums.Sentiment | null
   status: $Enums.CouponStatus | null
   expiresAt: Date | null
   usedAt: Date | null
@@ -80,11 +68,7 @@ export type CouponCountAggregateOutputType = {
   id: number
   code: number
   userId: number
-  productId: number
-  productName: number
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency: number
   reason: number
   sentiment: number
@@ -99,25 +83,17 @@ export type CouponCountAggregateOutputType = {
 
 export type CouponAvgAggregateInputType = {
   discountPercentage?: true
-  originalPrice?: true
-  discountedPrice?: true
 }
 
 export type CouponSumAggregateInputType = {
   discountPercentage?: true
-  originalPrice?: true
-  discountedPrice?: true
 }
 
 export type CouponMinAggregateInputType = {
   id?: true
   code?: true
   userId?: true
-  productId?: true
-  productName?: true
   discountPercentage?: true
-  originalPrice?: true
-  discountedPrice?: true
   currency?: true
   reason?: true
   sentiment?: true
@@ -132,11 +108,7 @@ export type CouponMaxAggregateInputType = {
   id?: true
   code?: true
   userId?: true
-  productId?: true
-  productName?: true
   discountPercentage?: true
-  originalPrice?: true
-  discountedPrice?: true
   currency?: true
   reason?: true
   sentiment?: true
@@ -151,11 +123,7 @@ export type CouponCountAggregateInputType = {
   id?: true
   code?: true
   userId?: true
-  productId?: true
-  productName?: true
   discountPercentage?: true
-  originalPrice?: true
-  discountedPrice?: true
   currency?: true
   reason?: true
   sentiment?: true
@@ -257,14 +225,10 @@ export type CouponGroupByOutputType = {
   id: string
   code: string
   userId: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency: string
   reason: string
-  sentiment: string
+  sentiment: $Enums.Sentiment
   status: $Enums.CouponStatus
   expiresAt: Date
   usedAt: Date | null
@@ -299,14 +263,10 @@ export type CouponWhereInput = {
   id?: Prisma.StringFilter<"Coupon"> | string
   code?: Prisma.StringFilter<"Coupon"> | string
   userId?: Prisma.StringFilter<"Coupon"> | string
-  productId?: Prisma.StringFilter<"Coupon"> | string
-  productName?: Prisma.StringFilter<"Coupon"> | string
   discountPercentage?: Prisma.FloatFilter<"Coupon"> | number
-  originalPrice?: Prisma.FloatFilter<"Coupon"> | number
-  discountedPrice?: Prisma.FloatFilter<"Coupon"> | number
   currency?: Prisma.StringFilter<"Coupon"> | string
   reason?: Prisma.StringFilter<"Coupon"> | string
-  sentiment?: Prisma.StringFilter<"Coupon"> | string
+  sentiment?: Prisma.EnumSentimentFilter<"Coupon"> | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFilter<"Coupon"> | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFilter<"Coupon"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
@@ -319,11 +279,7 @@ export type CouponOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  productId?: Prisma.SortOrder
-  productName?: Prisma.SortOrder
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
@@ -342,14 +298,10 @@ export type CouponWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CouponWhereInput[]
   NOT?: Prisma.CouponWhereInput | Prisma.CouponWhereInput[]
   userId?: Prisma.StringFilter<"Coupon"> | string
-  productId?: Prisma.StringFilter<"Coupon"> | string
-  productName?: Prisma.StringFilter<"Coupon"> | string
   discountPercentage?: Prisma.FloatFilter<"Coupon"> | number
-  originalPrice?: Prisma.FloatFilter<"Coupon"> | number
-  discountedPrice?: Prisma.FloatFilter<"Coupon"> | number
   currency?: Prisma.StringFilter<"Coupon"> | string
   reason?: Prisma.StringFilter<"Coupon"> | string
-  sentiment?: Prisma.StringFilter<"Coupon"> | string
+  sentiment?: Prisma.EnumSentimentFilter<"Coupon"> | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFilter<"Coupon"> | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFilter<"Coupon"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
@@ -362,11 +314,7 @@ export type CouponOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  productId?: Prisma.SortOrder
-  productName?: Prisma.SortOrder
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
@@ -389,14 +337,10 @@ export type CouponScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
   code?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
-  productId?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
-  productName?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
   discountPercentage?: Prisma.FloatWithAggregatesFilter<"Coupon"> | number
-  originalPrice?: Prisma.FloatWithAggregatesFilter<"Coupon"> | number
-  discountedPrice?: Prisma.FloatWithAggregatesFilter<"Coupon"> | number
   currency?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
   reason?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
-  sentiment?: Prisma.StringWithAggregatesFilter<"Coupon"> | string
+  sentiment?: Prisma.EnumSentimentWithAggregatesFilter<"Coupon"> | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusWithAggregatesFilter<"Coupon"> | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Coupon"> | Date | string
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Coupon"> | Date | string | null
@@ -407,14 +351,10 @@ export type CouponScalarWhereWithAggregatesInput = {
 export type CouponCreateInput = {
   id?: string
   code: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -427,14 +367,10 @@ export type CouponUncheckedCreateInput = {
   id?: string
   code: string
   userId: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -445,14 +381,10 @@ export type CouponUncheckedCreateInput = {
 export type CouponUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -465,14 +397,10 @@ export type CouponUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -484,14 +412,10 @@ export type CouponCreateManyInput = {
   id?: string
   code: string
   userId: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -502,14 +426,10 @@ export type CouponCreateManyInput = {
 export type CouponUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -521,14 +441,10 @@ export type CouponUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -550,11 +466,7 @@ export type CouponCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  productId?: Prisma.SortOrder
-  productName?: Prisma.SortOrder
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
@@ -567,19 +479,13 @@ export type CouponCountOrderByAggregateInput = {
 
 export type CouponAvgOrderByAggregateInput = {
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
 }
 
 export type CouponMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  productId?: Prisma.SortOrder
-  productName?: Prisma.SortOrder
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
@@ -594,11 +500,7 @@ export type CouponMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   code?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  productId?: Prisma.SortOrder
-  productName?: Prisma.SortOrder
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
@@ -611,8 +513,6 @@ export type CouponMinOrderByAggregateInput = {
 
 export type CouponSumOrderByAggregateInput = {
   discountPercentage?: Prisma.SortOrder
-  originalPrice?: Prisma.SortOrder
-  discountedPrice?: Prisma.SortOrder
 }
 
 export type CouponCreateNestedManyWithoutUserInput = {
@@ -665,6 +565,10 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumSentimentFieldUpdateOperationsInput = {
+  set?: $Enums.Sentiment
+}
+
 export type EnumCouponStatusFieldUpdateOperationsInput = {
   set?: $Enums.CouponStatus
 }
@@ -672,14 +576,10 @@ export type EnumCouponStatusFieldUpdateOperationsInput = {
 export type CouponCreateWithoutUserInput = {
   id?: string
   code: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -690,14 +590,10 @@ export type CouponCreateWithoutUserInput = {
 export type CouponUncheckedCreateWithoutUserInput = {
   id?: string
   code: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -738,14 +634,10 @@ export type CouponScalarWhereInput = {
   id?: Prisma.StringFilter<"Coupon"> | string
   code?: Prisma.StringFilter<"Coupon"> | string
   userId?: Prisma.StringFilter<"Coupon"> | string
-  productId?: Prisma.StringFilter<"Coupon"> | string
-  productName?: Prisma.StringFilter<"Coupon"> | string
   discountPercentage?: Prisma.FloatFilter<"Coupon"> | number
-  originalPrice?: Prisma.FloatFilter<"Coupon"> | number
-  discountedPrice?: Prisma.FloatFilter<"Coupon"> | number
   currency?: Prisma.StringFilter<"Coupon"> | string
   reason?: Prisma.StringFilter<"Coupon"> | string
-  sentiment?: Prisma.StringFilter<"Coupon"> | string
+  sentiment?: Prisma.EnumSentimentFilter<"Coupon"> | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFilter<"Coupon"> | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFilter<"Coupon"> | Date | string
   usedAt?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
@@ -756,14 +648,10 @@ export type CouponScalarWhereInput = {
 export type CouponCreateManyUserInput = {
   id?: string
   code: string
-  productId: string
-  productName: string
   discountPercentage: number
-  originalPrice: number
-  discountedPrice: number
   currency?: string
   reason: string
-  sentiment?: string
+  sentiment?: $Enums.Sentiment
   status?: $Enums.CouponStatus
   expiresAt: Date | string
   usedAt?: Date | string | null
@@ -774,14 +662,10 @@ export type CouponCreateManyUserInput = {
 export type CouponUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -792,14 +676,10 @@ export type CouponUpdateWithoutUserInput = {
 export type CouponUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -810,14 +690,10 @@ export type CouponUncheckedUpdateWithoutUserInput = {
 export type CouponUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
-  productId?: Prisma.StringFieldUpdateOperationsInput | string
-  productName?: Prisma.StringFieldUpdateOperationsInput | string
   discountPercentage?: Prisma.FloatFieldUpdateOperationsInput | number
-  originalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  discountedPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
-  sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sentiment?: Prisma.EnumSentimentFieldUpdateOperationsInput | $Enums.Sentiment
   status?: Prisma.EnumCouponStatusFieldUpdateOperationsInput | $Enums.CouponStatus
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -831,11 +707,7 @@ export type CouponSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   code?: boolean
   userId?: boolean
-  productId?: boolean
-  productName?: boolean
   discountPercentage?: boolean
-  originalPrice?: boolean
-  discountedPrice?: boolean
   currency?: boolean
   reason?: boolean
   sentiment?: boolean
@@ -851,11 +723,7 @@ export type CouponSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   code?: boolean
   userId?: boolean
-  productId?: boolean
-  productName?: boolean
   discountPercentage?: boolean
-  originalPrice?: boolean
-  discountedPrice?: boolean
   currency?: boolean
   reason?: boolean
   sentiment?: boolean
@@ -871,11 +739,7 @@ export type CouponSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   code?: boolean
   userId?: boolean
-  productId?: boolean
-  productName?: boolean
   discountPercentage?: boolean
-  originalPrice?: boolean
-  discountedPrice?: boolean
   currency?: boolean
   reason?: boolean
   sentiment?: boolean
@@ -891,11 +755,7 @@ export type CouponSelectScalar = {
   id?: boolean
   code?: boolean
   userId?: boolean
-  productId?: boolean
-  productName?: boolean
   discountPercentage?: boolean
-  originalPrice?: boolean
-  discountedPrice?: boolean
   currency?: boolean
   reason?: boolean
   sentiment?: boolean
@@ -906,7 +766,7 @@ export type CouponSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CouponOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "userId" | "productId" | "productName" | "discountPercentage" | "originalPrice" | "discountedPrice" | "currency" | "reason" | "sentiment" | "status" | "expiresAt" | "usedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["coupon"]>
+export type CouponOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "userId" | "discountPercentage" | "currency" | "reason" | "sentiment" | "status" | "expiresAt" | "usedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["coupon"]>
 export type CouponInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -926,14 +786,10 @@ export type $CouponPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id: string
     code: string
     userId: string
-    productId: string
-    productName: string
     discountPercentage: number
-    originalPrice: number
-    discountedPrice: number
     currency: string
     reason: string
-    sentiment: string
+    sentiment: $Enums.Sentiment
     status: $Enums.CouponStatus
     expiresAt: Date
     usedAt: Date | null
@@ -1366,14 +1222,10 @@ export interface CouponFieldRefs {
   readonly id: Prisma.FieldRef<"Coupon", 'String'>
   readonly code: Prisma.FieldRef<"Coupon", 'String'>
   readonly userId: Prisma.FieldRef<"Coupon", 'String'>
-  readonly productId: Prisma.FieldRef<"Coupon", 'String'>
-  readonly productName: Prisma.FieldRef<"Coupon", 'String'>
   readonly discountPercentage: Prisma.FieldRef<"Coupon", 'Float'>
-  readonly originalPrice: Prisma.FieldRef<"Coupon", 'Float'>
-  readonly discountedPrice: Prisma.FieldRef<"Coupon", 'Float'>
   readonly currency: Prisma.FieldRef<"Coupon", 'String'>
   readonly reason: Prisma.FieldRef<"Coupon", 'String'>
-  readonly sentiment: Prisma.FieldRef<"Coupon", 'String'>
+  readonly sentiment: Prisma.FieldRef<"Coupon", 'Sentiment'>
   readonly status: Prisma.FieldRef<"Coupon", 'CouponStatus'>
   readonly expiresAt: Prisma.FieldRef<"Coupon", 'DateTime'>
   readonly usedAt: Prisma.FieldRef<"Coupon", 'DateTime'>

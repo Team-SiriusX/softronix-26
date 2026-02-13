@@ -880,11 +880,7 @@ export const CouponScalarFieldEnum = {
   id: 'id',
   code: 'code',
   userId: 'userId',
-  productId: 'productId',
-  productName: 'productName',
   discountPercentage: 'discountPercentage',
-  originalPrice: 'originalPrice',
-  discountedPrice: 'discountedPrice',
   currency: 'currency',
   reason: 'reason',
   sentiment: 'sentiment',
@@ -988,6 +984,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Sentiment'
+ */
+export type EnumSentimentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sentiment'>
+    
+
+
+/**
+ * Reference to a field of type 'Sentiment[]'
+ */
+export type ListEnumSentimentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sentiment[]'>
     
 
 

@@ -10,6 +10,7 @@ const VALID_SORT_BY = ["price", "rating", "name", "reviews"] as const;
 const VALID_ORDER = ["asc", "desc"] as const;
 const VALID_VIBES = ["cheaper", "premium", "trending", "best_rated", "new_arrivals"] as const;
 const VALID_RECOMMENDATION_BASIS = ["past_activity", "current_chat", "trending", "similar"] as const;
+const VALID_DISCOUNT_REASONS = ["birthday", "student", "tourist", "senior", "local", "first_time", "military", "healthcare", "teacher", "new_homeowner", "social_media", "public_servant", "anniversary", "referral"] as const;
 
 function requireString(args: Record<string, unknown>, key: string, label: string): string | null {
   const val = args[key];
@@ -395,6 +396,12 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
         return { success: false, error: "Missing required argument: reason" };
       }
 
+      // Validate reason against approved list
+      const reasonErr = requireEnum(reason.toLowerCase(), VALID_DISCOUNT_REASONS, "reason");
+      if (reasonErr) {
+        return { success: false, error: `Invalid discount reason. ${reasonErr}` };
+      }
+
       const product = store.products.find((p) => p.id === productId);
       if (!product) {
         return { success: false, error: "Product not found" };
@@ -419,20 +426,24 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
       const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
       const couponCode = `${codePrefix.toUpperCase()}-${actualDiscount}-${randomSuffix}`;
 
+      // Map sentiment string to Prisma enum
+      const sentimentMap: Record<string, "POSITIVE" | "NEUTRAL" | "NEGATIVE"> = {
+        positive: "POSITIVE",
+        neutral: "NEUTRAL",
+        negative: "NEGATIVE",
+      };
+      const sentimentEnum = sentimentMap[sentiment.toLowerCase()] ?? "POSITIVE";
+
       // Store in database
       try {
         const coupon = await db.coupon.create({
           data: {
             code: couponCode,
             userId,
-            productId: product.id,
-            productName: product.name,
             discountPercentage: actualDiscount,
-            originalPrice,
-            discountedPrice,
             currency: product.price.currency,
             reason,
-            sentiment,
+            sentiment: sentimentEnum,
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
           },
         });
@@ -442,13 +453,13 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
           coupon: {
             id: coupon.id,
             code: coupon.code,
-            productId: coupon.productId,
-            productName: coupon.productName,
+            productId: product.id,
+            productName: product.name,
             discountPercentage: coupon.discountPercentage,
-            originalPrice: coupon.originalPrice,
-            discountedPrice: coupon.discountedPrice,
-            formattedOriginalPrice: `${coupon.currency} ${coupon.originalPrice.toFixed(2)}`,
-            formattedDiscountedPrice: `${coupon.currency} ${coupon.discountedPrice.toFixed(2)}`,
+            originalPrice,
+            discountedPrice,
+            formattedOriginalPrice: `${product.price.currency} ${originalPrice.toFixed(2)}`,
+            formattedDiscountedPrice: `${product.price.currency} ${discountedPrice.toFixed(2)}`,
             reason: coupon.reason,
             expiresAt: coupon.expiresAt.toISOString(),
           },
