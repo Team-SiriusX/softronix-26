@@ -171,7 +171,7 @@ export default function CircularText({ onEnter }: CircularTextProps) {
 
       <button 
         ref={enterBtnRef}
-        className="absolute left-1/2 top-1/2 -ml-[45px] -mt-[45px] w-[90px] h-[90px] bg-transparent border-0 p-0 cursor-pointer font-medium text-[#272524] z-50 focus:outline-none"
+        className="absolute left-1/2 top-1/2 -ml-11.25 -mt-11.25 w-22.5 h-22.5 bg-transparent border-0 p-0 cursor-pointer font-medium text-[#272524] z-50 focus:outline-none"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}

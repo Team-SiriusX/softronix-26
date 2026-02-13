@@ -13,8 +13,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "",
-  description: "",
+  title: "Echo - AI Shopping Assistant",
+  description: "Your intelligent grooming companion powered by AI",
 };
 
 export default function RootLayout({
@@ -30,6 +30,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} font-sans antialiased`}
         style={{ fontFamily: 'var(--font-space-grotesk)' }}
+        suppressHydrationWarning
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <Providers>{children}</Providers>

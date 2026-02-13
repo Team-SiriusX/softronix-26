@@ -27,12 +27,12 @@ export default function SignUp() {
 			{/* Glassmorphic Card */}
 			<div className="relative rounded-2xl border border-neutral-800 bg-black/40 p-8 shadow-2xl backdrop-blur-xl">
 				{/* Gradient Border Effect */}
-				<div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-100" />
+				<div className="absolute -inset-px rounded-2xl bg-linear-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-100" />
 
 				<div className="relative space-y-6">
 					{/* Header */}
 					<div className="space-y-2 text-center">
-						<h1 className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-3xl font-bold text-transparent">
+						<h1 className="bg-linear-to-b from-neutral-50 to-neutral-400 bg-clip-text text-3xl font-bold text-transparent">
 							Create Account
 						</h1>
 						<p className="text-sm text-neutral-400">
@@ -184,7 +184,7 @@ export default function SignUp() {
 						{/* Create Account Button */}
 						<Button
 							type="submit"
-							className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:from-blue-500 hover:to-blue-400"
+							className="w-full bg-linear-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:from-blue-500 hover:to-blue-400"
 							disabled={loading}
 							onClick={async () => {
 								await signUp.email({
