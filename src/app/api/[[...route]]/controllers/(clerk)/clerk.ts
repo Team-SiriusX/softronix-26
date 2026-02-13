@@ -234,7 +234,7 @@ async function sendOpenRouterChat(messages: Message[]) {
   try {
     return await openRouter.chat.send({
       chatGenerationParams: {
-        model: "arcee-ai/trinity-mini:free",
+        model: "nvidia/nemotron-3-nano-30b-a3b:free",
         messages,
         tools,
         toolChoice: "auto",
@@ -278,6 +278,203 @@ function buildFallbackClerkResponse(
     "",
     "If you want, I can refine these by budget, brand, skin type, or ingredient preference.",
   ].join("\n");
+}
+
+type ChatbotProduct = {
+  name: string;
+  price: string;
+  rating: number | null;
+  reviewCount: number | null;
+  url: string | null;
+};
+
+function extractUrl(value: string): string | null {
+  const markdownMatch = value.match(/\((https?:\/\/[^)\s]+)\)/i);
+  if (markdownMatch?.[1]) return markdownMatch[1];
+
+  const angleBracketMatch = value.match(/<(https?:\/\/[^>\s]+)>/i);
+  if (angleBracketMatch?.[1]) return angleBracketMatch[1];
+
+  const plainMatch = value.match(/(https?:\/\/\S+)/i);
+  if (plainMatch?.[1]) return plainMatch[1].replace(/[)>.,]$/, "");
+
+  return null;
+}
+
+function cleanResponseForChat(text: string): string {
+  const lines = text.split("\n");
+
+  const cleaned = lines.filter((line) => {
+    const trimmed = line.trim();
+    // Remove markdown table rows (| ... |) and divider rows (|---|---|)
+    if (trimmed.startsWith("|") && trimmed.endsWith("|")) return false;
+    // Remove product heading lines like "### 1. Glow Face Wash"
+    if (/^#{1,4}\s*\d+[\.)\s]/.test(trimmed)) return false;
+    // Remove bullet lines with product metadata (Price, Rating, Category, Product link)
+    if (/^[-*]\s*\*\*(?:Price|Rating|Category|Product\s*link|Availability|Reviews?|Link)[:\s]*\*\*/i.test(trimmed)) return false;
+    return true;
+  });
+
+  let result = cleaned.join("\n");
+
+  // Remove angle-bracket URLs: <https://...>
+  result = result.replace(/<(https?:\/\/[^>\s]+)>/gi, "");
+
+  // Replace markdown links [text](url) with just the text
+  result = result.replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/gi, "$1");
+
+  // Remove bare URLs
+  result = result.replace(/https?:\/\/\S+/gi, "");
+
+  // Collapse 3+ consecutive blank lines into 2
+  result = result.replace(/(\n\s*){3,}/g, "\n\n");
+
+  return result.trim();
+}
+
+function lookupProductUrl(name: string): string | null {
+  const normalized = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const match = store.products.find((p) => {
+    const pNormalized = p.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return pNormalized === normalized || pNormalized.includes(normalized) || normalized.includes(pNormalized);
+  });
+  return match?.url ?? null;
+}
+
+function extractProductsFromResponse(responseText: string): ChatbotProduct[] {
+  // Strategy 1: Markdown table
+  const tableProducts = extractFromTable(responseText);
+  if (tableProducts.length > 0) return tableProducts;
+
+  // Strategy 2: Heading + bullet list (### 1. Product Name / - **Price:** ...)
+  const headingProducts = extractFromHeadingList(responseText);
+  if (headingProducts.length > 0) return headingProducts;
+
+  // Strategy 3: Simple numbered list (1. Name — Price | ⭐ ...)
+  return extractFromNumberedList(responseText);
+}
+
+function extractFromTable(responseText: string): ChatbotProduct[] {
+  const lines = responseText.split("\n").map((l) => l.trim());
+
+  return lines
+    .filter((line) => line.startsWith("|") && line.endsWith("|"))
+    .map((line) => line.split("|").slice(1, -1).map((c) => c.trim()))
+    .filter((cells) => cells.length >= 3)
+    .filter((cells) => {
+      if (cells.every((c) => /^:?-{2,}:?$/.test(c))) return false;
+      const headerKws = ["product", "price", "rating", "reviews", "link", "category", "quick link", "name", "status", "stock", "availability"];
+      const hits = cells.filter((c) => {
+        const lower = c.toLowerCase().replace(/[^a-z\s]/g, "").trim();
+        return headerKws.some((kw) => lower === kw || lower.includes(kw));
+      });
+      return hits.length < 2;
+    })
+    .map((cells): ChatbotProduct | null => {
+      const name = cells[0].replace(/\*\*/g, "").trim();
+
+      let url: string | null = null;
+      for (const cell of cells) {
+        const found = extractUrl(cell);
+        if (found) { url = found; break; }
+      }
+
+      let price = "";
+      for (const cell of cells) {
+        if (/(?:Rs|₹|\$|€|£)[\s.]*[\d,]+/.test(cell)) { price = cell; break; }
+      }
+
+      let rating: number | null = null;
+      let reviewCount: number | null = null;
+      for (const cell of cells) {
+        const rm = cell.match(/([\d.]+)\s*[\/\s]+5/i);
+        const rvm = cell.match(/\(\s*(\d+)\s+reviews?\)/i);
+        const sc = cell.match(/^\s*(\d+)\s*$/);
+        if (rm && rating === null) rating = Number.parseFloat(rm[1]);
+        if (rvm && reviewCount === null) reviewCount = Number.parseInt(rvm[1], 10);
+        else if (sc && reviewCount === null && rating !== null) reviewCount = Number.parseInt(sc[1], 10);
+      }
+
+      return { name, price, rating, reviewCount, url };
+    })
+    .filter((item): item is ChatbotProduct => item !== null);
+}
+
+function extractFromHeadingList(responseText: string): ChatbotProduct[] {
+  // Split on heading patterns like "### 1. Glow Face Wash" or "## 2) Product"
+  const blocks = responseText.split(/(?=#{1,4}\s*\d+[.)\s])/g);
+  const products: ChatbotProduct[] = [];
+
+  for (const block of blocks) {
+    const headerMatch = block.match(/#{1,4}\s*\d+[.)\s]+(.+)/);
+    if (!headerMatch) continue;
+
+    const name = headerMatch[1].replace(/\*\*/g, "").trim();
+
+    // Price: match "**Price:** Rs. 899.00" or "Price: Rs 899"
+    const priceMatch = block.match(/\*\*Price[:\s]\*\*\s*([^\n]+)/i) || block.match(/Price[:\s]+([^\n]+)/i);
+    const price = priceMatch ? priceMatch[1].replace(/\*\*/g, "").trim() : "";
+
+    // Rating: match "4.5 / 5" or "4.5/5"
+    const ratingMatch = block.match(/([\d.]+)\s*[\/\s]+5/i);
+    const rating = ratingMatch ? Number.parseFloat(ratingMatch[1]) : null;
+
+    // Reviews: match "(68 reviews)" or "68 reviews"
+    const reviewMatch = block.match(/\(\s*(\d+)\s+reviews?\)/i);
+    const reviewCount = reviewMatch ? Number.parseInt(reviewMatch[1], 10) : null;
+
+    // URL: from block text or store lookup
+    const url = extractUrl(block) ?? lookupProductUrl(name);
+
+    products.push({ name, price, rating, reviewCount, url });
+  }
+
+  return products;
+}
+
+function extractFromNumberedList(responseText: string): ChatbotProduct[] {
+  const lines = responseText.split("\n").map((l) => l.trim());
+
+  return lines
+    .map((line): ChatbotProduct | null => {
+      const m = line.match(/^\d+[.)\s]+\*{0,2}(.+?)\*{0,2}\s+[—–\-]\s+(.+?)\s+\|\s+[⭐★]\s*([\d.]+)\s*\/\s*5\s*\((\d+)\s+reviews?\)\s*(?:\|\s*(https?:\/\/\S+))?$/i);
+      if (!m) return null;
+
+      const name = m[1].trim();
+      return {
+        name,
+        price: m[2].trim(),
+        rating: Number.parseFloat(m[3]),
+        reviewCount: Number.parseInt(m[4], 10),
+        url: m[5]?.trim() ?? lookupProductUrl(name),
+      };
+    })
+    .filter((item): item is ChatbotProduct => item !== null);
+}
+function normalizeAssistantContent(content: Message["content"]): string {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        if (item && typeof item === "object" && "text" in item) {
+          const text = item.text;
+          return typeof text === "string" ? text : "";
+        }
+
+        return "";
+      })
+      .filter((part) => part.length > 0)
+      .join("\n");
+  }
+
+  return "";
 }
 
 // Execute function calls from the AI
@@ -469,8 +666,14 @@ async function executeFunctions(functionName: string, functionArgs: Record<strin
   }
 }
 
+type ClerkResponse = {
+  text: string;
+  toolProducts: ChatbotProduct[];
+};
+
 // Main chat function using OpenRouter SDK with RAG and Tool Calling
-async function chatWithClerk(userMessage: string, conversationHistory: Array<{ role: string; content: string }>) {
+async function chatWithClerk(userMessage: string, conversationHistory: Array<{ role: string; content: string }>): Promise<ClerkResponse> {
+  const toolProducts: ChatbotProduct[] = [];
   try {
     console.log("🤖 Clerk received message:", userMessage);
 
@@ -526,7 +729,7 @@ async function chatWithClerk(userMessage: string, conversationHistory: Array<{ r
       response = await sendOpenRouterChat(messages);
     } catch (error) {
       console.error("OpenRouter initial call failed, using fallback response:", error);
-      return buildFallbackClerkResponse(userMessage, relevantProducts as Array<{ id: string; metadata?: Record<string, unknown> }> | undefined);
+      return { text: buildFallbackClerkResponse(userMessage, relevantProducts as Array<{ id: string; metadata?: Record<string, unknown> }> | undefined), toolProducts };
     }
 
     let assistantMessage = response.choices[0]?.message;
@@ -540,9 +743,11 @@ async function chatWithClerk(userMessage: string, conversationHistory: Array<{ r
       console.log(`🛠️ Iteration ${iteration}: Model requested ${assistantMessage.toolCalls.length} tool call(s)`);
 
       // Add assistant's message with tool calls to conversation
+      const assistantContent = normalizeAssistantContent(assistantMessage.content);
+
       messages.push({
         role: 'assistant',
-        content: assistantMessage.content || "",
+        content: assistantContent,
         toolCalls: assistantMessage.toolCalls,
       });
 
@@ -563,6 +768,19 @@ async function chatWithClerk(userMessage: string, conversationHistory: Array<{ r
 
           // Execute the function
           const functionResult = await executeFunctions(functionName, functionArgs);
+
+          // Capture products from searchProducts tool calls
+          if (functionName === "searchProducts" && functionResult.success && Array.isArray(functionResult.results)) {
+            for (const r of functionResult.results) {
+              toolProducts.push({
+                name: r.name ?? "Product",
+                price: r.price?.formatted ?? (typeof r.price === "string" ? r.price : ""),
+                rating: r.rating ?? null,
+                reviewCount: r.reviewCount ?? null,
+                url: r.url ?? null,
+              });
+            }
+          }
 
           console.log(`✅ Tool result:`, functionResult);
 
@@ -587,7 +805,7 @@ async function chatWithClerk(userMessage: string, conversationHistory: Array<{ r
         response = await sendOpenRouterChat(messages);
       } catch (error) {
         console.error("OpenRouter follow-up call failed, using fallback response:", error);
-        return buildFallbackClerkResponse(userMessage, relevantProducts as Array<{ id: string; metadata?: Record<string, unknown> }> | undefined);
+        return { text: buildFallbackClerkResponse(userMessage, relevantProducts as Array<{ id: string; metadata?: Record<string, unknown> }> | undefined), toolProducts };
       }
 
       assistantMessage = response.choices[0]?.message;
@@ -597,14 +815,19 @@ async function chatWithClerk(userMessage: string, conversationHistory: Array<{ r
     console.log("✨ Generating final response...");
 
     if (!assistantMessage || !assistantMessage.content) {
-      return "I apologize, but I couldn't process your request. Please try again.";
+      return { text: "I apologize, but I couldn't process your request. Please try again.", toolProducts };
     }
 
     console.log("✅ Response generated successfully");
-    return assistantMessage.content;
+    const finalContent = normalizeAssistantContent(assistantMessage.content);
+    if (!finalContent.trim()) {
+      return { text: "I apologize, but I couldn't process your request. Please try again.", toolProducts };
+    }
+
+    return { text: finalContent, toolProducts };
   } catch (error) {
     console.error("Error in chatWithClerk:", error);
-    return "I apologize, but I'm having trouble processing your request right now. Please try again in a moment.";
+    return { text: "I apologize, but I'm having trouble processing your request right now. Please try again in a moment.", toolProducts: [] };
   }
 }
 
@@ -691,11 +914,18 @@ const app = new Hono()
       const { userMessage, conversationHistory } = c.req.valid("json");
 
       try {
-        const response = await chatWithClerk(userMessage, conversationHistory);
+        const { text: rawResponse, toolProducts } = await chatWithClerk(userMessage, conversationHistory);
+        let products = extractProductsFromResponse(rawResponse);
+        // Fallback: use products captured from tool calls if text extraction found nothing
+        if (products.length === 0 && toolProducts.length > 0) {
+          products = toolProducts;
+        }
+        const response = cleanResponseForChat(rawResponse);
 
         return c.json({
           success: true,
-          response
+          response,
+          products,
         });
       } catch (error) {
         console.error("Error in clerk chat:", error);
