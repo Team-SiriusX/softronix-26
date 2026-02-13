@@ -24,6 +24,7 @@ model User {
   role          UserRole  @default(USER)
   sessions      Session[]
   accounts      Account[]
+  coupons       Coupon[]
 
   @@unique([email])
   @@map("user")
@@ -81,4 +82,35 @@ model Verification {
 enum UserRole {
   USER
   ADMIN
+}
+
+model Coupon {
+  id                 String       @id @default(cuid())
+  code               String       @unique
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId          String
+  productName        String
+  discountPercentage Float
+  originalPrice      Float
+  discountedPrice    Float
+  currency           String       @default("Rs.")
+  reason             String
+  sentiment          String       @default("positive") // positive, neutral, negative
+  status             CouponStatus @default(ACTIVE)
+  expiresAt          DateTime
+  usedAt             DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([code])
+  @@index([userId])
+  @@index([status])
+  @@map("coupon")
+}
+
+enum CouponStatus {
+  ACTIVE
+  USED
+  EXPIRED
 }

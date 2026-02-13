@@ -15,3 +15,12 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const CouponStatus = {
+  ACTIVE: 'ACTIVE',
+  USED: 'USED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type CouponStatus = (typeof CouponStatus)[keyof typeof CouponStatus]

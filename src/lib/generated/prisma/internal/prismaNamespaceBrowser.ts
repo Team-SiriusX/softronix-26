@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Coupon: 'Coupon'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -130,6 +131,28 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  userId: 'userId',
+  productId: 'productId',
+  productName: 'productName',
+  discountPercentage: 'discountPercentage',
+  originalPrice: 'originalPrice',
+  discountedPrice: 'discountedPrice',
+  currency: 'currency',
+  reason: 'reason',
+  sentiment: 'sentiment',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
 
 
 export const SortOrder = {
