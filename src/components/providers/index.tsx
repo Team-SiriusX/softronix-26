@@ -9,17 +9,12 @@ export default function Providers({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <QueryProvider>
-<<<<<<< HEAD
       <CartProvider>
-        <Toaster richColors />
-        {children}
+        <ChatProvider>
+          <Toaster richColors />
+          {children}
+        </ChatProvider>
       </CartProvider>
-=======
-      <ChatProvider>
-        <Toaster richColors />
-        {children}
-      </ChatProvider>
->>>>>>> d2bca92b9ed5287aff10a83178020c8897e78bef
     </QueryProvider>
   );
 }
