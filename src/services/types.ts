@@ -81,6 +81,17 @@ export type CartMutationResponse = {
   error?: string;
 };
 
+// ─── Local Cart (guest) ────────────────────────────────────
+
+export type LocalCartItem = {
+  productId: string;
+  quantity: number;
+};
+
+export type SyncCartRequest = {
+  items: LocalCartItem[];
+};
+
 // ─── Order ─────────────────────────────────────────────────
 
 export type OrderItem = {

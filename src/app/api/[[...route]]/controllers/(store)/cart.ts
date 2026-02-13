@@ -221,6 +221,103 @@ const app = new Hono()
 
       return c.json({ message: "Item removed from cart" });
     }
+  )
+
+  // POST /cart/sync — merge localStorage items into DB cart (called on login)
+  .post(
+    "/sync",
+    zValidator(
+      "json",
+      z.object({
+        items: z.array(
+          z.object({
+            productId: z.string(),
+            quantity: z.number().int().positive(),
+          })
+        ),
+      })
+    ),
+    async (c) => {
+      const user = c.get("user");
+      const { items } = c.req.valid("json");
+
+      // Find or create cart
+      let cart = await db.cart.findUnique({
+        where: { userId: user.id },
+      });
+
+      if (!cart) {
+        cart = await db.cart.create({
+          data: { userId: user.id },
+        });
+      }
+
+      // Upsert each item from local cart
+      for (const item of items) {
+        const product = getProductById(item.productId);
+        if (!product) continue; // skip invalid products
+
+        const existing = await db.cartItem.findUnique({
+          where: {
+            cartId_productId: {
+              cartId: cart.id,
+              productId: item.productId,
+            },
+          },
+        });
+
+        if (existing) {
+          await db.cartItem.update({
+            where: { id: existing.id },
+            data: { quantity: existing.quantity + item.quantity },
+          });
+        } else {
+          await db.cartItem.create({
+            data: {
+              cartId: cart.id,
+              productId: item.productId,
+              quantity: item.quantity,
+            },
+          });
+        }
+      }
+
+      // Return the merged cart
+      const mergedCart = await db.cart.findUnique({
+        where: { userId: user.id },
+        include: { items: true },
+      });
+
+      const enrichedItems = (mergedCart?.items ?? []).map((item) => {
+        const product = getProductById(item.productId);
+        return {
+          id: item.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          product: product
+            ? {
+                name: product.name,
+                price: product.price.current,
+                image: product.images?.[0] ?? null,
+                formattedPrice: product.price.formatted,
+              }
+            : null,
+          subtotal: product ? product.price.current * item.quantity : 0,
+        };
+      });
+
+      const total = enrichedItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+      return c.json({
+        data: {
+          id: mergedCart!.id,
+          items: enrichedItems,
+          itemCount: enrichedItems.length,
+          total,
+        },
+        message: "Cart synced successfully",
+      });
+    }
   );
 
 export default app;

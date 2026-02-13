@@ -27,6 +27,7 @@ model User {
   cart          Cart?
   orders        Order[]
   coupons       Coupon[]
+  addresses     Address[]
 
   @@unique([email])
   @@map("user")
@@ -114,11 +115,49 @@ model Order {
   status         OrderStatus    @default(PENDING)
   paymentStatus  PaymentStatus  @default(UNPAID)
   deliveryStatus DeliveryStatus @default(PENDING)
+  addressId      String?
+  address        Address?       @relation(fields: [addressId], references: [id])
+  payment        Payment?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
   @@index([userId])
   @@map("order")
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName   String
+  phone      String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  country    String   @default("PK")
+  postalCode String
+  orders     Order[]
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@map("address")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  orderId   String        @unique
+  order     Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider  String        @default("stripe")
+  intentId  String        @unique
+  status    PaymentStatus @default(UNPAID)
+  amount    Float
+  currency  String        @default("pkr")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([intentId])
+  @@map("payment")
 }
 
 model OrderItem {
@@ -168,6 +207,7 @@ enum OrderStatus {
 enum PaymentStatus {
   UNPAID
   PAID
+  FAILED
   REFUNDED
 }
 

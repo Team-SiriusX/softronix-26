@@ -3,15 +3,13 @@
 import { useRef, useEffect } from "react";
 import { ProductCard } from "./productCard";
 import { Loader2, PackageSearch } from "lucide-react";
-import { useSession } from "@/lib/auth-client";
 import { useProducts } from "@/services/queries/products";
-import { useAddToCart } from "@/services/queries/cart";
+import { useCartStore } from "@/hooks/use-cart-store";
 
 export function Products() {
     const sentinelRef = useRef<HTMLDivElement>(null);
-    const session = useSession();
 
-    // ─── Queries & mutations from service layer ──────────────
+    // ─── Queries & cart store ────────────────────────────────
     const {
         data,
         fetchNextPage,
@@ -21,7 +19,7 @@ export function Products() {
         isError,
     } = useProducts();
 
-    const addToCartMutation = useAddToCart();
+    const { isInCart, addItem, isMutating, mutatingProductId } = useCartStore();
 
     // Flatten pages
     const products = data?.pages.flatMap((page) => page.data) ?? [];
@@ -43,15 +41,6 @@ export function Products() {
         observer.observe(sentinelRef.current);
         return () => observer.disconnect();
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-    // ─── Add to cart via mutation ────────────────────────────
-    const handleAddToCart = (productId: string) => {
-        if (!session.data?.user) {
-            alert("Please sign in to add items to your cart.");
-            return;
-        }
-        addToCartMutation.mutate({ productId, quantity: 1 });
-    };
 
     // ─── Loading skeleton ────────────────────────────────────
     if (isLoading) {
@@ -127,11 +116,9 @@ export function Products() {
                     <ProductCard
                         key={product.id}
                         product={product}
-                        onAddToCart={handleAddToCart}
-                        isAddingToCart={
-                            addToCartMutation.isPending &&
-                            addToCartMutation.variables?.productId === product.id
-                        }
+                        onAddToCart={(id) => addItem(id)}
+                        isAddingToCart={isMutating && mutatingProductId === product.id}
+                        isInCart={isInCart(product.id)}
                     />
                 ))}
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart, Star, StarHalf, Check, Package } from "lucide-react";
+import { ShoppingCart, Star, StarHalf, Check, Package, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import type { Product } from "@/services/types";
 
@@ -8,6 +8,7 @@ type ProductCardProps = {
     product: Product;
     onAddToCart?: (productId: string) => void;
     isAddingToCart?: boolean;
+    isInCart?: boolean;
 };
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
@@ -43,6 +44,7 @@ export function ProductCard({
     product,
     onAddToCart,
     isAddingToCart,
+    isInCart,
 }: ProductCardProps) {
     const inStock = product.stock_status === "in_stock";
     const hasDiscount =
@@ -141,27 +143,37 @@ export function ProductCard({
                     )}
                 </div>
 
-                {/* Add to Cart */}
-                <button
-                    onClick={() => onAddToCart?.(product.id)}
-                    disabled={!inStock || isAddingToCart}
-                    className={`mt-1 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 ${inStock
-                            ? "bg-primary text-primary-foreground hover:brightness-110"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                >
-                    {isAddingToCart ? (
-                        <span className="flex items-center gap-2">
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                            Adding…
-                        </span>
-                    ) : (
-                        <>
-                            <ShoppingCart className="h-4 w-4" />
-                            {inStock ? "Add to Cart" : "Out of Stock"}
-                        </>
-                    )}
-                </button>
+                {/* Add to Cart / Added to Cart */}
+                {isInCart ? (
+                    <button
+                        disabled
+                        className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400"
+                    >
+                        <CheckCircle className="h-4 w-4" />
+                        Added to Cart
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => onAddToCart?.(product.id)}
+                        disabled={!inStock || isAddingToCart}
+                        className={`mt-1 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 ${inStock
+                                ? "bg-primary text-primary-foreground hover:brightness-110"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                    >
+                        {isAddingToCart ? (
+                            <span className="flex items-center gap-2">
+                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
+                                Adding…
+                            </span>
+                        ) : (
+                            <>
+                                <ShoppingCart className="h-4 w-4" />
+                                {inStock ? "Add to Cart" : "Out of Stock"}
+                            </>
+                        )}
+                    </button>
+                )}
             </div>
         </div>
     );

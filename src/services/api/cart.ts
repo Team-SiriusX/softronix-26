@@ -1,13 +1,10 @@
-/**
- * Cart API service — pure fetch functions for cart mutations.
- */
-
 import type {
   CartResponse,
   CartMutationResponse,
   AddToCartRequest,
   UpdateCartRequest,
   RemoveFromCartRequest,
+  SyncCartRequest,
 } from "../types";
 
 export async function fetchCart(): Promise<CartResponse> {
@@ -57,6 +54,21 @@ export async function removeFromCart(
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.error || "Failed to remove from cart");
+  }
+  return res.json();
+}
+
+export async function syncCart(
+  data: SyncCartRequest
+): Promise<CartResponse & { message: string }> {
+  const res = await fetch("/api/cart/sync", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Failed to sync cart");
   }
   return res.json();
 }
