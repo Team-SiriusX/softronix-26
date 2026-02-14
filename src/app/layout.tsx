@@ -1,6 +1,7 @@
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import Providers from "@/components/providers";
 import FloatingChatButton from "@/components/chat/floating-chat-button";
+import SmoothScroll from "@/components/providers/smooth-scroll";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata } from "next";
 import { Space_Grotesk, Playfair_Display, Gloock } from "next/font/google";
@@ -47,7 +48,9 @@ export default function RootLayout({
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <Providers>
-          {children}
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
           <FloatingChatButton />
         </Providers>
       </body>

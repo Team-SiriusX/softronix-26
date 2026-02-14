@@ -12,6 +12,23 @@ export interface ProductFilters {
   tags?: string[];
 }
 
+export interface AppliedCoupon {
+  couponCode: string;
+  productId: string;
+  discountPercentage: number;
+  originalPrice: number;
+  discountedPrice: number;
+  formattedOriginalPrice: string;
+  formattedDiscountedPrice: string;
+}
+
+export interface AdjustedPrice {
+  productId: string;
+  adjustedPrice: number;
+  formattedPrice: string;
+  increasePercentage: number;
+}
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -37,6 +54,16 @@ interface ChatContextType {
   updateFilters: (partialFilters: Partial<ProductFilters>) => void;
   clearFilters: () => void;
 
+  // Coupons & price adjustments
+  appliedCoupons: AppliedCoupon[];
+  addCoupon: (coupon: AppliedCoupon) => void;
+  removeCoupon: (productId: string) => void;
+  getCouponForProduct: (productId: string) => AppliedCoupon | undefined;
+  adjustedPrices: AdjustedPrice[];
+  addAdjustedPrice: (adjustment: AdjustedPrice) => void;
+  getAdjustedPrice: (productId: string) => AdjustedPrice | undefined;
+  couponDiscount: number;
+
   // Helper methods
   setCategory: (category?: string) => void;
   setPriceRange: (min?: number, max?: number) => void;
@@ -57,6 +84,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [filters, setFilters] = useState<ProductFilters>({});
+  const [appliedCoupons, setAppliedCoupons] = useState<AppliedCoupon[]>([]);
+  const [adjustedPrices, setAdjustedPrices] = useState<AdjustedPrice[]>([]);
 
   // Chat controls
   const openChat = useCallback(() => setIsChatOpen(true), []);
@@ -83,6 +112,43 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const clearFilters = useCallback(() => {
     setFilters({});
   }, []);
+
+  // Coupon controls
+  const addCoupon = useCallback((coupon: AppliedCoupon) => {
+    setAppliedCoupons((prev) => {
+      // Replace if same product already has a coupon
+      const filtered = prev.filter((c) => c.productId !== coupon.productId);
+      return [...filtered, coupon];
+    });
+  }, []);
+
+  const removeCoupon = useCallback((productId: string) => {
+    setAppliedCoupons((prev) => prev.filter((c) => c.productId !== productId));
+  }, []);
+
+  const getCouponForProduct = useCallback(
+    (productId: string) => appliedCoupons.find((c) => c.productId === productId),
+    [appliedCoupons],
+  );
+
+  // Total coupon discount
+  const couponDiscount = appliedCoupons.reduce(
+    (sum, c) => sum + (c.originalPrice - c.discountedPrice),
+    0,
+  );
+
+  // Price adjustment controls (rude user penalty)
+  const addAdjustedPrice = useCallback((adjustment: AdjustedPrice) => {
+    setAdjustedPrices((prev) => {
+      const filtered = prev.filter((a) => a.productId !== adjustment.productId);
+      return [...filtered, adjustment];
+    });
+  }, []);
+
+  const getAdjustedPrice = useCallback(
+    (productId: string) => adjustedPrices.find((a) => a.productId === productId),
+    [adjustedPrices],
+  );
 
   // Convenience setters
   const setCategory = useCallback(
@@ -130,6 +196,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setFilters,
     updateFilters,
     clearFilters,
+
+    // Coupons & price adjustments
+    appliedCoupons,
+    addCoupon,
+    removeCoupon,
+    getCouponForProduct,
+    adjustedPrices,
+    addAdjustedPrice,
+    getAdjustedPrice,
+    couponDiscount,
 
     // Helper methods
     setCategory,

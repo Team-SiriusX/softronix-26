@@ -14,7 +14,9 @@ import {
   Package,
   Loader2,
   Zap,
+  TrendingUp,
 } from "lucide-react";
+import { useChatContext } from "@/components/providers/chat-provider";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -28,6 +30,8 @@ export default function ProductDetailPage() {
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const { getAdjustedPrice } = useChatContext();
+  const adjustment = product ? getAdjustedPrice(product.id) : undefined;
 
   if (!product) {
     return (
@@ -172,23 +176,38 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="border-y border-[#1c1c1c]/10 py-6">
-              <div className="flex items-baseline gap-3">
-                <span className="font-gloock text-3xl text-[#1c1c1c]">
-                  {product.price.currency} {product.price.current}
-                </span>
-                {product.price.original && (
-                  <>
-                    <span className="text-xl text-[#5c5c5c] line-through">
-                      {product.price.currency} {product.price.original}
-                    </span>
-                    {product.price.discount_percentage && (
-                      <span className="bg-[#1c1c1c] px-2 py-1 text-xs font-bold uppercase tracking-widest text-[#f2efe9]">
-                        -{product.price.discount_percentage}% OFF
+              {adjustment ? (
+                <div className="flex items-baseline gap-3">
+                  <span className="font-gloock text-3xl text-red-600">
+                    {adjustment.formattedPrice}
+                  </span>
+                  <span className="text-xl text-[#5c5c5c] line-through">
+                    {product.price.currency} {product.price.current}
+                  </span>
+                  <span className="flex items-center gap-1 rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-600">
+                    <TrendingUp className="h-3.5 w-3.5" />
+                    +{adjustment.increasePercentage}% Price Increase
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-baseline gap-3">
+                  <span className="font-gloock text-3xl text-[#1c1c1c]">
+                    {product.price.currency} {product.price.current}
+                  </span>
+                  {product.price.original && (
+                    <>
+                      <span className="text-xl text-[#5c5c5c] line-through">
+                        {product.price.currency} {product.price.original}
                       </span>
-                    )}
-                  </>
-                )}
-              </div>
+                      {product.price.discount_percentage && (
+                        <span className="bg-[#1c1c1c] px-2 py-1 text-xs font-bold uppercase tracking-widest text-[#f2efe9]">
+                          -{product.price.discount_percentage}% OFF
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Stock Status */}

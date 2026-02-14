@@ -74,19 +74,19 @@ export type Store = {
 export const store: Store = {
     "store_info": {
         "name": "Echo",
-        "website": "https://www.darimooch.com",
+        "website": "https://www.echogrooming.com",
         "description": "Pakistan's #1 Men's Grooming Brand",
         "tagline": "Shop the finest men's grooming essentials in Pakistan",
-        "about": "Pakistan's first beard grooming and care products company, founded by two bearded buddies who wanted to solve age-old problems faced by men when growing facial hair",
+        "about": "Echo is Pakistan's premier men's grooming brand, founded by two bearded buddies who wanted to solve age-old problems faced by men when growing facial hair",
         "contact": {
             "email": "support@echo.com",
             "phone": "+92 316 1115556"
         },
         "social_media": {
-            "facebook": "https://www.facebook.com/Darimooch/",
-            "instagram": "https://www.instagram.com/darimooch/",
-            "tiktok": "https://www.tiktok.com/@darimooch",
-            "youtube": "https://www.youtube.com/@darimooch5071"
+            "facebook": "https://www.facebook.com/echogrooming/",
+            "instagram": "https://www.instagram.com/echogrooming/",
+            "tiktok": "https://www.tiktok.com/@echogrooming",
+            "youtube": "https://www.youtube.com/@echogrooming"
         },
         "shipping": {
             "free_shipping_threshold": 1999,

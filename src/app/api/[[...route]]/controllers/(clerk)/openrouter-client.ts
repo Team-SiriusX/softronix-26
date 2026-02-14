@@ -9,7 +9,7 @@ export async function sendOpenRouterChat(messages: Message[]) {
     try {
         return await openRouter.chat.send({
             chatGenerationParams: {
-                model: "nvidia/nemotron-3-nano-30b-a3b:free",
+                model: "google/gemini-2.0-flash-001",
                 messages,
                 tools,
                 toolChoice: "auto",

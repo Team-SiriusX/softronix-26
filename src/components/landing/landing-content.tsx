@@ -97,7 +97,7 @@ export default function LandingContent({ isVisible }: LandingContentProps) {
           ref={footerRef}
           className="md:col-span-2 md:justify-self-end mt-4 md:mt-0 pointer-events-auto"
         >
-          <span className="text-sm opacity-60">Creative Development &bull; 2026</span>
+          <span className="text-sm opacity-60">Echo &bull; AI Shopping Assistant &bull; 2026</span>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default function LandingContent({ isVisible }: LandingContentProps) {
             ref={headlineRef}
             className="text-3xl md:text-5xl lg:text-6xl leading-tight font-light text-[#292725]"
           >
-            We are a creative agency that focuses on <span className="font-normal">human-centric</span> design and ergonomic workplace innovations.
+            Your personal <span className="font-normal">AI-powered</span> grooming assistant — discover, negotiate, and shop with a clerk that truly knows you.
           </p>
           <div className="mt-12 flex justify-center gap-4">
              <Link 

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/hooks/use-cart-store";
+import { useChatContext } from "@/components/providers/chat-provider";
 import { useSession } from "@/lib/auth-client";
 import {
     Minus,
@@ -13,6 +14,8 @@ import {
     Loader2,
     Package,
     ChevronRight,
+    Tag,
+    X,
 } from "lucide-react";
 
 export default function CartPage() {
@@ -25,8 +28,11 @@ export default function CartPage() {
         isLoading,
         isMutating,
     } = useCartStore();
+    const { appliedCoupons, removeCoupon, couponDiscount, getCouponForProduct, getAdjustedPrice } = useChatContext();
     const session = useSession();
     const isAuthenticated = !!session.data?.user;
+
+    const finalTotal = Math.max(0, total - couponDiscount);
 
     return (
         <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
@@ -113,10 +119,37 @@ export default function CartPage() {
                                             <h3 className="font-gloock text-lg text-[#1c1c1c] md:text-xl">
                                                 {item.product?.name ?? item.productId}
                                             </h3>
-                                            <p className="mt-1 font-sans text-sm font-medium text-[#1c1c1c]">
-                                                {item.product?.formattedPrice ??
-                                                    `Rs.${item.subtotal.toLocaleString()}`}
-                                            </p>
+                                            {getCouponForProduct(item.productId) ? (
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <p className="font-sans text-sm text-[#5c5c5c] line-through">
+                                                        {getCouponForProduct(item.productId)!.formattedOriginalPrice}
+                                                    </p>
+                                                    <p className="font-sans text-sm font-semibold text-green-700">
+                                                        {getCouponForProduct(item.productId)!.formattedDiscountedPrice}
+                                                    </p>
+                                                    <span className="flex items-center gap-1 rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-800">
+                                                        <Tag className="h-3 w-3" />
+                                                        {getCouponForProduct(item.productId)!.couponCode}
+                                                    </span>
+                                                </div>
+                                            ) : getAdjustedPrice(item.productId) ? (
+                                                <div className="mt-1 flex items-center gap-2">
+                                                    <p className="font-sans text-sm text-[#5c5c5c] line-through">
+                                                        {item.product?.formattedPrice ?? `Rs.${item.subtotal.toLocaleString()}`}
+                                                    </p>
+                                                    <p className="font-sans text-sm font-semibold text-red-700">
+                                                        {getAdjustedPrice(item.productId)!.formattedPrice}
+                                                    </p>
+                                                    <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-800">
+                                                        +{getAdjustedPrice(item.productId)!.increasePercentage}%
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <p className="mt-1 font-sans text-sm font-medium text-[#1c1c1c]">
+                                                    {item.product?.formattedPrice ??
+                                                        `Rs.${item.subtotal.toLocaleString()}`}
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="mt-4 flex items-center justify-between">
                                             <div className="flex items-center gap-3 border border-[#1c1c1c]/20">
@@ -180,6 +213,30 @@ export default function CartPage() {
                                             Rs.{total.toLocaleString()}
                                         </span>
                                     </div>
+                                    {appliedCoupons.length > 0 && (
+                                        <div className="space-y-2">
+                                            {appliedCoupons.map((coupon) => (
+                                                <div key={coupon.productId} className="flex items-center justify-between rounded bg-green-50 px-3 py-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <Tag className="h-3.5 w-3.5 text-green-700" />
+                                                        <span className="text-xs font-semibold text-green-800">{coupon.couponCode}</span>
+                                                        <span className="text-xs text-green-700">({coupon.discountPercentage}% off)</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-xs font-medium text-green-800">
+                                                            -Rs.{(coupon.originalPrice - coupon.discountedPrice).toLocaleString()}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => removeCoupon(coupon.productId)}
+                                                            className="text-green-600 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <X className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                     <div className="flex justify-between font-sans text-sm">
                                         <span className="text-[#5c5c5c]">Shipping</span>
                                         <span className="font-medium text-[#1c1c1c]">Free</span>
@@ -189,9 +246,16 @@ export default function CartPage() {
                                     <span className="font-gloock text-lg text-[#1c1c1c]">
                                         Total
                                     </span>
-                                    <span className="font-gloock text-2xl text-[#1c1c1c]">
-                                        Rs.{total.toLocaleString()}
-                                    </span>
+                                    <div className="text-right">
+                                        {couponDiscount > 0 && (
+                                            <span className="mr-2 font-sans text-sm text-[#5c5c5c] line-through">
+                                                Rs.{total.toLocaleString()}
+                                            </span>
+                                        )}
+                                        <span className="font-gloock text-2xl text-[#1c1c1c]">
+                                            Rs.{finalTotal.toLocaleString()}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-3 pt-4">

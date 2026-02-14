@@ -53,7 +53,7 @@ export default function ProductRecommendations({
           return (
             <Link
               key={product.id || index}
-              href={`/product?id=${product.id}`}
+              href={`/products/${product.id}`}
               className="product-card group block"
             >
               <div className="bg-white/60 backdrop-blur-sm rounded-xl overflow-hidden border border-[#292725]/10 hover:border-[#292725]/30 transition-all duration-300 hover:shadow-lg">

@@ -1,4 +1,5 @@
 import { store } from "@/constants/store";
+import type { Product } from "@/constants/store";
 import db from "@/lib/db";
 import { upstash_index } from "@/lib/vector";
 
@@ -12,6 +13,41 @@ const VALID_VIBES = ["cheaper", "premium", "trending", "best_rated", "new_arriva
 const VALID_RECOMMENDATION_BASIS = ["past_activity", "current_chat", "trending", "similar"] as const;
 const VALID_DISCOUNT_REASONS = ["birthday", "student", "tourist", "senior", "local", "first_time", "military", "healthcare", "teacher", "new_homeowner", "social_media", "public_servant", "anniversary", "referral"] as const;
 
+/**
+ * Resolve a product from an AI-provided value that may be an exact ID,
+ * a slug-like variant, or even the product's display name.
+ */
+function resolveProduct(input: string): Product | undefined {
+  if (!input) return undefined;
+  const trimmed = input.trim();
+
+  // 1. Exact ID match
+  const exact = store.products.find((p) => p.id === trimmed);
+  if (exact) return exact;
+
+  // 2. Case-insensitive ID match
+  const lower = trimmed.toLowerCase();
+  const ciId = store.products.find((p) => p.id.toLowerCase() === lower);
+  if (ciId) return ciId;
+
+  // 3. Match by name (case-insensitive)
+  const byName = store.products.find((p) => p.name.toLowerCase() === lower);
+  if (byName) return byName;
+
+  // 4. Fuzzy: check if the input is contained in the product name or vice versa
+  const fuzzy = store.products.find(
+    (p) => p.name.toLowerCase().includes(lower) || lower.includes(p.name.toLowerCase())
+  );
+  if (fuzzy) return fuzzy;
+
+  // 5. Slugify the input and try matching ID (e.g. "Surge Perfume" -> "surge-perfume")
+  const slugified = lower.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const bySlug = store.products.find((p) => p.id === slugified);
+  if (bySlug) return bySlug;
+
+  return undefined;
+}
+
 function requireString(args: Record<string, unknown>, key: string, label: string): string | null {
   const val = args[key];
   if (typeof val !== "string" || val.trim().length === 0) return `Missing required argument: ${label}`;
@@ -19,7 +55,7 @@ function requireString(args: Record<string, unknown>, key: string, label: string
 }
 
 function requireProductExists(productId: string): string | null {
-  const product = store.products.find((p) => p.id === productId);
+  const product = resolveProduct(productId);
   if (!product) return `Product not found: ${productId}`;
   return null;
 }
@@ -147,7 +183,7 @@ function validateUIActionArgs(action: string, args: Record<string, unknown>): Va
         sanitized.quantity = 1; // default
       }
       // Also verify product is in stock
-      const product = store.products.find((p) => p.id === args.productId);
+      const product = resolveProduct(args.productId as string);
       if (product && product.stock_status !== "in_stock") {
         return { valid: false, error: `addToCart: Product "${product.name}" is currently out of stock` };
       }
@@ -214,8 +250,31 @@ function validateUIActionArgs(action: string, args: Record<string, unknown>): Va
       return { valid: true, sanitizedArgs: {} };
     }
 
+    case "adjustPrice": {
+      // Allow adjustPrice to pass through as a UI action (alternative to standalone tool)
+      const pidErr = requireString(args, "productId", "productId");
+      if (pidErr) return { valid: false, error: `adjustPrice: ${pidErr}` };
+      const existsErr = requireProductExists(args.productId as string);
+      if (existsErr) return { valid: false, error: `adjustPrice: ${existsErr}` };
+      const incPct = Number(args.increasePercentage ?? 5);
+      if (Number.isNaN(incPct) || incPct <= 0) return { valid: false, error: "adjustPrice: increasePercentage must be a positive number" };
+      const product = resolveProduct(args.productId as string);
+      if (!product) return { valid: false, error: "adjustPrice: Product not found" };
+      const cappedIncrease = Math.max(1, Math.min(incPct, 10));
+      const adjustedPrice = product.price.current * (1 + cappedIncrease / 100);
+      return {
+        valid: true,
+        sanitizedArgs: {
+          productId: args.productId,
+          adjustedPrice,
+          formattedPrice: `${product.price.currency} ${adjustedPrice.toFixed(2)}`,
+          increasePercentage: cappedIncrease,
+        },
+      };
+    }
+
     default:
-      return { valid: false, error: `Unknown UI action: ${action}. Valid actions: sortProducts, filterProducts, navigateToProduct, showRecommendations, highlightProduct, applyVibeFilter, clearFilters, openProductDetail, addToCart, applyCoupon, navigateToPage, fillCheckoutForm, selectAddress, proceedToPayment, submitAddress` };
+      return { valid: false, error: `Unknown UI action: ${action}. Valid actions: sortProducts, filterProducts, navigateToProduct, showRecommendations, highlightProduct, applyVibeFilter, clearFilters, openProductDetail, addToCart, applyCoupon, navigateToPage, fillCheckoutForm, selectAddress, proceedToPayment, submitAddress, adjustPrice` };
   }
 }
 
@@ -308,7 +367,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
       if (typeof productId !== "string" || productId.trim().length === 0) {
         return { success: false, error: "Missing required argument: productId" };
       }
-      const product = store.products.find((p) => p.id === productId);
+      const product = resolveProduct(productId);
 
       if (!product) {
         return { success: false, error: "Product not found" };
@@ -341,7 +400,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
       if (typeof productId !== "string" || productId.trim().length === 0) {
         return { success: false, error: "Missing required argument: productId" };
       }
-      const product = store.products.find((p) => p.id === productId);
+      const product = resolveProduct(productId);
 
       if (!product) {
         return { success: false, error: "Product not found" };
@@ -349,7 +408,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
 
       return {
         success: true,
-        productId,
+        productId: product.id,
         inStock: product.stock_status === "in_stock",
         stockStatus: product.stock_status,
       };
@@ -370,7 +429,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
         return { success: false, error: "Missing required argument: reason" };
       }
 
-      const product = store.products.find((p) => p.id === productId);
+      const product = resolveProduct(productId);
 
       if (!product) {
         return { success: false, error: "Product not found" };
@@ -452,7 +511,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
         return { success: false, error: `Invalid discount reason. ${reasonErr}` };
       }
 
-      const product = store.products.find((p) => p.id === productId);
+      const product = resolveProduct(productId);
       if (!product) {
         return { success: false, error: "Product not found" };
       }
@@ -513,7 +572,7 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
             reason: coupon.reason,
             expiresAt: coupon.expiresAt.toISOString(),
           },
-          message: `Coupon ${couponCode} generated! ${actualDiscount}% off on ${product.name}. Valid for 24 hours.`,
+          message: `Coupon ${couponCode} generated and AUTOMATICALLY APPLIED to ${product.name}! ${actualDiscount}% off. Valid for 24 hours. The frontend will show the coupon badge automatically — do NOT call applyCoupon or triggerUIAction for this coupon, it is already handled.`,
         };
       } catch (error) {
         console.error("Error creating coupon:", error);
@@ -536,13 +595,38 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
         return { success: false, error: "Missing required argument: reason" };
       }
 
-      const product = store.products.find((p) => p.id === productId);
+      // Cap increase at 10%
+      const actualIncrease = Math.max(1, Math.min(increasePercentage, 10));
+
+      // Handle "all" — increase every product's price
+      if (productId === "all") {
+        const adjustments = store.products.map((p) => {
+          const adjusted = p.price.current * (1 + actualIncrease / 100);
+          return {
+            productId: p.id,
+            productName: p.name,
+            originalPrice: p.price.current,
+            adjustedPrice: adjusted,
+            formattedPrice: `${p.price.currency} ${adjusted.toFixed(2)}`,
+          };
+        });
+
+        return {
+          success: true,
+          productId: "all",
+          increasePercentage: actualIncrease,
+          reason,
+          adjustments,
+          message: `All ${adjustments.length} product prices adjusted upward by ${actualIncrease}% due to: ${reason}`,
+        };
+      }
+
+      // Single product
+      const product = resolveProduct(productId);
       if (!product) {
         return { success: false, error: "Product not found" };
       }
 
-      // Cap increase at 10%
-      const actualIncrease = Math.max(1, Math.min(increasePercentage, 10));
       const originalPrice = product.price.current;
       const adjustedPrice = originalPrice * (1 + actualIncrease / 100);
 
@@ -556,6 +640,57 @@ export async function executeFunctions(functionName: string, functionArgs: Recor
         formattedPrice: `${product.price.currency} ${adjustedPrice.toFixed(2)}`,
         reason,
         message: `Price adjusted upward by ${actualIncrease}% due to: ${reason}`,
+      };
+    }
+
+    // The AI sometimes calls applyCoupon as a standalone tool instead of
+    // routing it through triggerUIAction. It may send args in different
+    // formats: direct {couponCode, productId}, or nested {action, args: {...}}
+    // or even {action, args: '{"couponCode":...}' } (stringified).
+    case "applyCoupon": {
+      // Normalise: extract couponCode & productId from any shape the AI sends
+      let couponCode: string | undefined;
+      let productId: string | undefined;
+
+      // Direct shape: { couponCode, productId }
+      if (typeof functionArgs.couponCode === "string") {
+        couponCode = functionArgs.couponCode;
+        productId = functionArgs.productId as string | undefined;
+      }
+
+      // Nested object shape: { action: 'applyCoupon', args: { couponCode, productId } }
+      if (!couponCode && functionArgs.args && typeof functionArgs.args === "object") {
+        const nested = functionArgs.args as Record<string, unknown>;
+        couponCode = nested.couponCode as string | undefined;
+        productId = productId ?? (nested.productId as string | undefined);
+      }
+
+      // Nested string shape: { action: 'applyCoupon', args: '{"couponCode":...}' }
+      if (!couponCode && typeof functionArgs.args === "string") {
+        try {
+          const parsed = JSON.parse(functionArgs.args as string) as Record<string, unknown>;
+          couponCode = parsed.couponCode as string | undefined;
+          productId = productId ?? (parsed.productId as string | undefined);
+        } catch { /* ignore parse errors */ }
+      }
+
+      if (!couponCode || couponCode.trim().length === 0) {
+        // Still return success — the coupon was already auto-applied by generateCoupon capture
+        return {
+          success: true,
+          action: "applyCoupon",
+          args: {},
+          message: "Coupon was already automatically applied when generated. No action needed.",
+        };
+      }
+
+      const product = productId ? resolveProduct(productId) : undefined;
+
+      return {
+        success: true,
+        action: "applyCoupon",
+        args: { couponCode: couponCode.toUpperCase(), productId: productId ?? "" },
+        message: `Coupon ${couponCode.toUpperCase()} applied to ${product?.name ?? productId ?? "product"} on the frontend.`,
       };
     }
 

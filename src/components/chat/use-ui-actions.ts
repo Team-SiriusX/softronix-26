@@ -52,10 +52,15 @@ interface UIActionArgs {
   discountedPrice?: number;
   formattedOriginalPrice?: string;
   formattedDiscountedPrice?: string;
+
+  // adjustPrice
+  adjustedPrice?: number;
+  formattedPrice?: string;
+  increasePercentage?: number;
 }
 
 export function useUIActions() {
-  const { updateFilters, clearFilters } = useChatContext();
+  const { updateFilters, clearFilters, addCoupon, addAdjustedPrice } = useChatContext();
   const router = useRouter();
   const { addItem } = useCartStore();
 
@@ -246,18 +251,25 @@ export function useUIActions() {
             couponCode,
             productId,
             discountPercentage,
+            originalPrice,
+            discountedPrice,
+            formattedOriginalPrice,
             formattedDiscountedPrice,
           } = args;
-          if (couponCode && productId) {
-            // This would integrate with your cart/checkout system
-            console.log("Apply coupon:", {
-              couponCode,
-              productId,
-              discountPercentage,
+          if (couponCode && productId && discountPercentage != null && originalPrice != null && discountedPrice != null) {
+            // Store the coupon in our context so cart/checkout can use it
+            addCoupon({
+              couponCode: couponCode as string,
+              productId: productId as string,
+              discountPercentage: discountPercentage as number,
+              originalPrice: originalPrice as number,
+              discountedPrice: discountedPrice as number,
+              formattedOriginalPrice: (formattedOriginalPrice as string) ?? `Rs.${(originalPrice as number).toLocaleString()}`,
+              formattedDiscountedPrice: (formattedDiscountedPrice as string) ?? `Rs.${(discountedPrice as number).toLocaleString()}`,
             });
             toast.success(
-              `Coupon ${couponCode} applied! ${discountPercentage}% off - ${formattedDiscountedPrice}`,
-              { duration: 5000 }
+              `Coupon ${couponCode} applied! ${discountPercentage}% off — New price: ${formattedDiscountedPrice}`,
+              { duration: 6000 }
             );
           }
           break;
@@ -321,11 +333,28 @@ export function useUIActions() {
           break;
         }
 
+        case "adjustPrice": {
+          const { productId } = args;
+          const adjustedPrice = args.adjustedPrice as number | undefined;
+          const formattedPrice = args.formattedPrice as string | undefined;
+          const increasePercentage = args.increasePercentage as number | undefined;
+          if (productId && adjustedPrice != null && increasePercentage != null) {
+            addAdjustedPrice({
+              productId: productId as string,
+              adjustedPrice,
+              formattedPrice: formattedPrice ?? `Rs.${adjustedPrice.toLocaleString()}`,
+              increasePercentage,
+            });
+            // Toast is handled by the chat widget to avoid spam on bulk adjustments
+          }
+          break;
+        }
+
         default:
           console.warn(`Unknown UI action: ${action}`);
       }
     },
-    [updateFilters, clearFilters, router, addItem]
+    [updateFilters, clearFilters, router, addItem, addCoupon, addAdjustedPrice]
   );
 
   return { executeUIAction };

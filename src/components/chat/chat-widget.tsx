@@ -10,6 +10,7 @@ import ProductRecommendations from "./product-recommendations";
 import HumanChat from "./human-chat";
 import { cn } from "@/lib/utils";
 import { Product } from "@/services";
+import { toast } from "sonner";
 import { useSendChatMessage, useProducts } from "./_api";
 import {
   useChatState,
@@ -132,6 +133,9 @@ export default function ChatWidget() {
               | undefined;
 
             if (functions && functions.length > 0) {
+              // Count adjustPrice calls for smart toast
+              const adjustPriceCalls = functions.filter((fn) => fn.name === "adjustPrice");
+
               functions.forEach(
                 (fn: { name: string; args: Record<string, unknown> }) => {
                   // Handle requireAuth special case
@@ -144,6 +148,22 @@ export default function ChatWidget() {
                   executeUIAction(fn.name, fn.args);
                 },
               );
+
+              // Show a single toast for price adjustments
+              if (adjustPriceCalls.length > 0) {
+                const pct = adjustPriceCalls[0].args.increasePercentage as number;
+                if (adjustPriceCalls.length === 1) {
+                  toast.error(
+                    `Price increased by ${pct}% due to behavior. New price: ${adjustPriceCalls[0].args.formattedPrice}`,
+                    { duration: 5000 }
+                  );
+                } else {
+                  toast.error(
+                    `All product prices increased by ${pct}% due to inappropriate behavior.`,
+                    { duration: 5000 }
+                  );
+                }
+              }
             }
           } else {
             throw new Error(String(data.error) || "Failed to get response");

@@ -1,9 +1,10 @@
 "use client";
 
-import { ShoppingCart, Check, Package, CheckCircle } from "lucide-react";
+import { ShoppingCart, Check, Package, CheckCircle, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/services/types";
+import { useChatContext } from "@/components/providers/chat-provider";
 
 type ProductCardProps = {
   product: Product;
@@ -21,9 +22,11 @@ export function ProductCard({
   const inStock = product.stock_status === "in_stock";
   const imageUrl = product.images?.[0];
   const category = product.category?.[0] || "Grooming";
+  const { getAdjustedPrice } = useChatContext();
+  const adjustment = getAdjustedPrice(product.id);
 
   return (
-    <div className="group block">
+    <div id={`product-${product.id}`} className="group block">
       {/* Image */}
       <Link href={`/products/${product.id}`} className="block">
         <div className="relative mb-4 aspect-[3/4] w-full overflow-hidden bg-[#e8e5df]">
@@ -33,7 +36,7 @@ export function ProductCard({
               alt={product.name}
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover object-center"
+              className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
@@ -65,13 +68,30 @@ export function ProductCard({
         </Link>
 
         <div className="flex items-baseline gap-2 font-sans text-sm">
-          <span className="font-medium text-[#1c1c1c]">
-            {product.price.currency} {product.price.current}
-          </span>
-          {product.price.original && (
-            <span className="text-xs text-[#5c5c5c] line-through">
-              {product.price.currency} {product.price.original}
-            </span>
+          {adjustment ? (
+            <>
+              <span className="font-medium text-red-600">
+                {adjustment.formattedPrice}
+              </span>
+              <span className="text-xs text-[#5c5c5c] line-through">
+                {product.price.currency} {product.price.current}
+              </span>
+              <span className="flex items-center gap-0.5 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600">
+                <TrendingUp className="h-3 w-3" />
+                +{adjustment.increasePercentage}%
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="font-medium text-[#1c1c1c]">
+                {product.price.currency} {product.price.current}
+              </span>
+              {product.price.original && (
+                <span className="text-xs text-[#5c5c5c] line-through">
+                  {product.price.currency} {product.price.original}
+                </span>
+              )}
+            </>
           )}
         </div>
 

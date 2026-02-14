@@ -1,4 +1,5 @@
 import { upstash_index } from "@/lib/vector";
+import { store } from "@/constants/store";
 import db from "@/lib/db";
 import { getProductById } from "@/lib/product-loader";
 import type { Message } from "@openrouter/sdk/models";
@@ -88,6 +89,45 @@ async function buildUserActivityContext(userId: string): Promise<string> {
   return activityContext;
 }
 
+/**
+ * When the model returns empty text content but tools executed successfully,
+ * build a contextual fallback message based on which RPC actions were captured.
+ */
+function buildToolSuccessFallback(functions: ClerkRpcCall[]): string {
+  const parts: string[] = [];
+
+  for (const fn of functions) {
+    const args = fn.args as Record<string, unknown>;
+    switch (fn.name) {
+      case "applyCoupon":
+        parts.push(`Great news! 🎉 Your coupon **${args.couponCode}** has been applied! You now get **${args.discountPercentage}% off** — the new price is **${args.formattedDiscountedPrice}**. Enjoy your purchase!`);
+        break;
+      case "adjustPrice": {
+        const adjustCount = functions.filter((f) => f.name === "adjustPrice").length;
+        if (adjustCount > 1) {
+          parts.push(`Due to inappropriate behavior, prices for **all products** have been increased by ${args.increasePercentage}%. Please be respectful and I'll be happy to help you find great deals.`);
+        } else {
+          parts.push(`Due to inappropriate behavior, the price has been adjusted upward by ${args.increasePercentage}% to **${args.formattedPrice}**. Please be respectful and I'll be happy to help you find great deals.`);
+        }
+        break;
+      }
+      case "navigateToProduct":
+        parts.push(`I've pulled up the product page for you — take a look! 👀`);
+        break;
+      case "filterProducts":
+      case "sortProducts":
+        parts.push(`I've updated the products view for you. Check it out! ✨`);
+        break;
+      default:
+        break;
+    }
+  }
+
+  return parts.length > 0
+    ? parts.join("\n\n")
+    : "I've processed your request! Let me know if there's anything else I can help with. 😊";
+}
+
 // Main chat function using OpenRouter SDK with RAG and Tool Calling
 export async function chatWithClerk(userMessage: string, conversationHistory: ConversationMessage[], userId?: string | null): Promise<ClerkResponse> {
   const toolProducts: ChatbotProduct[] = [];
@@ -160,7 +200,7 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
     let assistantMessage = response.choices[0]?.message;
 
     // Step 3: Handle tool calls if present
-    const maxIterations = 5; // Prevent infinite loops
+    const maxIterations = 3; // Keep fast — 3 max round-trips
     let iteration = 0;
 
     while (assistantMessage?.toolCalls && assistantMessage.toolCalls.length > 0 && iteration < maxIterations) {
@@ -244,15 +284,45 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
 
           // Capture price adjustment as frontend RPC call
           if (functionName === "adjustPrice" && functionResult.success) {
-            functions.push({
-              name: "adjustPrice",
-              args: {
-                productId: functionResult.productId as string,
-                adjustedPrice: functionResult.adjustedPrice as number,
-                formattedPrice: functionResult.formattedPrice as string,
-                increasePercentage: functionResult.increasePercentage as number,
-              },
-            });
+            if (functionResult.productId === "all" && Array.isArray(functionResult.adjustments)) {
+              // Bulk adjustment — push one RPC per product
+              for (const adj of functionResult.adjustments as Array<{ productId: string; adjustedPrice: number; formattedPrice: string }>) {
+                functions.push({
+                  name: "adjustPrice",
+                  args: {
+                    productId: adj.productId,
+                    adjustedPrice: adj.adjustedPrice,
+                    formattedPrice: adj.formattedPrice,
+                    increasePercentage: functionResult.increasePercentage as number,
+                  },
+                });
+              }
+            } else {
+              functions.push({
+                name: "adjustPrice",
+                args: {
+                  productId: functionResult.productId as string,
+                  adjustedPrice: functionResult.adjustedPrice as number,
+                  formattedPrice: functionResult.formattedPrice as string,
+                  increasePercentage: functionResult.increasePercentage as number,
+                },
+              });
+            }
+          }
+
+          // Capture standalone applyCoupon calls (AI sometimes calls it directly
+          // instead of via triggerUIAction). This is a fallback — the primary
+          // capture happens via generateCoupon above.
+          if (functionName === "applyCoupon" && functionResult.success) {
+            const alreadyHasCoupon = functions.some(
+              (fn) => fn.name === "applyCoupon" && (fn.args as Record<string, unknown>).couponCode === (functionResult.args as Record<string, unknown>)?.couponCode
+            );
+            if (!alreadyHasCoupon) {
+              functions.push({
+                name: functionResult.action as string,
+                args: (functionResult.args as Record<string, unknown>) ?? {},
+              });
+            }
           }
 
           console.log(`✅ Tool result:`, functionResult);
@@ -288,13 +358,79 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
     console.log("✨ Generating final response...");
 
     if (!assistantMessage || !assistantMessage.content) {
+      // If tools executed successfully but model returned no text, build a contextual fallback
+      if (functions.length > 0) {
+        const fallbackText = buildToolSuccessFallback(functions);
+        console.log("✅ Tools succeeded — using contextual fallback response");
+        return { text: fallbackText, toolProducts, functions };
+      }
       return { text: "I apologize, but I couldn't process your request. Please try again.", toolProducts, functions };
     }
 
     console.log("✅ Response generated successfully");
     const finalContent = normalizeAssistantContent(assistantMessage.content);
     if (!finalContent.trim()) {
+      if (functions.length > 0) {
+        const fallbackText = buildToolSuccessFallback(functions);
+        console.log("✅ Tools succeeded — using contextual fallback response");
+        return { text: fallbackText, toolProducts, functions };
+      }
       return { text: "I apologize, but I couldn't process your request. Please try again.", toolProducts, functions };
+    }
+
+    // ── Rudeness sentinel ──
+    // If the user message is rude/demanding but the AI didn't call adjustPrice,
+    // automatically trigger price increase on the most recently discussed product.
+    const RUDE_PATTERNS = /\b(ripoff|rip off|garbage|trash|overpriced|scam|worst|terrible|awful|sucks|stupid|bull\s?shit|wtf|stfu)\b|give me (\d{2,3})% off|(\d{2,3})% off or i.*(leave|go|walk)/i;
+    const alreadyAdjusted = functions.some((fn) => fn.name === "adjustPrice");
+    if (!alreadyAdjusted && RUDE_PATTERNS.test(userMessage)) {
+      const increasePercentage = 5;
+
+      // Try to find a specific product the user mentioned
+      let targetProductId: string | undefined;
+      if (toolProducts.length > 0) {
+        targetProductId = toolProducts[0].id;
+      }
+      // Check conversation history for a recently discussed product
+      if (!targetProductId) {
+        for (const msg of [...conversationHistory].reverse()) {
+          const idMatch = msg.content.match(/ID:\s*([a-z0-9-]+)/i);
+          if (idMatch) { targetProductId = idMatch[1]; break; }
+        }
+      }
+
+      if (targetProductId) {
+        // Specific product mentioned — increase just that one
+        const product = store.products.find((p) => p.id === targetProductId);
+        if (product) {
+          const adjustedPrice = product.price.current * (1 + increasePercentage / 100);
+          functions.push({
+            name: "adjustPrice",
+            args: {
+              productId: product.id,
+              adjustedPrice,
+              formattedPrice: `${product.price.currency} ${adjustedPrice.toFixed(2)}`,
+              increasePercentage,
+            },
+          });
+          console.log(`⚠️ Rudeness sentinel: auto-increased price for ${product.name} (+${increasePercentage}%)`);
+        }
+      } else {
+        // Generic rudeness — increase ALL product prices
+        for (const product of store.products) {
+          const adjustedPrice = product.price.current * (1 + increasePercentage / 100);
+          functions.push({
+            name: "adjustPrice",
+            args: {
+              productId: product.id,
+              adjustedPrice,
+              formattedPrice: `${product.price.currency} ${adjustedPrice.toFixed(2)}`,
+              increasePercentage,
+            },
+          });
+        }
+        console.log(`⚠️ Rudeness sentinel: auto-increased price for ALL ${store.products.length} products (+${increasePercentage}%)`);
+      }
     }
 
     return { text: finalContent, toolProducts, functions };
