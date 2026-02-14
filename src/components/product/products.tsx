@@ -48,28 +48,17 @@ export function Products() {
   // ─── Loading skeleton ────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="w-full space-y-8">
-        <div className="space-y-1">
-          <div className="h-8 w-48 animate-pulse rounded-lg bg-muted" />
-          <div className="h-4 w-64 animate-pulse rounded bg-muted" />
+      <div className="w-full space-y-12">
+        <div className="border-b border-[#1c1c1c]/10 pb-8">
+          <div className="h-12 w-64 animate-pulse rounded bg-[#e8e5df]" />
+          <div className="mt-2 h-4 w-48 animate-pulse rounded bg-[#e8e5df]" />
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {Array.from({ length: 10 }, (_, i) => (
-            <div
-              key={i}
-              className="animate-pulse rounded-2xl border border-border/40 bg-card"
-            >
-              <div className="aspect-4/3 rounded-t-2xl bg-muted" />
-              <div className="space-y-3 p-4">
-                <div className="flex gap-1">
-                  <div className="h-4 w-14 rounded-full bg-muted" />
-                  <div className="h-4 w-16 rounded-full bg-muted" />
-                </div>
-                <div className="h-5 w-3/4 rounded bg-muted" />
-                <div className="h-4 w-24 rounded bg-muted" />
-                <div className="h-7 w-28 rounded bg-muted" />
-                <div className="h-10 w-full rounded-xl bg-muted" />
-              </div>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 12 }, (_, i) => (
+            <div key={i} className="space-y-4">
+              <div className="aspect-[3/4] w-full animate-pulse rounded bg-[#e8e5df]" />
+              <div className="h-4 w-3/4 animate-pulse rounded bg-[#e8e5df]" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-[#e8e5df]" />
             </div>
           ))}
         </div>
@@ -80,12 +69,12 @@ export function Products() {
   // ─── Error state ─────────────────────────────────────────
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <PackageSearch className="h-12 w-12 text-muted-foreground/40" />
-        <p className="text-lg font-semibold text-foreground">
+      <div className="flex flex-col items-center justify-center gap-4 py-32 text-center">
+        <PackageSearch className="h-16 w-16 text-[#1c1c1c]/20" />
+        <p className="font-gloock text-2xl text-[#1c1c1c]">
           Failed to load products
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[#5c5c5c]">
           Please try refreshing the page.
         </p>
       </div>
@@ -94,26 +83,24 @@ export function Products() {
 
   // ─── Main render ─────────────────────────────────────────
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-12">
       {/* Header */}
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground">
-            Our Products
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Showing{" "}
-            <span className="font-semibold text-foreground">
-              {products.length}
-            </span>{" "}
-            of <span className="font-semibold text-foreground">{total}</span>{" "}
-            products
-          </p>
-        </div>
+      <div className="border-b border-[#1c1c1c]/10 pb-8">
+        <h1 className="font-gloock text-4xl tracking-tight text-[#1c1c1c] md:text-5xl">
+          All Products
+        </h1>
+        <p className="mt-2 font-sans text-sm text-[#5c5c5c]">
+          Showing{" "}
+          <span className="font-semibold text-[#1c1c1c]">
+            {products.length}
+          </span>{" "}
+          of <span className="font-semibold text-[#1c1c1c]">{total}</span>{" "}
+          products
+        </p>
       </div>
 
-      {/* Product grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      {/* Product grid - matching landing page */}
+      <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 md:gap-x-8 md:gap-y-16 lg:grid-cols-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}
@@ -126,18 +113,16 @@ export function Products() {
       </div>
 
       {/* Scroll sentinel */}
-      <div ref={sentinelRef} className="flex justify-center py-6">
+      <div ref={sentinelRef} className="flex justify-center py-8">
         {isFetchingNextPage && (
-          <div className="flex items-center gap-2.5 rounded-full bg-muted/60 px-5 py-2.5 backdrop-blur-sm">
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">
-              Loading more…
-            </span>
+          <div className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-[#5c5c5c]">
+            <Loader2 className="h-4 w-4 animate-spin text-[#1c1c1c]" />
+            Loading more…
           </div>
         )}
         {!hasNextPage && products.length > 0 && (
-          <div className="rounded-full bg-muted/40 px-5 py-2 text-sm text-muted-foreground">
-            You&apos;ve seen all {total} products ✨
+          <div className="px-6 py-3 text-sm text-[#5c5c5c]">
+            You&apos;ve seen all {total} products
           </div>
         )}
       </div>

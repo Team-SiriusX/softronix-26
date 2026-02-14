@@ -1,11 +1,6 @@
 /**
- * Example Filter Panel Component
- * 
- * This demonstrates how to use the ChatProvider hooks to create
- * an interactive filter panel that updates products in real-time.
- * 
- * You can place this component anywhere in your app (e.g., in a sidebar)
- * and it will control the product filtering globally.
+ * Product Filter Panel - Landing Page Style
+ * Beige aesthetic matching the main landing page
  */
 
 "use client";
@@ -21,8 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X, Filter, Search, DollarSign, ArrowUpDown } from "lucide-react";
+import { X } from "lucide-react";
 
 export function ProductFilterPanel() {
   const {
@@ -42,71 +36,25 @@ export function ProductFilterPanel() {
     filters.sortBy;
 
   return (
-    <div className="w-full max-w-sm p-6 space-y-6 bg-card rounded-lg border shadow-sm">
+    <div className="sticky top-6 space-y-6 border border-[#1c1c1c]/10 bg-[#f7f4f0] p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Filter className="h-5 w-5 text-muted-foreground" />
-          <h3 className="text-lg font-semibold">Filters</h3>
-        </div>
+      <div className="border-b border-[#1c1c1c]/10 pb-4">
+        <h3 className="font-gloock text-2xl tracking-tight text-[#1c1c1c]">
+          Filters
+        </h3>
         {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={clearFilters}
-            className="h-8 px-2 text-xs"
+            className="mt-2 text-xs font-medium uppercase tracking-widest text-[#5c5c5c] transition-colors hover:text-[#1c1c1c]"
           >
             Clear All
-          </Button>
+          </button>
         )}
       </div>
 
-      {/* Active Filters Display */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2">
-          {filters.category && (
-            <Badge variant="secondary" className="gap-1">
-              {filters.category}
-              <X
-                className="h-3 w-3 cursor-pointer"
-                onClick={() => setCategory(undefined)}
-              />
-            </Badge>
-          )}
-          {filters.search && (
-            <Badge variant="secondary" className="gap-1">
-              Search: {filters.search}
-              <X
-                className="h-3 w-3 cursor-pointer"
-                onClick={() => setSearch(undefined)}
-              />
-            </Badge>
-          )}
-          {(filters.minPrice || filters.maxPrice) && (
-            <Badge variant="secondary" className="gap-1">
-              ${filters.minPrice || 0} - ${filters.maxPrice || "∞"}
-              <X
-                className="h-3 w-3 cursor-pointer"
-                onClick={() => setPriceRange(undefined, undefined)}
-              />
-            </Badge>
-          )}
-          {filters.sortBy && (
-            <Badge variant="secondary" className="gap-1">
-              Sort: {filters.sortBy}
-              <X
-                className="h-3 w-3 cursor-pointer"
-                onClick={() => setSortBy(undefined)}
-              />
-            </Badge>
-          )}
-        </div>
-      )}
-
       {/* Search */}
       <div className="space-y-2">
-        <Label htmlFor="search" className="flex items-center gap-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
+        <Label htmlFor="search" className="text-xs font-medium uppercase tracking-widest text-[#1c1c1c]">
           Search
         </Label>
         <Input
@@ -115,37 +63,37 @@ export function ProductFilterPanel() {
           placeholder="Search products..."
           value={filters.search || ""}
           onChange={(e) => setSearch(e.target.value || undefined)}
-          className="w-full"
+          className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c]"
         />
       </div>
 
       {/* Category */}
       <div className="space-y-2">
-        <Label htmlFor="category">Category</Label>
+        <Label htmlFor="category" className="text-xs font-medium uppercase tracking-widest text-[#1c1c1c]">
+          Category
+        </Label>
         <Select
           value={filters.category || "all"}
           onValueChange={(value) =>
             setCategory(value === "all" ? undefined : value)
           }
         >
-          <SelectTrigger id="category">
+          <SelectTrigger id="category" className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c]">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-[#1c1c1c]/20 bg-[#f2efe9]">
             <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="skincare">Skincare</SelectItem>
-            <SelectItem value="haircare">Haircare</SelectItem>
-            <SelectItem value="bodycare">Body Care</SelectItem>
-            <SelectItem value="shaving">Shaving</SelectItem>
-            <SelectItem value="fragrance">Fragrance</SelectItem>
+            <SelectItem value="Face">Face</SelectItem>
+            <SelectItem value="Hair">Hair Care</SelectItem>
+            <SelectItem value="Beard">Beard</SelectItem>
+            <SelectItem value="Bundles">Bundles</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Price Range */}
       <div className="space-y-2">
-        <Label className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+        <Label className="text-xs font-medium uppercase tracking-widest text-[#1c1c1c]">
           Price Range
         </Label>
         <div className="grid grid-cols-2 gap-2">
@@ -158,6 +106,7 @@ export function ProductFilterPanel() {
               setPriceRange(value, filters.maxPrice);
             }}
             min={0}
+            className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50"
           />
           <Input
             type="number"
@@ -168,14 +117,14 @@ export function ProductFilterPanel() {
               setPriceRange(filters.minPrice, value);
             }}
             min={0}
+            className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50"
           />
         </div>
       </div>
 
       {/* Sort By */}
       <div className="space-y-2">
-        <Label htmlFor="sortBy" className="flex items-center gap-2">
-          <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+        <Label htmlFor="sortBy" className="text-xs font-medium uppercase tracking-widest text-[#1c1c1c]">
           Sort By
         </Label>
         <Select
@@ -185,10 +134,10 @@ export function ProductFilterPanel() {
             setSortBy(value === "default" ? undefined : (value as SortByType));
           }}
         >
-          <SelectTrigger id="sortBy">
+          <SelectTrigger id="sortBy" className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c]">
             <SelectValue placeholder="Select sorting" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="border-[#1c1c1c]/20 bg-[#f2efe9]">
             <SelectItem value="default">Default</SelectItem>
             <SelectItem value="price-asc">Price: Low to High</SelectItem>
             <SelectItem value="price-desc">Price: High to Low</SelectItem>
@@ -199,67 +148,34 @@ export function ProductFilterPanel() {
         </Select>
       </div>
 
-      {/* Quick Filter Buttons */}
-      <div className="space-y-2">
-        <Label>Quick Filters</Label>
-        <div className="grid grid-cols-2 gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPriceRange(0, 25)}
-            className="text-xs"
-          >
-            Under $25
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPriceRange(0, 50)}
-            className="text-xs"
-          >
-            Under $50
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setCategory("skincare");
-              setSortBy("price-asc");
-            }}
-            className="text-xs"
-          >
-            Skincare Deals
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSortBy("newest")}
-            className="text-xs"
-          >
-            New Arrivals
-          </Button>
+      {/* Active Filters */}
+      {hasActiveFilters && (
+        <div className="space-y-2 border-t border-[#1c1c1c]/10 pt-4">
+          <Label className="text-xs font-medium uppercase tracking-widest text-[#1c1c1c]">
+            Active
+          </Label>
+          <div className="flex flex-wrap gap-2">
+            {filters.category && (
+              <button
+                onClick={() => setCategory(undefined)}
+                className="flex items-center gap-1 border border-[#1c1c1c]/20 bg-[#1c1c1c] px-2 py-1 text-xs text-[#f2efe9] transition-opacity hover:opacity-80"
+              >
+                {filters.category}
+                <X className="h-3 w-3" />
+              </button>
+            )}
+            {filters.search && (
+              <button
+                onClick={() => setSearch(undefined)}
+                className="flex items-center gap-1 border border-[#1c1c1c]/20 bg-[#1c1c1c] px-2 py-1 text-xs text-[#f2efe9] transition-opacity hover:opacity-80"
+              >
+                {filters.search}
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
-
-/**
- * Example usage in a page component:
- * 
- * import { ProductFilterPanel } from "@/components/product/product-filter-panel";
- * import { Products } from "@/components/product/products";
- * 
- * export default function ProductsPage() {
- *   return (
- *     <div className="flex gap-6">
- *       <aside className="w-80">
- *         <ProductFilterPanel />
- *       </aside>
- *       <main className="flex-1">
- *         <Products />
- *       </main>
- *     </div>
- *   );
- * }
- */

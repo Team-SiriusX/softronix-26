@@ -29,192 +29,201 @@ export default function CartPage() {
     const isAuthenticated = !!session.data?.user;
 
     return (
-        <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
             {/* Header */}
-            <div className="mb-8 flex items-center gap-4">
-                <Link
-                    href="/products"
-                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-border transition-colors hover:bg-muted"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Link>
-                <div>
-                    <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+            <div className="border-b border-[#1c1c1c]/10 bg-[#f2efe9]">
+                <div className="mx-auto max-w-[100rem] px-6 py-6 md:px-12 lg:px-24">
+                    <div className="flex items-center gap-6">
+                        <Link
+                            href="/products"
+                            className="flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-[#1c1c1c] transition-opacity hover:opacity-60"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Continue Shopping
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mx-auto max-w-[100rem] px-6 py-12 md:px-12 lg:px-24">
+                {/* Page Title */}
+                <div className="mb-12 border-b border-[#1c1c1c]/10 pb-8">
+                    <h1 className="font-gloock text-4xl tracking-tight text-[#1c1c1c] md:text-5xl">
                         Shopping Cart
                     </h1>
                     {itemCount > 0 && (
-                        <p className="mt-0.5 text-sm text-muted-foreground">
+                        <p className="mt-2 font-sans text-sm text-[#5c5c5c]">
                             {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
                         </p>
                     )}
                 </div>
-            </div>
 
-            {/* Loading */}
-            {isLoading ? (
-                <div className="flex flex-col items-center justify-center gap-3 py-24">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Loading your cart…</p>
-                </div>
-            ) : items.length === 0 ? (
-                /* Empty */
-                <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-border bg-card/50 py-24">
-                    <div className="rounded-2xl bg-muted/50 p-6">
-                        <ShoppingBag className="h-16 w-16 text-muted-foreground/30" />
+                {/* Loading */}
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center gap-4 py-32">
+                        <Loader2 className="h-8 w-8 animate-spin text-[#1c1c1c]" />
+                        <p className="text-sm text-[#5c5c5c]">Loading your cart…</p>
                     </div>
-                    <div className="text-center">
-                        <p className="text-lg font-semibold text-foreground">
-                            Your cart is empty
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            Browse products and add items to your cart
-                        </p>
+                ) : items.length === 0 ? (
+                    /* Empty */
+                    <div className="flex flex-col items-center justify-center gap-6 border border-dashed border-[#1c1c1c]/20 bg-[#f7f4f0] py-32">
+                        <ShoppingBag className="h-20 w-20 text-[#1c1c1c]/20" />
+                        <div className="text-center">
+                            <p className="font-gloock text-2xl text-[#1c1c1c]">
+                                Your cart is empty
+                            </p>
+                            <p className="mt-2 text-sm text-[#5c5c5c]">
+                                Browse products and add items to your cart
+                            </p>
+                        </div>
+                        <Link
+                            href="/products"
+                            className="mt-4 border border-[#1c1c1c] bg-transparent px-8 py-3 text-sm font-medium uppercase tracking-widest text-[#1c1c1c] transition-all hover:bg-[#1c1c1c] hover:text-[#f2efe9]"
+                        >
+                            Continue Shopping
+                        </Link>
                     </div>
-                    <Link
-                        href="/products"
-                        className="mt-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110"
-                    >
-                        Continue Shopping
-                    </Link>
-                </div>
-            ) : (
-                /* Cart content */
-                <div className="grid gap-8 lg:grid-cols-3">
-                    {/* Items */}
-                    <div className="space-y-3 lg:col-span-2">
-                        {items.map((item) => (
-                            <div
-                                key={item.productId}
-                                className="flex gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-sm transition-all hover:shadow-md"
-                            >
-                                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-muted sm:h-28 sm:w-28">
-                                    {item.product?.image ? (
-                                        <Image
-                                            src={item.product.image}
-                                            alt={item.product.name ?? "Product"}
-                                            fill
-                                            sizes="112px"
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center">
-                                            <Package className="h-8 w-8 text-muted-foreground/30" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex flex-1 flex-col justify-between">
-                                    <div>
-                                        <p className="line-clamp-2 text-sm font-semibold text-card-foreground sm:text-base">
-                                            {item.product?.name ?? item.productId}
-                                        </p>
-                                        <p className="mt-1 text-sm font-bold text-primary">
-                                            {item.product?.formattedPrice ??
-                                                `Rs.${item.subtotal.toLocaleString()}`}
-                                        </p>
+                ) : (
+                    /* Cart content */
+                    <div className="grid gap-12 lg:grid-cols-3">
+                        {/* Items */}
+                        <div className="space-y-4 lg:col-span-2">
+                            {items.map((item) => (
+                                <div
+                                    key={item.productId}
+                                    className="flex gap-6 border-b border-[#1c1c1c]/10 pb-6"
+                                >
+                                    <div className="relative h-32 w-32 shrink-0 overflow-hidden bg-[#e8e5df]">
+                                        {item.product?.image ? (
+                                            <Image
+                                                src={item.product.image}
+                                                alt={item.product.name ?? "Product"}
+                                                fill
+                                                sizes="128px"
+                                                className="object-cover"
+                                            />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center">
+                                                <Package className="h-10 w-10 text-[#1c1c1c]/20" />
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="mt-3 flex items-center justify-between">
-                                        <div className="flex items-center gap-1.5">
-                                            <button
-                                                onClick={() =>
-                                                    item.quantity > 1
-                                                        ? updateItem(item.productId, item.quantity - 1)
-                                                        : removeItem(item.productId)
-                                                }
-                                                disabled={isMutating}
-                                                className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
-                                            >
-                                                <Minus className="h-3.5 w-3.5" />
-                                            </button>
-                                            <span className="flex h-8 w-10 items-center justify-center text-sm font-semibold">
-                                                {item.quantity}
-                                            </span>
-                                            <button
-                                                onClick={() =>
-                                                    updateItem(item.productId, item.quantity + 1)
-                                                }
-                                                disabled={isMutating}
-                                                className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
-                                            >
-                                                <Plus className="h-3.5 w-3.5" />
-                                            </button>
+                                    <div className="flex flex-1 flex-col justify-between">
+                                        <div>
+                                            <h3 className="font-gloock text-lg text-[#1c1c1c] md:text-xl">
+                                                {item.product?.name ?? item.productId}
+                                            </h3>
+                                            <p className="mt-1 font-sans text-sm font-medium text-[#1c1c1c]">
+                                                {item.product?.formattedPrice ??
+                                                    `Rs.${item.subtotal.toLocaleString()}`}
+                                            </p>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            {item.subtotal > 0 && (
-                                                <span className="text-sm font-semibold text-foreground">
-                                                    Rs.{item.subtotal.toLocaleString()}
+                                        <div className="mt-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-3 border border-[#1c1c1c]/20">
+                                                <button
+                                                    onClick={() =>
+                                                        item.quantity > 1
+                                                            ? updateItem(item.productId, item.quantity - 1)
+                                                            : removeItem(item.productId)
+                                                    }
+                                                    disabled={isMutating}
+                                                    className="flex h-10 w-10 items-center justify-center bg-transparent text-[#1c1c1c] transition-colors hover:bg-[#1c1c1c] hover:text-[#f2efe9] disabled:opacity-40"
+                                                >
+                                                    <Minus className="h-4 w-4" />
+                                                </button>
+                                                <span className="w-12 text-center text-sm font-medium text-[#1c1c1c]">
+                                                    {item.quantity}
                                                 </span>
-                                            )}
-                                            <button
-                                                onClick={() => removeItem(item.productId)}
-                                                disabled={isMutating}
-                                                className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
+                                                <button
+                                                    onClick={() =>
+                                                        updateItem(item.productId, item.quantity + 1)
+                                                    }
+                                                    disabled={isMutating}
+                                                    className="flex h-10 w-10 items-center justify-center bg-transparent text-[#1c1c1c] transition-colors hover:bg-[#1c1c1c] hover:text-[#f2efe9] disabled:opacity-40"
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            <div className="flex items-center gap-6">
+                                                {item.subtotal > 0 && (
+                                                    <span className="font-sans text-base font-semibold text-[#1c1c1c]">
+                                                        Rs.{item.subtotal.toLocaleString()}
+                                                    </span>
+                                                )}
+                                                <button
+                                                    onClick={() => removeItem(item.productId)}
+                                                    disabled={isMutating}
+                                                    className="flex h-10 w-10 items-center justify-center text-[#5c5c5c] transition-colors hover:text-[#1c1c1c] disabled:opacity-40"
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
 
-                    {/* Order summary */}
-                    <div className="lg:col-span-1">
-                        <div className="sticky top-8 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
-                            <h2 className="text-lg font-bold text-card-foreground">
-                                Order Summary
-                            </h2>
-                            <div className="space-y-3 border-b border-border pb-4">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        Subtotal ({itemCount}{" "}
-                                        {itemCount === 1 ? "item" : "items"})
+                        {/* Order summary */}
+                        <div className="lg:col-span-1">
+                            <div className="sticky top-6 space-y-6 border border-[#1c1c1c]/10 bg-[#f7f4f0] p-6">
+                                <h2 className="border-b border-[#1c1c1c]/10 pb-4 font-gloock text-2xl tracking-tight text-[#1c1c1c]">
+                                    Order Summary
+                                </h2>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between font-sans text-sm">
+                                        <span className="text-[#5c5c5c]">
+                                            Subtotal ({itemCount}{" "}
+                                            {itemCount === 1 ? "item" : "items"})
+                                        </span>
+                                        <span className="font-medium text-[#1c1c1c]">
+                                            Rs.{total.toLocaleString()}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between font-sans text-sm">
+                                        <span className="text-[#5c5c5c]">Shipping</span>
+                                        <span className="font-medium text-[#1c1c1c]">Free</span>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between border-t border-[#1c1c1c]/10 pt-4">
+                                    <span className="font-gloock text-lg text-[#1c1c1c]">
+                                        Total
                                     </span>
-                                    <span className="font-medium text-foreground">
+                                    <span className="font-gloock text-2xl text-[#1c1c1c]">
                                         Rs.{total.toLocaleString()}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Shipping</span>
-                                    <span className="font-medium text-emerald-600">Free</span>
+
+                                <div className="space-y-3 pt-4">
+                                    <Link
+                                        href={isAuthenticated ? "/checkout" : "#"}
+                                        onClick={(e) => {
+                                            if (!isAuthenticated) {
+                                                e.preventDefault();
+                                                alert("Please sign in to checkout.");
+                                            }
+                                        }}
+                                        className="flex w-full items-center justify-center gap-2 border border-[#1c1c1c] bg-[#1c1c1c] px-6 py-3 text-sm font-medium uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c]"
+                                    >
+                                        {!isAuthenticated
+                                            ? "Sign in to Checkout"
+                                            : "Proceed to Checkout"}
+                                        <ChevronRight className="h-4 w-4" />
+                                    </Link>
+
+                                    <Link
+                                        href="/products"
+                                        className="flex w-full items-center justify-center gap-2 border border-[#1c1c1c]/20 bg-transparent px-6 py-3 text-sm font-medium uppercase tracking-widest text-[#1c1c1c] transition-all hover:border-[#1c1c1c]"
+                                    >
+                                        <ArrowLeft className="h-3.5 w-3.5" />
+                                        Continue Shopping
+                                    </Link>
                                 </div>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-base font-bold text-foreground">
-                                    Total
-                                </span>
-                                <span className="text-xl font-extrabold text-foreground">
-                                    Rs.{total.toLocaleString()}
-                                </span>
-                            </div>
-
-                            <Link
-                                href={isAuthenticated ? "/checkout" : "#"}
-                                onClick={(e) => {
-                                    if (!isAuthenticated) {
-                                        e.preventDefault();
-                                        alert("Please sign in to checkout.");
-                                    }
-                                }}
-                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110 active:scale-[0.98]"
-                            >
-                                {!isAuthenticated
-                                    ? "Sign in to Checkout"
-                                    : "Proceed to Checkout"}
-                                <ChevronRight className="h-4 w-4" />
-                            </Link>
-
-                            <Link
-                                href="/products"
-                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                            >
-                                <ArrowLeft className="h-3.5 w-3.5" />
-                                Continue Shopping
-                            </Link>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

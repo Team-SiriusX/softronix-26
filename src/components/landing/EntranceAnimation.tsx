@@ -13,7 +13,7 @@ export default function EntranceAnimation() {
     // Determine image selector and path setup
     // Images are in public root, accessible via /1.jpg etc.
     // CSS applies background-image provided inline in JSX.
-    
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -64,7 +64,7 @@ export default function EntranceAnimation() {
             .set(cardList, {
               transformOrigin: `center ${radius1 + image.clientHeight / 2}px`,
             })
-            .set(".group", {
+            .set(".scene .group", {
               transformStyle: "preserve-3d",
             })
             .to(cardList, {
@@ -127,7 +127,7 @@ export default function EntranceAnimation() {
               },
             })
             .to(
-              ".group",
+              ".scene .group",
               {
                 rotation: 360,
                 duration: 20,
@@ -141,78 +141,69 @@ export default function EntranceAnimation() {
           };
         }
       );
-      
+
       return () => {
         mm.revert();
       };
     };
-    
+
     // We only want to run this once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div 
-        ref={containerRef} 
-        className={`entrance-container demo-1 ${loading ? "loading" : ""}`}
+    <div
+      ref={containerRef}
+      className={`entrance-container demo-1 ${loading ? "loading" : ""}`}
     >
-        <div data-debug>
-            <div></div>
-        </div>
-        <main>
-            <header className="frame">
-                <h1 className="frame__title">Entrance Animation for Images</h1>
-                <a className="frame__back" href="https://tympanus.net/codrops/?p=76798">Article</a>
-                <a className="frame__archive" href="https://tympanus.net/codrops/demos/">All demos</a>
-                <a className="frame__github" href="https://github.com/d3adrabbit/EntranceAnimationForImages">GitHub</a>
-                <nav className="frame__tags">
-                    <a href="https://tympanus.net/codrops/demos/?tag=intro">#intro</a>
-                    <a href="https://tympanus.net/codrops/demos/?tag=stack">#stack</a>
-                </nav>
-                <nav className="frame__demos">
-                    <span>Variation 1</span>
-                    <a href="index2.html">Variation 2</a>
-                    <a href="index3.html">Variation 3</a>
-                </nav>
-            </header>
-            
-            <div className="content">
-                <div className="scene">
-                    <div className="group">
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/1.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/2.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/3.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/4.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/5.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/6.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/7.jpg)" }}></div>
-                        </div>
-                        <div className="card">
-                            <div className="card__img" style={{ backgroundImage: "url(/8.jpg)" }}></div>
-                        </div>
-                    </div>
-                </div>
+      <div data-debug>
+        <div></div>
+      </div>
+      <main>
+        <header className="frame">
+          <h1 className="frame__title">Echo</h1>
+          <a className="frame__back" href="/products">Products</a>
+          <a className="frame__archive" href="/cart">Cart</a>
+          <a className="frame__github" href="/profile">Profile</a>
+        </header>
 
-                <div className="headings">
-                    <h1 className="headings__main gloock-regular">ECHO</h1>
-                  
-                    <h5 className="headings_subtitle gloock-regular">Leave a Mark.</h5>
-                </div>
+        <div className="content">
+          <div className="scene">
+            <div className="group">
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/1.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/2.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/3.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/4.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/5.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/6.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/7.jpg)" }}></div>
+              </div>
+              <div className="card">
+                <div className="card__img" style={{ backgroundImage: "url(/8.jpg)" }}></div>
+              </div>
             </div>
-        </main>
+          </div>
+
+          <div className="headings">
+            <h1 className="headings__main gloock-regular">ECHO</h1>
+
+            <h5 className="headings_subtitle gloock-regular">Leave a Mark.</h5>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
