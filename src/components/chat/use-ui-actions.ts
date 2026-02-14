@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useChatContext, ProductFilters } from "@/components/providers/chat-provider";
+import { useCartStore } from "@/hooks/use-cart-store";
+import { dispatchAgentEvent } from "@/lib/agent-events";
 import { toast } from "sonner";
 
 interface UIActionArgs {
@@ -21,6 +23,21 @@ interface UIActionArgs {
   quantity?: number;
   duration?: number;
 
+  // navigateToPage
+  page?: "home" | "products" | "cart" | "checkout" | "orders" | "profile";
+
+  // fillCheckoutForm
+  fullName?: string;
+  phone?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+
+  // selectAddress
+  addressIndex?: number;
+
   // showRecommendations
   basedOn?: "past_activity" | "current_chat" | "trending" | "similar";
   productIds?: string[];
@@ -40,6 +57,7 @@ interface UIActionArgs {
 export function useUIActions() {
   const { updateFilters, clearFilters } = useChatContext();
   const router = useRouter();
+  const { addItem } = useCartStore();
 
   const executeUIAction = useCallback(
     (action: string, args: UIActionArgs) => {
@@ -58,10 +76,17 @@ export function useUIActions() {
                   ? order === "asc"
                     ? "name-asc"
                     : "name-desc"
-                  : undefined;
+                  : sortBy === "rating"
+                    ? order === "asc"
+                      ? "rating-asc"
+                      : "rating-desc"
+                    : sortBy === "reviews"
+                      ? "reviews-desc"
+                      : undefined;
 
             if (sortValue) {
               updateFilters({ sortBy: sortValue });
+              router.push("/products");
               toast.success(`Sorted by ${sortBy} (${order})`);
             }
           }
@@ -83,6 +108,7 @@ export function useUIActions() {
           if (search) filters.search = search;
 
           updateFilters(filters);
+          router.push("/products");
           toast.success("Filters applied");
           break;
         }
@@ -108,9 +134,24 @@ export function useUIActions() {
 
         case "showRecommendations": {
           const { basedOn, productIds } = args;
-          // This could trigger a state update to show recommendations
-          // For now, just log it
-          console.log("Show recommendations:", { basedOn, productIds });
+          // Apply sort filters based on recommendation type
+          // Products are shown inline in the chat as recommendation cards,
+          // so we update filters for the products page and navigate there
+          switch (basedOn) {
+            case "trending":
+              updateFilters({ sortBy: "newest" });
+              break;
+            case "past_activity":
+              // Sort by best rated — the AI already has the user's activity context
+              // and will search for products from their preferred categories
+              updateFilters({ sortBy: "rating-desc" });
+              break;
+            case "similar":
+            case "current_chat":
+            default:
+              break;
+          }
+          router.push("/products");
           toast.info(`Showing ${basedOn || "curated"} recommendations`);
           break;
         }
@@ -163,7 +204,7 @@ export function useUIActions() {
                 toast.success("Showing trending products");
                 break;
               case "best_rated":
-                updateFilters({ sortBy: "newest" }); // Would need rating sort
+                updateFilters({ sortBy: "rating-desc" });
                 toast.success("Showing best rated products");
                 break;
               case "new_arrivals":
@@ -171,6 +212,7 @@ export function useUIActions() {
                 toast.success("Showing new arrivals");
                 break;
             }
+            router.push("/products");
           }
           break;
         }
@@ -193,8 +235,7 @@ export function useUIActions() {
         case "addToCart": {
           const { productId, quantity = 1 } = args;
           if (productId) {
-            // This would integrate with your cart system
-            console.log("Add to cart:", { productId, quantity });
+            addItem(productId, quantity);
             toast.success(`Added ${quantity} item(s) to cart`);
           }
           break;
@@ -222,11 +263,69 @@ export function useUIActions() {
           break;
         }
 
+        case "navigateToPage": {
+          const { page } = args;
+          if (page) {
+            const pageMap: Record<string, string> = {
+              home: "/",
+              products: "/products",
+              cart: "/cart",
+              checkout: "/checkout",
+              orders: "/orders",
+              profile: "/profile",
+            };
+            const path = pageMap[page];
+            if (path) {
+              router.push(path);
+              toast.success(`Navigating to ${page}`);
+            }
+          }
+          break;
+        }
+
+        case "fillCheckoutForm": {
+          const { fullName, phone, line1, line2, city, state, postalCode } = args;
+          if (fullName && phone && line1 && city && postalCode) {
+            dispatchAgentEvent("agent:fillAddress", {
+              fullName,
+              phone,
+              line1,
+              line2: line2 || "",
+              city,
+              state: state || "",
+              postalCode,
+            });
+            toast.success("Filling address form...");
+          }
+          break;
+        }
+
+        case "selectAddress": {
+          const { addressIndex } = args;
+          if (addressIndex !== undefined && addressIndex >= 1) {
+            dispatchAgentEvent("agent:selectAddress", { addressIndex });
+            toast.success(`Selecting address #${addressIndex}`);
+          }
+          break;
+        }
+
+        case "proceedToPayment": {
+          dispatchAgentEvent("agent:proceedToPayment", {});
+          toast.success("Proceeding to payment...");
+          break;
+        }
+
+        case "submitAddress": {
+          dispatchAgentEvent("agent:submitAddress", {});
+          toast.success("Saving address...");
+          break;
+        }
+
         default:
           console.warn(`Unknown UI action: ${action}`);
       }
     },
-    [updateFilters, clearFilters, router]
+    [updateFilters, clearFilters, router, addItem]
   );
 
   return { executeUIAction };

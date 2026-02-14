@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCartStore } from "@/hooks/use-cart-store";
 import { useSession } from "@/lib/auth-client";
+import { onAgentEvent } from "@/lib/agent-events";
 import { queryKeys } from "@/services/query-keys";
 import {
     useAddresses,
@@ -95,6 +96,56 @@ export default function CheckoutPage() {
         });
     };
 
+    // Refs for agent event handlers to access latest state
+    const selectedAddressIdRef = useRef(selectedAddressId);
+    selectedAddressIdRef.current = selectedAddressId;
+    const addressFormRef = useRef(addressForm);
+    addressFormRef.current = addressForm;
+
+    // Stable handler refs
+    const handleCreateAddressRef = useRef(handleCreateAddress);
+    handleCreateAddressRef.current = handleCreateAddress;
+    const handleProceedRef = useRef(handleProceedToPayment);
+    handleProceedRef.current = handleProceedToPayment;
+
+    // ─── Agent event listeners ───────────────────────────────
+    useEffect(() => {
+        const cleanups = [
+            onAgentEvent("agent:fillAddress", (payload) => {
+                setShowAddressForm(true);
+                setAddressForm({
+                    fullName: payload.fullName || "",
+                    phone: payload.phone || "",
+                    line1: payload.line1 || "",
+                    line2: payload.line2 || "",
+                    city: payload.city || "",
+                    state: payload.state || "",
+                    postalCode: payload.postalCode || "",
+                });
+            }),
+            onAgentEvent("agent:selectAddress", (payload) => {
+                const addresses = addressQuery.data?.data ?? [];
+                const idx = payload.addressIndex - 1; // 1-based → 0-based
+                if (addresses[idx]) {
+                    setSelectedAddressId(addresses[idx].id);
+                }
+            }),
+            onAgentEvent("agent:submitAddress", () => {
+                // Small delay to let React state settle from fillAddress
+                setTimeout(() => {
+                    handleCreateAddressRef.current();
+                }, 300);
+            }),
+            onAgentEvent("agent:proceedToPayment", () => {
+                // Small delay to let address selection/creation settle
+                setTimeout(() => {
+                    handleProceedRef.current();
+                }, 500);
+            }),
+        ];
+        return () => cleanups.forEach((fn) => fn());
+    }, [addressQuery.data]);
+
     const handlePaymentSuccess = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.cart.all });
         queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
@@ -107,20 +158,22 @@ export default function CheckoutPage() {
     // ─── Guard: not signed in ────────────────────────────────
     if (!isAuthenticated) {
         return (
-            <div className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
-                <div className="rounded-2xl bg-muted/50 p-5">
-                    <Lock className="h-12 w-12 text-muted-foreground/40" />
+            <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+                <div className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
+                    <div className="bg-[#e8e5df] p-8 rounded-sm">
+                        <Lock className="h-12 w-12 text-[#1c1c1c]/40" />
+                    </div>
+                    <h2 className="font-gloock text-2xl text-[#1c1c1c]">Sign in to continue</h2>
+                    <p className="text-sm text-[#5c5c5c]">
+                        You need to be signed in to complete your purchase.
+                    </p>
+                    <Link
+                        href="/auth/sign-in"
+                        className="border border-[#1c1c1c] bg-[#1c1c1c] px-6 py-3 text-sm font-medium uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c]"
+                    >
+                        Sign In
+                    </Link>
                 </div>
-                <h2 className="text-lg font-bold text-foreground">Sign in to continue</h2>
-                <p className="text-sm text-muted-foreground">
-                    You need to be signed in to complete your purchase.
-                </p>
-                <Link
-                    href="/auth/sign-in"
-                    className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110"
-                >
-                    Sign In
-                </Link>
             </div>
         );
     }
@@ -128,20 +181,22 @@ export default function CheckoutPage() {
     // ─── Guard: empty cart ───────────────────────────────────
     if (!cartLoading && items.length === 0 && step === "address") {
         return (
-            <div className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
-                <div className="rounded-2xl bg-muted/50 p-5">
-                    <ShoppingBag className="h-12 w-12 text-muted-foreground/40" />
+            <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+                <div className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
+                    <div className="bg-[#e8e5df] p-8 rounded-sm">
+                        <ShoppingBag className="h-12 w-12 text-[#1c1c1c]/40" />
+                    </div>
+                    <h2 className="font-gloock text-2xl text-[#1c1c1c]">Your cart is empty</h2>
+                    <p className="text-sm text-[#5c5c5c]">
+                        Add items to your cart before checking out.
+                    </p>
+                    <Link
+                        href="/products"
+                        className="border border-[#1c1c1c] bg-[#1c1c1c] px-6 py-3 text-sm font-medium uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c]"
+                    >
+                        Browse Products
+                    </Link>
                 </div>
-                <h2 className="text-lg font-bold text-foreground">Your cart is empty</h2>
-                <p className="text-sm text-muted-foreground">
-                    Add items to your cart before checking out.
-                </p>
-                <Link
-                    href="/products"
-                    className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110"
-                >
-                    Browse Products
-                </Link>
             </div>
         );
     }
@@ -150,19 +205,19 @@ export default function CheckoutPage() {
     const StepIndicator = () => (
         <div className="mb-8 flex items-center justify-center gap-3">
             <div
-                className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${step === "address"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-primary/10 text-primary"
+                className={`flex items-center gap-2 px-4 py-1.5 text-xs font-medium uppercase tracking-widest transition-colors ${step === "address"
+                        ? "bg-[#1c1c1c] text-[#f2efe9]"
+                        : "bg-[#1c1c1c]/5 text-[#1c1c1c]"
                     }`}
             >
                 <MapPin className="h-3.5 w-3.5" />
                 Address
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4 text-[#5c5c5c]" />
             <div
-                className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${step === "payment"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
+                className={`flex items-center gap-2 px-4 py-1.5 text-xs font-medium uppercase tracking-widest transition-colors ${step === "payment"
+                        ? "bg-[#1c1c1c] text-[#f2efe9]"
+                        : "bg-[#e8e5df] text-[#5c5c5c]"
                     }`}
             >
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -174,33 +229,35 @@ export default function CheckoutPage() {
     // ─── Payment step ────────────────────────────────────────
     if (step === "payment" && paymentData) {
         return (
-            <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
-                <StepIndicator />
-                <div className="mb-6">
-                    <button
-                        onClick={() => setStep("address")}
-                        className="mb-4 flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                        <ArrowLeft className="h-3.5 w-3.5" />
-                        Back to address
-                    </button>
-                    <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-                        Payment
-                    </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Order #{paymentData.orderId.slice(0, 8)}… •{" "}
-                        <span className="font-semibold text-foreground">
-                            Rs.{paymentData.total.toLocaleString()}
-                        </span>
-                    </p>
+            <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+                <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
+                    <StepIndicator />
+                    <div className="mb-6">
+                        <button
+                            onClick={() => setStep("address")}
+                            className="mb-4 flex items-center gap-1.5 text-sm font-medium uppercase tracking-widest text-[#5c5c5c] transition-colors hover:text-[#1c1c1c]"
+                        >
+                            <ArrowLeft className="h-3.5 w-3.5" />
+                            Back to address
+                        </button>
+                        <h1 className="font-gloock text-2xl text-[#1c1c1c]">
+                            Payment
+                        </h1>
+                        <p className="mt-1 text-sm text-[#5c5c5c]">
+                            Order #{paymentData.orderId.slice(0, 8)}… •{" "}
+                            <span className="font-semibold text-[#1c1c1c]">
+                                Rs.{paymentData.total.toLocaleString()}
+                            </span>
+                        </p>
+                    </div>
+                    <CheckoutForm
+                        clientSecret={paymentData.clientSecret}
+                        orderId={paymentData.orderId}
+                        totalAmount={paymentData.total}
+                        onSuccess={handlePaymentSuccess}
+                        onCancel={() => setStep("address")}
+                    />
                 </div>
-                <CheckoutForm
-                    clientSecret={paymentData.clientSecret}
-                    orderId={paymentData.orderId}
-                    totalAmount={paymentData.total}
-                    onSuccess={handlePaymentSuccess}
-                    onCancel={() => setStep("address")}
-                />
             </div>
         );
     }
@@ -209,32 +266,33 @@ export default function CheckoutPage() {
     const addresses = addressQuery.data?.data ?? [];
 
     return (
-        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-            <StepIndicator />
+        <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+            <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+                <StepIndicator />
 
-            <div className="mb-8 flex items-center gap-4">
-                <Link
-                    href="/cart"
-                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-border transition-colors hover:bg-muted"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Link>
-                <div>
-                    <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-                        Shipping Address
-                    </h1>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                        Where should we deliver your order?
-                    </p>
+                <div className="mb-8 flex items-center gap-4">
+                    <Link
+                        href="/cart"
+                        className="flex h-10 w-10 items-center justify-center border border-[#1c1c1c]/20 transition-colors hover:bg-[#e8e5df]"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </Link>
+                    <div>
+                        <h1 className="font-gloock text-2xl text-[#1c1c1c]">
+                            Shipping Address
+                        </h1>
+                        <p className="mt-0.5 text-sm text-[#5c5c5c]">
+                            Where should we deliver your order?
+                        </p>
+                    </div>
                 </div>
-            </div>
 
             {/* Order summary mini */}
-            <div className="mb-6 flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
-                <span className="text-sm text-muted-foreground">
+            <div className="mb-6 flex items-center justify-between border border-[#1c1c1c]/10 bg-[#e8e5df] px-4 py-3">
+                <span className="text-sm text-[#5c5c5c]">
                     {itemCount} {itemCount === 1 ? "item" : "items"}
                 </span>
-                <span className="text-base font-bold text-foreground">
+                <span className="font-gloock text-base text-[#1c1c1c]">
                     Rs.{total.toLocaleString()}
                 </span>
             </div>
@@ -243,39 +301,39 @@ export default function CheckoutPage() {
             <div className="space-y-3">
                 {addressQuery.isLoading ? (
                     <div className="flex justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#5c5c5c]" />
                     </div>
                 ) : (
                     addresses.map((addr) => (
                         <button
                             key={addr.id}
                             onClick={() => setSelectedAddressId(addr.id)}
-                            className={`w-full rounded-xl border p-4 text-left transition-all ${selectedAddressId === addr.id
-                                    ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                                    : "border-border hover:border-primary/40 hover:bg-muted/30"
+                            className={`w-full border p-4 text-left transition-all ${selectedAddressId === addr.id
+                                    ? "border-[#1c1c1c] bg-[#1c1c1c]/5"
+                                    : "border-[#1c1c1c]/10 hover:border-[#1c1c1c]/40 hover:bg-[#e8e5df]"
                                 }`}
                         >
                             <div className="flex items-start gap-3">
                                 <div
-                                    className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors ${selectedAddressId === addr.id
-                                            ? "border-primary bg-primary"
-                                            : "border-muted-foreground/30"
+                                    className={`mt-0.5 flex h-5 w-5 items-center justify-center border-2 transition-colors ${selectedAddressId === addr.id
+                                            ? "border-[#1c1c1c] bg-[#1c1c1c]"
+                                            : "border-[#5c5c5c]/30"
                                         }`}
                                 >
                                     {selectedAddressId === addr.id && (
-                                        <div className="h-2 w-2 rounded-full bg-white" />
+                                        <div className="h-2 w-2 bg-[#f2efe9]" />
                                     )}
                                 </div>
                                 <div>
-                                    <p className="text-sm font-semibold text-foreground">
+                                    <p className="text-sm font-semibold text-[#1c1c1c]">
                                         {addr.fullName}
                                     </p>
-                                    <p className="mt-0.5 text-sm text-muted-foreground">
+                                    <p className="mt-0.5 text-sm text-[#5c5c5c]">
                                         {addr.line1}
                                         {addr.line2 ? `, ${addr.line2}` : ""}, {addr.city}
                                         {addr.state ? `, ${addr.state}` : ""} {addr.postalCode}
                                     </p>
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
+                                    <p className="mt-0.5 text-xs text-[#5c5c5c]">
                                         📞 {addr.phone}
                                     </p>
                                 </div>
@@ -288,7 +346,7 @@ export default function CheckoutPage() {
                 {!showAddressForm && (
                     <button
                         onClick={() => setShowAddressForm(true)}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border py-4 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        className="flex w-full items-center justify-center gap-2 border border-dashed border-[#1c1c1c]/20 py-4 text-sm font-medium uppercase tracking-widest text-[#5c5c5c] transition-colors hover:border-[#1c1c1c] hover:text-[#1c1c1c]"
                     >
                         <PlusCircle className="h-4 w-4" />
                         Add New Address
@@ -297,8 +355,8 @@ export default function CheckoutPage() {
 
                 {/* Address form */}
                 {showAddressForm && (
-                    <div className="space-y-3 rounded-xl border border-border bg-card p-5">
-                        <h3 className="text-sm font-semibold text-foreground">
+                    <div className="space-y-3 border border-[#1c1c1c]/10 bg-[#e8e5df] p-5">
+                        <h3 className="text-sm font-semibold uppercase tracking-widest text-[#1c1c1c]">
                             New Address
                         </h3>
                         <div className="grid gap-3 sm:grid-cols-2">
@@ -308,7 +366,7 @@ export default function CheckoutPage() {
                                 onChange={(e) =>
                                     setAddressForm({ ...addressForm, fullName: e.target.value })
                                 }
-                                className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className="border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                             />
                             <input
                                 placeholder="Phone *"
@@ -316,7 +374,7 @@ export default function CheckoutPage() {
                                 onChange={(e) =>
                                     setAddressForm({ ...addressForm, phone: e.target.value })
                                 }
-                                className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className="border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                             />
                         </div>
                         <input
@@ -325,7 +383,7 @@ export default function CheckoutPage() {
                             onChange={(e) =>
                                 setAddressForm({ ...addressForm, line1: e.target.value })
                             }
-                            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                            className="w-full border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                         />
                         <input
                             placeholder="Address Line 2 (optional)"
@@ -333,7 +391,7 @@ export default function CheckoutPage() {
                             onChange={(e) =>
                                 setAddressForm({ ...addressForm, line2: e.target.value })
                             }
-                            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                            className="w-full border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                         />
                         <div className="grid gap-3 sm:grid-cols-3">
                             <input
@@ -342,7 +400,7 @@ export default function CheckoutPage() {
                                 onChange={(e) =>
                                     setAddressForm({ ...addressForm, city: e.target.value })
                                 }
-                                className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className="border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                             />
                             <input
                                 placeholder="State"
@@ -350,7 +408,7 @@ export default function CheckoutPage() {
                                 onChange={(e) =>
                                     setAddressForm({ ...addressForm, state: e.target.value })
                                 }
-                                className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className="border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                             />
                             <input
                                 placeholder="Postal Code *"
@@ -361,13 +419,13 @@ export default function CheckoutPage() {
                                         postalCode: e.target.value,
                                     })
                                 }
-                                className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className="border border-[#1c1c1c]/20 bg-[#f2efe9] px-3 py-2.5 text-sm outline-none transition-colors focus:border-[#1c1c1c]"
                             />
                         </div>
                         <div className="flex gap-2 pt-1">
                             <button
                                 onClick={() => setShowAddressForm(false)}
-                                className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                                className="border border-[#1c1c1c]/20 px-4 py-2 text-sm font-medium uppercase tracking-widest transition-colors hover:bg-[#f2efe9]"
                             >
                                 Cancel
                             </button>
@@ -381,7 +439,7 @@ export default function CheckoutPage() {
                                     !addressForm.city ||
                                     !addressForm.postalCode
                                 }
-                                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-50"
+                                className="flex items-center gap-2 border border-[#1c1c1c] bg-[#1c1c1c] px-4 py-2 text-sm font-medium uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c] disabled:opacity-50"
                             >
                                 {createAddressMutation.isPending && (
                                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -394,11 +452,11 @@ export default function CheckoutPage() {
             </div>
 
             {/* Continue to payment */}
-            <div className="mt-8 border-t border-border pt-6">
+            <div className="mt-8 border-t border-[#1c1c1c]/10 pt-6">
                 <button
                     onClick={handleProceedToPayment}
                     disabled={!selectedAddressId || initCheckoutMutation.isPending}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-110 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 border border-[#1c1c1c] bg-[#1c1c1c] px-4 py-3.5 text-sm font-medium uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
                 >
                     {initCheckoutMutation.isPending ? (
                         <>
@@ -413,13 +471,13 @@ export default function CheckoutPage() {
                     )}
                 </button>
                 {initCheckoutMutation.isError && (
-                    <p className="mt-2 text-center text-sm text-destructive">
+                    <p className="mt-2 text-center text-sm text-red-600">
                         {initCheckoutMutation.error.message}
                     </p>
                 )}
 
                 {/* Trust badges */}
-                <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                <div className="mt-4 flex items-center justify-center gap-4 text-xs text-[#5c5c5c]">
                     <span className="flex items-center gap-1">
                         <Lock className="h-3 w-3" /> Encrypted
                     </span>
@@ -428,6 +486,7 @@ export default function CheckoutPage() {
                     </span>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

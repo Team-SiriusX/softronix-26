@@ -1,4 +1,6 @@
 import { upstash_index } from "@/lib/vector";
+import db from "@/lib/db";
+import { getProductById } from "@/lib/product-loader";
 import type { Message } from "@openrouter/sdk/models";
 import { systemPrompt } from "./config";
 import { sendOpenRouterChat } from "./openrouter-client";
@@ -6,6 +8,85 @@ import { buildFallbackClerkResponse } from "./response-formatters";
 import { executeFunctions } from "./tool-executor";
 import type { ChatbotProduct, ClerkRpcCall, ClerkResponse, ConversationMessage } from "./types";
 import { normalizeAssistantContent, parseToolArguments } from "./utils";
+
+/**
+ * Build a context string describing the user's past activity:
+ * - Current cart items
+ * - Recent order history (last 5 orders)
+ */
+async function buildUserActivityContext(userId: string): Promise<string> {
+  let activityContext = "\n\nUser Past Activity & Preferences:\n";
+  let hasData = false;
+
+  try {
+    // Fetch current cart items
+    const cartItems = await db.cartItem.findMany({
+      where: { cart: { userId } },
+      select: { productId: true, quantity: true },
+    });
+
+    if (cartItems.length > 0) {
+      hasData = true;
+      activityContext += "Current Cart:\n";
+      for (const item of cartItems) {
+        const product = getProductById(item.productId);
+        if (product) {
+          activityContext += `- ${product.name} (x${item.quantity}) — ${product.price.formatted}, Category: ${product.category.join(", ")}\n`;
+        }
+      }
+      activityContext += "\n";
+    }
+
+    // Fetch recent orders (last 5)
+    const recentOrders = await db.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: {
+        items: { select: { productId: true, quantity: true, priceSnapshot: true } },
+      },
+    });
+
+    if (recentOrders.length > 0) {
+      hasData = true;
+      activityContext += "Recent Order History:\n";
+      for (const order of recentOrders) {
+        const itemNames = order.items
+          .map((item) => {
+            const product = getProductById(item.productId);
+            return product ? `${product.name} (x${item.quantity})` : `Product ${item.productId} (x${item.quantity})`;
+          })
+          .join(", ");
+        activityContext += `- Order ${order.id.slice(-6)} (${order.status}): ${itemNames}\n`;
+      }
+      activityContext += "\n";
+
+      // Extract categories the user tends to buy
+      const purchasedCategories = new Set<string>();
+      for (const order of recentOrders) {
+        for (const item of order.items) {
+          const product = getProductById(item.productId);
+          if (product) {
+            product.category.forEach((c) => purchasedCategories.add(c));
+          }
+        }
+      }
+      if (purchasedCategories.size > 0) {
+        activityContext += `Preferred Categories: ${Array.from(purchasedCategories).join(", ")}\n`;
+      }
+    }
+  } catch (error) {
+    console.error("Error building user activity context:", error);
+  }
+
+  if (!hasData) {
+    activityContext += "No previous orders or cart items found. This may be a new customer.\n";
+  }
+
+  activityContext += "\nUse this activity data to personalize product recommendations. When asked for recommendations based on past activity, suggest products from similar categories or complementary items to what the user has purchased or has in their cart.\n";
+
+  return activityContext;
+}
 
 // Main chat function using OpenRouter SDK with RAG and Tool Calling
 export async function chatWithClerk(userMessage: string, conversationHistory: ConversationMessage[], userId?: string | null): Promise<ClerkResponse> {
@@ -41,7 +122,11 @@ export async function chatWithClerk(userMessage: string, conversationHistory: Co
     const authContext = userId
       ? "\n\nUser Authentication: The user IS logged in. You may generate coupons for them."
       : "\n\nUser Authentication: The user is NOT logged in. Do NOT attempt to generate coupons. If the user asks for a discount or coupon, politely tell them they need to sign in first to receive discounts, and let them know you'll help them get a great deal once they're logged in.";
-    const enhancedSystemPrompt = systemPrompt + authContext + contextualInfo;
+
+    // Build user activity context (cart + order history) for personalized recommendations
+    const userActivityContext = userId ? await buildUserActivityContext(userId) : "";
+
+    const enhancedSystemPrompt = systemPrompt + authContext + userActivityContext + contextualInfo;
 
     // Prepare messages for the API call
     const historyMessages = conversationHistory.reduce<Message[]>((accumulator, msg) => {

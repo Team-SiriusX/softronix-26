@@ -73,13 +73,13 @@ export type Store = {
 
 export const store: Store = {
     "store_info": {
-        "name": "Dari Mooch",
+        "name": "Echo",
         "website": "https://www.darimooch.com",
         "description": "Pakistan's #1 Men's Grooming Brand",
         "tagline": "Shop the finest men's grooming essentials in Pakistan",
         "about": "Pakistan's first beard grooming and care products company, founded by two bearded buddies who wanted to solve age-old problems faced by men when growing facial hair",
         "contact": {
-            "email": "support@darimooch.com",
+            "email": "support@echo.com",
             "phone": "+92 316 1115556"
         },
         "social_media": {
@@ -114,7 +114,7 @@ export const store: Store = {
         {
             "id": "hair-color-cream",
             "name": "Hair Color Cream",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1199,
                 "currency": "PKR",
@@ -126,7 +126,7 @@ export const store: Store = {
                 "New Launch"
             ],
             "url": "https://www.darimooch.com/products/hair-color-cream",
-            "description": "Dari Mooch's first-ever hair color enriched with Ginseng Extract, combining rich dark brown color with advanced hair care. Delivers natural, lasting dark brown color in just 5 minutes.",
+            "description": "Echo's first-ever hair color enriched with Ginseng Extract, combining rich dark brown color with advanced hair care. Delivers natural, lasting dark brown color in just 5 minutes.",
             "key_features": [
                 "Full grey coverage in 5 minutes",
                 "No-drip formula",
@@ -156,7 +156,7 @@ export const store: Store = {
             "reviews": {
                 "count": 0,
                 "average_rating": null,
-                "summary": "New product - no customer reviews yet. First-ever hair color from Dari Mooch designed specifically for men seeking quick grey coverage with hair nourishment."
+                "summary": "New product - no customer reviews yet. First-ever hair color from Echo designed specifically for men seeking quick grey coverage with hair nourishment."
             },
             "images": [
                 "https://www.darimooch.com/cdn/shop/files/2_1.webp",
@@ -171,7 +171,7 @@ export const store: Store = {
         {
             "id": "surge-perfume",
             "name": "Surge Perfume",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 2999,
                 "currency": "PKR",
@@ -201,7 +201,7 @@ export const store: Store = {
         {
             "id": "glow-face-wash",
             "name": "Glow Face Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 899,
                 "currency": "PKR",
@@ -230,7 +230,7 @@ export const store: Store = {
         {
             "id": "glow-body-wash",
             "name": "Glow Body Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 799,
                 "currency": "PKR",
@@ -259,7 +259,7 @@ export const store: Store = {
         {
             "id": "glow-bundle",
             "name": "Glow Bundle",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1528,
                 "original": 1698,
@@ -294,7 +294,7 @@ export const store: Store = {
         {
             "id": "de-tan-sunscreen-spf-50",
             "name": "De-Tan Sunscreen SPF 50+",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1199,
                 "currency": "PKR",
@@ -324,7 +324,7 @@ export const store: Store = {
         {
             "id": "lip-lightener-balm",
             "name": "Lip Lightener Balm",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -351,7 +351,7 @@ export const store: Store = {
         {
             "id": "lip-balm",
             "name": "Lip Balm",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 499,
                 "currency": "PKR",
@@ -378,7 +378,7 @@ export const store: Store = {
         {
             "id": "under-eye-balm",
             "name": "Under Eye Balm",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -405,7 +405,7 @@ export const store: Store = {
         {
             "id": "de-tan-face-wash",
             "name": "De-Tan Face Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 899,
                 "currency": "PKR",
@@ -434,7 +434,7 @@ export const store: Store = {
         {
             "id": "anti-hairfall-bundle",
             "name": "Anti-Hairfall Bundle | Complete Hair Loss Solution",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1978,
                 "original": 2198,
@@ -475,7 +475,7 @@ export const store: Store = {
         {
             "id": "ultimate-skin-hair-bundle",
             "name": "Ultimate Skin and Hair Care Bundle",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 3299,
                 "original": 3696,
@@ -504,7 +504,7 @@ export const store: Store = {
         {
             "id": "anti-hairfall-oil",
             "name": "Anti-Hairfall Oil",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1499,
                 "currency": "PKR",
@@ -539,7 +539,7 @@ export const store: Store = {
         {
             "id": "hair-clay-wax",
             "name": "Hair Clay Wax",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1199,
                 "currency": "PKR",
@@ -577,7 +577,7 @@ export const store: Store = {
         {
             "id": "hair-wax",
             "name": "Hair Wax",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1199,
                 "currency": "PKR",
@@ -616,7 +616,7 @@ export const store: Store = {
         {
             "id": "hair-clay-wax-hair-wax",
             "name": "Hair Clay Wax + Hair Wax",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1999,
                 "original": 2398,
@@ -650,7 +650,7 @@ export const store: Store = {
         {
             "id": "glow-bundle-hair-clay-wax",
             "name": "Glow Bundle + Hair Clay Wax",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 2549,
                 "original": 2897,
@@ -684,7 +684,7 @@ export const store: Store = {
         {
             "id": "beard-growth-kit",
             "name": "Beard Growth Kit",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 3799,
                 "original": 4097,
@@ -726,7 +726,7 @@ export const store: Store = {
         {
             "id": "beard-growth-oil",
             "name": "Beard Growth Oil",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1499,
                 "currency": "PKR",
@@ -763,7 +763,7 @@ export const store: Store = {
         {
             "id": "beard-growth-biotin-spray",
             "name": "Beard Growth Biotin Spray",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1499,
                 "currency": "PKR",
@@ -800,7 +800,7 @@ export const store: Store = {
         {
             "id": "beard-growth-shampoo",
             "name": "Beard Growth Shampoo",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 1099,
                 "currency": "PKR",
@@ -837,7 +837,7 @@ export const store: Store = {
         {
             "id": "beard-shampoo",
             "name": "Beard Shampoo",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -865,7 +865,7 @@ export const store: Store = {
         {
             "id": "beard-brush",
             "name": "Beard Brush",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 899,
                 "currency": "PKR",
@@ -900,7 +900,7 @@ export const store: Store = {
         {
             "id": "moustache-wax",
             "name": "Moustache Wax",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -928,7 +928,7 @@ export const store: Store = {
         {
             "id": "beard-balm",
             "name": "Beard Balm",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -962,7 +962,7 @@ export const store: Store = {
         {
             "id": "de-tan-body-wash",
             "name": "De-Tan Body Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 899,
                 "currency": "PKR",
@@ -999,7 +999,7 @@ export const store: Store = {
         {
             "id": "charcoal-body-wash",
             "name": "Charcoal Body Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 699,
                 "currency": "PKR",
@@ -1036,7 +1036,7 @@ export const store: Store = {
         {
             "id": "cocoa-butter-beard-conditioner",
             "name": "Cocoa Butter Beard Conditioner",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 799,
                 "currency": "PKR",
@@ -1067,7 +1067,7 @@ export const store: Store = {
         {
             "id": "urban-beard-oil",
             "name": "Urban Beard Oil",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -1105,7 +1105,7 @@ export const store: Store = {
         {
             "id": "oud-wood-beard-oil",
             "name": "Oud Wood Beard Oil",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 999,
                 "currency": "PKR",
@@ -1134,7 +1134,7 @@ export const store: Store = {
         {
             "id": "charcoal-facewash",
             "name": "Charcoal Face Wash",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 799,
                 "currency": "PKR",
@@ -1165,7 +1165,7 @@ export const store: Store = {
         {
             "id": "charcoal-face-scrub",
             "name": "Charcoal Face Scrub",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 799,
                 "currency": "PKR",
@@ -1202,7 +1202,7 @@ export const store: Store = {
         {
             "id": "anti-hairfall-shampoo",
             "name": "Anti-Hairfall Shampoo",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 699,
                 "currency": "PKR",
@@ -1236,7 +1236,7 @@ export const store: Store = {
         {
             "id": "keratin-smooth-shampoo",
             "name": "Keratin Smooth Shampoo",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 699,
                 "currency": "PKR",
@@ -1273,7 +1273,7 @@ export const store: Store = {
         {
             "id": "2in1-shampoo-conditioner",
             "name": "2-in-1 Shampoo + Conditioner",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 699,
                 "currency": "PKR",
@@ -1307,7 +1307,7 @@ export const store: Store = {
         {
             "id": "bamboo-toothbrush",
             "name": "Bamboo Toothbrush",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 350,
                 "currency": "PKR",
@@ -1339,7 +1339,7 @@ export const store: Store = {
         {
             "id": "anti-dandruff-shampoo",
             "name": "Anti-Dandruff Shampoo – Clear Scalp & Healthy Hair",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 699,
                 "currency": "PKR",
@@ -1374,7 +1374,7 @@ export const store: Store = {
         {
             "id": "hair-thickening-shampoo",
             "name": "Hair Thickening Shampoo",
-            "brand": "Dari Mooch",
+            "brand": "Echo",
             "price": {
                 "current": 799,
                 "currency": "PKR",

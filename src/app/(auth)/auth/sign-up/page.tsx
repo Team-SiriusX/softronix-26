@@ -24,19 +24,16 @@ export default function SignUp() {
 
 	return (
 		<div className="relative w-full max-w-lg">
-			{/* Glassmorphic Card */}
-			<div className="relative rounded-2xl border border-neutral-800 bg-black/40 p-8 shadow-2xl backdrop-blur-xl">
-				{/* Gradient Border Effect */}
-				<div className="absolute -inset-px rounded-2xl bg-linear-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-100" />
-
+			{/* Beige Card */}
+			<div className="relative border border-[#1c1c1c]/10 bg-[#f7f4f0] p-8 shadow-xl">
 				<div className="relative space-y-6">
 					{/* Header */}
 					<div className="space-y-2 text-center">
-						<h1 className="bg-linear-to-b from-neutral-50 to-neutral-400 bg-clip-text text-3xl font-bold text-transparent">
+						<h1 className="font-gloock text-3xl text-[#1c1c1c]">
 							Create Account
 						</h1>
-						<p className="text-sm text-neutral-400">
-							Join the campus job marketplace today
+						<p className="text-sm text-[#5c5c5c]">
+							Join us for premium grooming products
 						</p>
 					</div>
 
@@ -45,7 +42,7 @@ export default function SignUp() {
 						{/* Name Fields */}
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="first-name" className="text-neutral-300">
+								<Label htmlFor="first-name" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
 									First name
 								</Label>
 								<Input
@@ -54,11 +51,11 @@ export default function SignUp() {
 									required
 									onChange={(e) => setFirstName(e.target.value)}
 									value={firstName}
-									className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+									className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
 								/>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="last-name" className="text-neutral-300">
+								<Label htmlFor="last-name" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
 									Last name
 								</Label>
 								<Input
@@ -67,14 +64,14 @@ export default function SignUp() {
 									required
 									onChange={(e) => setLastName(e.target.value)}
 									value={lastName}
-									className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+									className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
 								/>
 							</div>
 						</div>
 
 						{/* Email */}
 						<div className="space-y-2">
-							<Label htmlFor="email" className="text-neutral-300">
+							<Label htmlFor="email" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
 								Email
 							</Label>
 							<Input
@@ -84,13 +81,13 @@ export default function SignUp() {
 								required
 								onChange={(e) => setEmail(e.target.value)}
 								value={email}
-								className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+								className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
 							/>
 						</div>
 
 						{/* Password */}
 						<div className="space-y-2">
-							<Label htmlFor="password" className="text-neutral-300">
+							<Label htmlFor="password" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
 								Password
 							</Label>
 							<Input
@@ -100,13 +97,13 @@ export default function SignUp() {
 								onChange={(e) => setPassword(e.target.value)}
 								autoComplete="new-password"
 								placeholder="••••••••"
-								className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+								className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
 							/>
 						</div>
 
 						{/* Confirm Password */}
 						<div className="space-y-2">
-							<Label htmlFor="password_confirmation" className="text-neutral-300">
+							<Label htmlFor="password_confirmation" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
 								Confirm Password
 							</Label>
 							<Input
@@ -116,19 +113,19 @@ export default function SignUp() {
 								onChange={(e) => setPasswordConfirmation(e.target.value)}
 								autoComplete="new-password"
 								placeholder="••••••••"
-								className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+								className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
 							/>
 						</div>
 
 						{/* Profile Image */}
 						<div className="space-y-2">
-							<Label htmlFor="image" className="text-neutral-300">
-								Profile Image <span className="text-neutral-500">(optional)</span>
+							<Label htmlFor="image" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
+								Profile Image <span className="text-[#5c5c5c]">(optional)</span>
 							</Label>
 							<div className="flex items-center gap-4">
 								{/* Image Preview */}
 								{imageUrl ? (
-									<div className="relative h-20 w-20 overflow-hidden rounded-lg border border-neutral-700">
+									<div className="relative h-20 w-20 overflow-hidden border border-[#1c1c1c]/20">
 										<Image
 											src={imageUrl}
 											alt="Profile preview"
@@ -139,14 +136,14 @@ export default function SignUp() {
 											onClick={() => {
 												setImageUrl(null);
 											}}
-											className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white transition-colors hover:bg-black/80"
+											className="absolute right-1 top-1 bg-[#1c1c1c]/80 p-1 text-[#f2efe9] transition-colors hover:bg-[#1c1c1c]"
 										>
 											<X size={14} />
 										</button>
 									</div>
 								) : (
-									<div className="flex h-20 w-20 items-center justify-center rounded-lg border border-dashed border-neutral-700 bg-neutral-900/30">
-										<Upload size={24} className="text-neutral-500" />
+									<div className="flex h-20 w-20 items-center justify-center border border-dashed border-[#1c1c1c]/20 bg-[#e8e5df]">
+										<Upload size={24} className="text-[#5c5c5c]" />
 									</div>
 								)}
 
@@ -165,7 +162,7 @@ export default function SignUp() {
 										}}
 										appearance={{
 											button:
-												"ut-ready:bg-blue-500/10 ut-uploading:cursor-not-allowed ut-uploading:bg-blue-500/50 bg-blue-500/10 text-blue-400 px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-500/20 transition-colors w-full border border-neutral-700",
+													"ut-ready:bg-[#1c1c1c]/10 ut-uploading:cursor-not-allowed ut-uploading:bg-[#1c1c1c]/50 bg-[#1c1c1c]/10 text-[#1c1c1c] px-4 py-2 text-sm font-medium uppercase tracking-widest hover:bg-[#1c1c1c]/20 transition-colors w-full border border-[#1c1c1c]/20",
 											container: "w-full",
 											allowedContent: "hidden",
 										}}
@@ -184,7 +181,7 @@ export default function SignUp() {
 						{/* Create Account Button */}
 						<Button
 							type="submit"
-							className="w-full bg-linear-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:from-blue-500 hover:to-blue-400"
+							className="w-full border border-[#1c1c1c] bg-[#1c1c1c] text-[#f2efe9] shadow-lg font-medium uppercase tracking-widest transition-all hover:bg-transparent hover:text-[#1c1c1c]"
 							disabled={loading}
 							onClick={async () => {
 								await signUp.email({
@@ -221,10 +218,10 @@ export default function SignUp() {
 						{/* Divider */}
 						<div className="relative">
 							<div className="absolute inset-0 flex items-center">
-								<span className="w-full border-t border-neutral-800" />
+								<span className="w-full border-t border-[#1c1c1c]/10" />
 							</div>
-							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-black/40 px-2 text-neutral-500">
+							<div className="relative flex justify-center text-xs uppercase tracking-widest">
+								<span className="bg-[#f7f4f0] px-2 text-[#5c5c5c]">
 									Or continue with
 								</span>
 							</div>
@@ -235,7 +232,7 @@ export default function SignUp() {
 							<Button
 								variant="outline"
 								disabled={loading}
-								className="border-neutral-700 bg-neutral-900/50 text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-800/50 hover:text-white"
+								className="border-[#1c1c1c]/20 bg-transparent text-[#1c1c1c] transition-colors hover:border-[#1c1c1c] hover:bg-[#e8e5df]"
 								onClick={async () => {
 									await signIn.social(
 										{
@@ -272,7 +269,7 @@ export default function SignUp() {
 							<Button
 								variant="outline"
 								disabled={loading}
-								className="border-neutral-700 bg-neutral-900/50 text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-800/50 hover:text-white"
+								className="border-[#1c1c1c]/20 bg-transparent text-[#1c1c1c] transition-colors hover:border-[#1c1c1c] hover:bg-[#e8e5df]"
 								onClick={async () => {
 									await signIn.social(
 										{
@@ -314,11 +311,11 @@ export default function SignUp() {
 					</div>
 
 					{/* Footer */}
-					<div className="pt-4 text-center text-sm text-neutral-400">
+					<div className="pt-4 text-center text-sm text-[#5c5c5c]">
 						Already have an account?{" "}
 						<Link
 							href="/auth/sign-in"
-							className="font-medium text-blue-400 transition-colors hover:text-blue-300"
+							className="font-medium text-[#1c1c1c] transition-colors hover:underline"
 						>
 							Sign in
 						</Link>

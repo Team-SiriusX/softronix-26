@@ -7,7 +7,7 @@ export interface ProductFilterOptions {
   minPrice?: number;
   maxPrice?: number;
   search?: string;
-  sortBy?: "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest";
+  sortBy?: "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest" | "rating-desc" | "rating-asc" | "reviews-desc";
   tags?: string[];
 }
 
@@ -71,6 +71,15 @@ export function getProducts(options?: ProductFilterOptions): Product[] {
       case "newest":
         // Assuming products are already in newest-first order, or reverse if needed
         products.reverse();
+        break;
+      case "rating-desc":
+        products.sort((a, b) => (b.reviews.average_rating ?? 0) - (a.reviews.average_rating ?? 0));
+        break;
+      case "rating-asc":
+        products.sort((a, b) => (a.reviews.average_rating ?? 0) - (b.reviews.average_rating ?? 0));
+        break;
+      case "reviews-desc":
+        products.sort((a, b) => (b.reviews.count ?? 0) - (a.reviews.count ?? 0));
         break;
     }
   }

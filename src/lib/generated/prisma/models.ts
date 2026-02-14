@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Conversation'
+export type * from './models/DirectMessage'
 export type * from './models/Session'
 export type * from './models/Account'
 export type * from './models/Verification'

@@ -14,23 +14,51 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  role          UserRole  @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  role          UserRole       @default(USER)
   sessions      Session[]
   accounts      Account[]
   cart          Cart?
   orders        Order[]
   coupons       Coupon[]
   addresses     Address[]
+  conversations Conversation[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Conversation {
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    ConversationStatus @default(OPEN)
+  messages  DirectMessage[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("conversation")
+}
+
+model DirectMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  senderRole     UserRole
+  content        String
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@map("direct_message")
 }
 
 model Session {
@@ -194,6 +222,11 @@ model Coupon {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum ConversationStatus {
+  OPEN
+  CLOSED
 }
 
 enum OrderStatus {

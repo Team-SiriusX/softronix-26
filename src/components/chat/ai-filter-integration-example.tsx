@@ -95,12 +95,15 @@ export function useAIFilterIntegration() {
     }
 
     if (appliedFilters.sortBy) {
-      const sortDescriptions = {
+      const sortDescriptions: Record<string, string> = {
         "price-asc": "sorted by lowest price first",
         "price-desc": "sorted by highest price first",
         "name-asc": "sorted alphabetically",
         "name-desc": "sorted reverse alphabetically",
-        "newest": "sorted by newest arrivals"
+        "newest": "sorted by newest arrivals",
+        "rating-desc": "sorted by highest rated",
+        "rating-asc": "sorted by lowest rated",
+        "reviews-desc": "sorted by most reviewed"
       };
       parts.push(sortDescriptions[appliedFilters.sortBy]);
     }

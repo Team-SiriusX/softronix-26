@@ -28,20 +28,24 @@ export default function ProfilePage() {
 
     if (session.isPending) {
         return (
-            <div className="flex min-h-[60vh] items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+                <div className="flex min-h-[60vh] items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-[#5c5c5c]" />
+                </div>
             </div>
         );
     }
 
     if (!user) {
         return (
-            <div className="mx-auto max-w-lg px-4 py-24 text-center">
-                <User className="mx-auto h-16 w-16 text-muted-foreground/30" />
-                <h2 className="mt-4 text-lg font-bold text-foreground">Sign in to view profile</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                    You need to be signed in to access your profile.
-                </p>
+            <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+                <div className="mx-auto max-w-lg px-4 py-24 text-center">
+                    <User className="mx-auto h-16 w-16 text-[#1c1c1c]/20" />
+                    <h2 className="mt-4 font-gloock text-2xl text-[#1c1c1c]">Sign in to view profile</h2>
+                    <p className="mt-1 text-sm text-[#5c5c5c]">
+                        You need to be signed in to access your profile.
+                    </p>
+                </div>
             </div>
         );
     }
@@ -73,30 +77,31 @@ export default function ProfilePage() {
     });
 
     return (
-        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-            {/* Header */}
-            <div className="mb-8 flex items-center gap-4">
-                <Link
-                    href="/products"
-                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-border transition-colors hover:bg-muted"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                </Link>
-                <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-                    My Profile
-                </h1>
-            </div>
+        <div className="min-h-screen bg-[#f2efe9] selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+            <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+                {/* Header */}
+                <div className="mb-8 flex items-center gap-4">
+                    <Link
+                        href="/products"
+                        className="flex h-10 w-10 items-center justify-center border border-[#1c1c1c]/20 transition-colors hover:bg-[#e8e5df]"
+                    >
+                        <ArrowLeft className="h-4 w-4 text-[#1c1c1c]" />
+                    </Link>
+                    <h1 className="font-gloock text-2xl text-[#1c1c1c] sm:text-3xl">
+                        My Profile
+                    </h1>
+                </div>
 
-            {/* Profile card */}
-            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-                {/* Banner */}
-                <div className="relative h-32 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent" />
+                {/* Profile card */}
+                <div className="overflow-hidden border border-[#1c1c1c]/10 bg-[#f7f4f0] shadow-sm">
+                    {/* Banner */}
+                    <div className="relative h-32 bg-[#e8e5df]" />
 
-                {/* Avatar + info */}
-                <div className="px-6 pb-6">
-                    <div className="-mt-14 flex items-end gap-4">
-                        <div className="relative">
-                            <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-4 border-card bg-muted shadow-lg">
+                    {/* Avatar + info */}
+                    <div className="px-6 pb-6">
+                        <div className="-mt-14 flex items-end gap-4">
+                            <div className="relative">
+                                <div className="relative h-24 w-24 overflow-hidden border-4 border-[#f7f4f0] bg-[#e8e5df] shadow-lg">
                                 {user.image ? (
                                     <Image
                                         src={user.image}
@@ -106,8 +111,8 @@ export default function ProfilePage() {
                                         className="object-cover"
                                     />
                                 ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-primary/10">
-                                        <span className="text-3xl font-bold text-primary">
+                                    <div className="flex h-full w-full items-center justify-center bg-[#1c1c1c]/5">
+                                        <span className="font-gloock text-3xl text-[#1c1c1c]">
                                             {user.name?.charAt(0)?.toUpperCase() ?? "?"}
                                         </span>
                                     </div>
@@ -115,13 +120,13 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <div className="pb-1">
-                            <h2 className="text-xl font-bold text-foreground">{user.name}</h2>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <h2 className="font-gloock text-xl text-[#1c1c1c]">{user.name}</h2>
+                            <p className="text-sm text-[#5c5c5c]">{user.email}</p>
                         </div>
                     </div>
 
                     {saved && (
-                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                        <div className="mt-4 flex items-center gap-2 border border-green-600/20 bg-green-50 px-4 py-2.5 text-sm font-medium text-green-700">
                             <CheckCircle className="h-4 w-4" />
                             Profile updated successfully!
                         </div>
@@ -130,20 +135,20 @@ export default function ProfilePage() {
                     {/* Info grid */}
                     <div className="mt-6 space-y-4">
                         {/* Name (editable) */}
-                        <div className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3">
+                        <div className="flex items-center justify-between border border-[#1c1c1c]/10 bg-[#f2efe9] px-4 py-3">
                             <div className="flex items-center gap-3">
-                                <User className="h-4 w-4 text-muted-foreground" />
+                                <User className="h-4 w-4 text-[#5c5c5c]" />
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground">Name</p>
+                                    <p className="text-xs font-medium uppercase tracking-widest text-[#5c5c5c]">Name</p>
                                     {isEditing ? (
                                         <input
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            className="mt-0.5 w-full bg-transparent text-sm font-semibold text-foreground outline-none"
+                                            className="mt-0.5 w-full bg-transparent text-sm font-semibold text-[#1c1c1c] outline-none"
                                             autoFocus
                                         />
                                     ) : (
-                                        <p className="mt-0.5 text-sm font-semibold text-foreground">
+                                        <p className="mt-0.5 text-sm font-semibold text-[#1c1c1c]">
                                             {user.name}
                                         </p>
                                     )}
@@ -156,14 +161,14 @@ export default function ProfilePage() {
                                             setIsEditing(false);
                                             setName(user.name ?? "");
                                         }}
-                                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                                        className="border border-[#1c1c1c]/20 px-3 py-1.5 text-xs font-medium uppercase tracking-widest transition-colors hover:bg-[#e8e5df]"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleSave}
                                         disabled={isSaving || !name.trim()}
-                                        className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-50"
+                                        className="flex items-center gap-1.5 border border-[#1c1c1c] bg-[#1c1c1c] px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#f2efe9] transition-all hover:bg-transparent hover:text-[#1c1c1c] disabled:opacity-50"
                                     >
                                         {isSaving && <Loader2 className="h-3 w-3 animate-spin" />}
                                         Save
@@ -172,7 +177,7 @@ export default function ProfilePage() {
                             ) : (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                    className="border border-[#1c1c1c]/20 px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-[#5c5c5c] transition-colors hover:bg-[#e8e5df] hover:text-[#1c1c1c]"
                                 >
                                     Edit
                                 </button>
@@ -180,38 +185,38 @@ export default function ProfilePage() {
                         </div>
 
                         {/* Email */}
-                        <div className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex items-center gap-3 border border-[#1c1c1c]/10 bg-[#f2efe9] px-4 py-3">
+                            <Mail className="h-4 w-4 text-[#5c5c5c]" />
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground">Email</p>
-                                <p className="mt-0.5 text-sm font-semibold text-foreground">
+                                <p className="text-xs font-medium uppercase tracking-widest text-[#5c5c5c]">Email</p>
+                                <p className="mt-0.5 text-sm font-semibold text-[#1c1c1c]">
                                     {user.email}
                                 </p>
                             </div>
                             {user.emailVerified && (
-                                <span className="ml-auto rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                <span className="ml-auto bg-green-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-green-700">
                                     Verified
                                 </span>
                             )}
                         </div>
 
                         {/* Member since */}
-                        <div className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex items-center gap-3 border border-[#1c1c1c]/10 bg-[#f2efe9] px-4 py-3">
+                            <Calendar className="h-4 w-4 text-[#5c5c5c]" />
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground">Member Since</p>
-                                <p className="mt-0.5 text-sm font-semibold text-foreground">
+                                <p className="text-xs font-medium uppercase tracking-widest text-[#5c5c5c]">Member Since</p>
+                                <p className="mt-0.5 text-sm font-semibold text-[#1c1c1c]">
                                     {memberSince}
                                 </p>
                             </div>
                         </div>
 
                         {/* Role */}
-                        <div className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3">
-                            <Shield className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex items-center gap-3 border border-[#1c1c1c]/10 bg-[#f2efe9] px-4 py-3">
+                            <Shield className="h-4 w-4 text-[#5c5c5c]" />
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground">Role</p>
-                                <p className="mt-0.5 text-sm font-semibold capitalize text-foreground">
+                                <p className="text-xs font-medium uppercase tracking-widest text-[#5c5c5c]">Role</p>
+                                <p className="mt-0.5 text-sm font-semibold capitalize text-[#1c1c1c]">
                                     {(user as any).role?.toLowerCase() ?? "user"}
                                 </p>
                             </div>
@@ -222,18 +227,19 @@ export default function ProfilePage() {
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
                         <Link
                             href="/orders"
-                            className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                            className="flex items-center justify-center gap-2 border border-[#1c1c1c]/20 px-4 py-3 text-sm font-medium uppercase tracking-widest text-[#1c1c1c] transition-colors hover:bg-[#e8e5df]"
                         >
                             📦 My Orders
                         </Link>
                         <Link
                             href="/cart"
-                            className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                            className="flex items-center justify-center gap-2 border border-[#1c1c1c]/20 px-4 py-3 text-sm font-medium uppercase tracking-widest text-[#1c1c1c] transition-colors hover:bg-[#e8e5df]"
                         >
                             🛒 My Cart
                         </Link>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

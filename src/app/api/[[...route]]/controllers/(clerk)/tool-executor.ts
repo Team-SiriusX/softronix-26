@@ -164,8 +164,58 @@ function validateUIActionArgs(action: string, args: Record<string, unknown>): Va
       return { valid: true, sanitizedArgs: { couponCode: (args.couponCode as string).toUpperCase(), productId: args.productId } };
     }
 
+    case "navigateToPage": {
+      const validPages = ["home", "products", "cart", "checkout", "orders", "profile"] as const;
+      const pageErr = requireString(args, "page", "page");
+      if (pageErr) return { valid: false, error: `navigateToPage: ${pageErr}` };
+      const enumErr = requireEnum(args.page, validPages, "page");
+      if (enumErr) return { valid: false, error: `navigateToPage: ${enumErr}` };
+      return { valid: true, sanitizedArgs: { page: args.page } };
+    }
+
+    case "fillCheckoutForm": {
+      const nameErr = requireString(args, "fullName", "fullName");
+      if (nameErr) return { valid: false, error: `fillCheckoutForm: ${nameErr}` };
+      const phoneErr = requireString(args, "phone", "phone");
+      if (phoneErr) return { valid: false, error: `fillCheckoutForm: ${phoneErr}` };
+      const line1Err = requireString(args, "line1", "line1");
+      if (line1Err) return { valid: false, error: `fillCheckoutForm: ${line1Err}` };
+      const cityErr = requireString(args, "city", "city");
+      if (cityErr) return { valid: false, error: `fillCheckoutForm: ${cityErr}` };
+      const postalErr = requireString(args, "postalCode", "postalCode");
+      if (postalErr) return { valid: false, error: `fillCheckoutForm: ${postalErr}` };
+      return {
+        valid: true,
+        sanitizedArgs: {
+          fullName: args.fullName,
+          phone: args.phone,
+          line1: args.line1,
+          line2: args.line2 || "",
+          city: args.city,
+          state: args.state || "",
+          postalCode: args.postalCode,
+        },
+      };
+    }
+
+    case "selectAddress": {
+      const idx = Number(args.addressIndex);
+      if (Number.isNaN(idx) || !Number.isInteger(idx) || idx < 1) {
+        return { valid: false, error: "selectAddress: addressIndex must be a positive integer (1-based)" };
+      }
+      return { valid: true, sanitizedArgs: { addressIndex: idx } };
+    }
+
+    case "proceedToPayment": {
+      return { valid: true, sanitizedArgs: {} };
+    }
+
+    case "submitAddress": {
+      return { valid: true, sanitizedArgs: {} };
+    }
+
     default:
-      return { valid: false, error: `Unknown UI action: ${action}. Valid actions: sortProducts, filterProducts, navigateToProduct, showRecommendations, highlightProduct, applyVibeFilter, clearFilters, openProductDetail, addToCart, applyCoupon` };
+      return { valid: false, error: `Unknown UI action: ${action}. Valid actions: sortProducts, filterProducts, navigateToProduct, showRecommendations, highlightProduct, applyVibeFilter, clearFilters, openProductDetail, addToCart, applyCoupon, navigateToPage, fillCheckoutForm, selectAddress, proceedToPayment, submitAddress` };
   }
 }
 

@@ -14,6 +14,11 @@ import {
     X,
     Volume2,
     VolumeX,
+    History,
+    Plus,
+    Trash2,
+    MessageSquare,
+    ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Product } from "@/services";
@@ -24,6 +29,9 @@ import {
 import { useUIActions } from "@/components/chat/use-ui-actions";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
 import { useTTS } from "@/hooks/use-tts";
+import { useChatHistory } from "@/hooks/use-chat-history";
+import { FormattedMessage } from "@/components/chat/formatted-message";
+import { AgentWorkingOverlay } from "@/components/chat/agent-working-overlay";
 import Image from "next/image";
 
 // Dynamic import for 3D canvas (no SSR)
@@ -50,10 +58,22 @@ export default function FullChatPage() {
     const { messages, setMessages } = useChatMessages();
     const [pendingProductIds, setPendingProductIds] = useState<string[]>([]);
     const [input, setInput] = useState("");
+    const [showHistory, setShowHistory] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [ttsEnabled, setTtsEnabled] = useState(true);
+
+    const {
+        sessions,
+        activeSessionId,
+        setActiveSessionId,
+        saveSession,
+        deleteSession,
+        clearAllSessions,
+        getSession,
+    } = useChatHistory();
+    const sessionIdRef = useRef<string | null>(null);
 
     const { mutate: sendMessage, isPending } = useSendChatMessage();
     const { data: products } = useProducts(pendingProductIds);
@@ -84,6 +104,41 @@ export default function FullChatPage() {
             );
         }
     }, []);
+
+    // Auto-save messages to history when they change
+    useEffect(() => {
+        if (messages.some((m) => m.role === "user")) {
+            const id = saveSession(messages, sessionIdRef.current);
+            if (id) sessionIdRef.current = id;
+        }
+    }, [messages, saveSession]);
+
+    // Load a past session
+    const loadSession = useCallback(
+        (id: string) => {
+            const session = getSession(id);
+            if (!session) return;
+            // Strip products (not stored in history)
+            setMessages(session.messages.map((m) => ({ role: m.role, content: m.content })));
+            sessionIdRef.current = id;
+            setActiveSessionId(id);
+            setShowHistory(false);
+        },
+        [getSession, setMessages, setActiveSessionId]
+    );
+
+    // Start new conversation
+    const handleNewChat = useCallback(() => {
+        setMessages([
+            {
+                role: "assistant",
+                content: "Welcome to Echo! I'm your personal grooming assistant. How can I help you today?",
+            },
+        ]);
+        sessionIdRef.current = null;
+        setActiveSessionId(null);
+        setShowHistory(false);
+    }, [setMessages, setActiveSessionId]);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -265,9 +320,12 @@ export default function FullChatPage() {
             </div>
 
             {/* ── RIGHT: Chat Panel ── */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#f2efe9]">
+            <div className="flex-1 flex flex-col min-w-0 bg-[#f2efe9] relative">
+                {/* Agent working overlay */}
+                <AgentWorkingOverlay isActive={isPending} variant="full" />
+
                 {/* Chat header */}
-                <header className="flex-shrink-0 border-b border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9]">
+                <header className="flex-shrink-0 border-b border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9] z-30">
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-lg font-bold text-[#1c1c1c] tracking-tight font-[family-name:var(--font-gloock)]">
@@ -277,8 +335,132 @@ export default function FullChatPage() {
                                 Speak or type to interact
                             </p>
                         </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={handleNewChat}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-wider text-[#1c1c1c]/60 hover:text-[#1c1c1c] hover:bg-[#1c1c1c]/5 transition-colors"
+                                title="New conversation"
+                            >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">New</span>
+                            </button>
+                            <button
+                                onClick={() => setShowHistory(!showHistory)}
+                                className={cn(
+                                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-wider transition-colors",
+                                    showHistory
+                                        ? "bg-[#1c1c1c] text-[#f2efe9]"
+                                        : "text-[#1c1c1c]/60 hover:text-[#1c1c1c] hover:bg-[#1c1c1c]/5"
+                                )}
+                                title="Chat history"
+                            >
+                                <History className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">History</span>
+                                {sessions.length > 0 && !showHistory && (
+                                    <span className="ml-0.5 w-4 h-4 rounded-full bg-[#1c1c1c]/10 text-[#1c1c1c]/60 flex items-center justify-center text-[8px] font-bold">
+                                        {sessions.length}
+                                    </span>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </header>
+
+                {/* ── History Panel (slides over messages) ── */}
+                {showHistory && (
+                    <div className="absolute inset-0 top-[61px] z-20 bg-[#f2efe9] flex flex-col animate-in slide-in-from-right-4 duration-200">
+                        {/* History header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-[#1c1c1c]/8">
+                            <div>
+                                <h2 className="text-sm font-bold text-[#1c1c1c] uppercase tracking-[0.15em]">
+                                    Chat History
+                                </h2>
+                                <p className="text-[9px] text-[#1c1c1c]/35 uppercase tracking-wider mt-0.5">
+                                    {sessions.length} conversation{sessions.length !== 1 ? "s" : ""}
+                                </p>
+                            </div>
+                            {sessions.length > 0 && (
+                                <button
+                                    onClick={() => {
+                                        if (confirm("Clear all chat history?")) clearAllSessions();
+                                    }}
+                                    className="text-[10px] uppercase tracking-wider text-red-400 hover:text-red-500 font-semibold transition-colors"
+                                >
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Session list */}
+                        <div className="flex-1 overflow-y-auto">
+                            {sessions.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-full text-center px-8">
+                                    <MessageSquare className="w-8 h-8 text-[#1c1c1c]/10 mb-3" />
+                                    <p className="text-xs font-medium text-[#1c1c1c]/40">
+                                        No previous conversations
+                                    </p>
+                                    <p className="text-[10px] text-[#1c1c1c]/25 mt-1">
+                                        Your chat history will appear here
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="py-2">
+                                    {sessions.map((session) => {
+                                        const isActive = sessionIdRef.current === session.id;
+                                        const msgCount = session.messages.filter((m) => m.role === "user").length;
+                                        const timeAgo = formatTimeAgo(session.updatedAt);
+                                        return (
+                                            <div
+                                                key={session.id}
+                                                className={cn(
+                                                    "group flex items-center gap-3 px-6 py-3.5 cursor-pointer transition-colors",
+                                                    isActive
+                                                        ? "bg-[#1c1c1c]/5"
+                                                        : "hover:bg-[#1c1c1c]/[0.03]"
+                                                )}
+                                                onClick={() => loadSession(session.id)}
+                                            >
+                                                <div className={cn(
+                                                    "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                                                    isActive ? "bg-[#1c1c1c] text-[#f2efe9]" : "bg-[#1c1c1c]/5 text-[#1c1c1c]/30"
+                                                )}>
+                                                    <MessageSquare className="w-3.5 h-3.5" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-xs font-medium text-[#1c1c1c] truncate">
+                                                        {session.title}
+                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="text-[9px] text-[#1c1c1c]/30">
+                                                            {msgCount} message{msgCount !== 1 ? "s" : ""}
+                                                        </span>
+                                                        <span className="text-[9px] text-[#1c1c1c]/20">·</span>
+                                                        <span className="text-[9px] text-[#1c1c1c]/30">
+                                                            {timeAgo}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            deleteSession(session.id);
+                                                        }}
+                                                        className="p-1.5 rounded-md hover:bg-red-50 text-[#1c1c1c]/20 hover:text-red-400 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 className="w-3 h-3" />
+                                                    </button>
+                                                    <ChevronRight className="w-3 h-3 text-[#1c1c1c]/15" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto min-h-0">
@@ -305,7 +487,7 @@ export default function FullChatPage() {
                                                 <span className="text-[8px] uppercase tracking-[0.15em] font-bold">Echo</span>
                                             </div>
                                         )}
-                                        <p className="text-[13px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                                        <FormattedMessage content={message.content} className="text-[13px] leading-relaxed" />
                                     </div>
                                 </div>
 
@@ -462,4 +644,23 @@ export default function FullChatPage() {
             </div>
         </div>
     );
+}
+/** Format a date string into a relative "time ago" label */
+function formatTimeAgo(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const seconds = Math.floor((now - then) / 1000);
+
+    if (seconds < 60) return "Just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    if (days < 30) return `${Math.floor(days / 7)}w ago`;
+    return new Date(dateStr).toLocaleDateString("en-PK", {
+        month: "short",
+        day: "numeric",
+    });
 }

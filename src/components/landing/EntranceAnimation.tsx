@@ -3,11 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { preloadImages } from "@/lib/utils";
+import { useSession } from "@/lib/auth-client";
+import { User } from "lucide-react";
+import Link from "next/link";
 import "./entrance-animation.css";
 
 export default function EntranceAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  const session = useSession();
+  const isAuthenticated = !!session.data?.user;
 
   useEffect(() => {
     // Determine image selector and path setup
@@ -164,7 +169,13 @@ export default function EntranceAnimation() {
           <h1 className="frame__title">Echo</h1>
           <a className="frame__back" href="/products">Products</a>
           <a className="frame__archive" href="/cart">Cart</a>
-          <a className="frame__github" href="/profile">Profile</a>
+          {isAuthenticated ? (
+            <Link href="/profile" className="frame__github">
+              <User className="h-4 w-4" />
+            </Link>
+          ) : (
+            <a className="frame__github" href="/auth/sign-in">Login</a>
+          )}
         </header>
 
         <div className="content">

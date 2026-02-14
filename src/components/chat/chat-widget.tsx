@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { X, LogIn } from "lucide-react";
+import { X, LogIn, MessageCircle } from "lucide-react";
 import ChatMessage from "./chat-message";
 import ChatInput from "./chat-input";
 import ProductRecommendations from "./product-recommendations";
+import HumanChat from "./human-chat";
 import { cn } from "@/lib/utils";
 import { Product } from "@/services";
 import { useSendChatMessage, useProducts } from "./_api";
@@ -27,6 +28,7 @@ export default function ChatWidget() {
   const { messages, setMessages } = useChatMessages();
   const [pendingProductIds, setPendingProductIds] = useState<string[]>([]);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [showHumanChat, setShowHumanChat] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -166,7 +168,7 @@ export default function ChatWidget() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity"
+        className="fixed inset-0 bg-black/10 z-40 transition-opacity"
         onClick={closeChat}
       />
 
@@ -191,15 +193,30 @@ export default function ChatWidget() {
               Your AI shopping assistant
             </p>
           </div>
-          <button
-            onClick={closeChat}
-            className="p-2 rounded-full hover:bg-[#292725]/10 transition-colors"
-            aria-label="Close chat"
-          >
-            <X className="w-5 h-5 text-[#292725]" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowHumanChat(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#292725] bg-[#c8c2bd]/60 hover:bg-[#c8c2bd] transition-colors"
+              title="Talk to a human"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              Human
+            </button>
+            <button
+              onClick={closeChat}
+              className="p-2 rounded-full hover:bg-[#292725]/10 transition-colors"
+              aria-label="Close chat"
+            >
+              <X className="w-5 h-5 text-[#292725]" />
+            </button>
+          </div>
         </div>
 
+        {/* Conditional: Human Chat or AI Chat */}
+        {showHumanChat ? (
+          <HumanChat onBack={() => setShowHumanChat(false)} />
+        ) : (
+          <>
         {/* Messages Container */}
         <div className="flex-1 overflow-y-auto px-4 py-4">
           <div className="space-y-4">
@@ -245,6 +262,8 @@ export default function ChatWidget() {
         <div className="border-t border-[#292725]/10 bg-[#dad4d1] px-4 py-4">
           <ChatInput onSend={handleSendMessage} isLoading={isPending} />
         </div>
+          </>
+        )}
       </div>
     </>
   );

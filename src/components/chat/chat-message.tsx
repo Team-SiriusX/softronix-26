@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
+import { FormattedMessage } from "@/components/chat/formatted-message";
 
 interface ChatMessageProps {
   message: string;
@@ -52,9 +53,7 @@ export default function ChatMessage({ message, role, isLatest, isLoading }: Chat
             <span className="w-2 h-2 bg-[#555] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
         ) : (
-          <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">
-            {message}
-          </p>
+          <FormattedMessage content={message} className="text-sm md:text-base leading-relaxed" />
         )}
       </div>
     </div>

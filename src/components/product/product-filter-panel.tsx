@@ -130,7 +130,7 @@ export function ProductFilterPanel() {
         <Select
           value={filters.sortBy || "default"}
           onValueChange={(value) => {
-            type SortByType = "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest";
+            type SortByType = "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest" | "rating-desc" | "rating-asc" | "reviews-desc";
             setSortBy(value === "default" ? undefined : (value as SortByType));
           }}
         >
@@ -144,6 +144,9 @@ export function ProductFilterPanel() {
             <SelectItem value="name-asc">Name: A to Z</SelectItem>
             <SelectItem value="name-desc">Name: Z to A</SelectItem>
             <SelectItem value="newest">Newest First</SelectItem>
+            <SelectItem value="rating-desc">Rating: High to Low</SelectItem>
+            <SelectItem value="rating-asc">Rating: Low to High</SelectItem>
+            <SelectItem value="reviews-desc">Most Reviewed</SelectItem>
           </SelectContent>
         </Select>
       </div>

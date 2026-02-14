@@ -18,18 +18,15 @@ export default function SignIn() {
 
   return (
     <div className="relative w-full max-w-md">
-      {/* Glassmorphic Card */}
-      <div className="relative rounded-2xl border border-neutral-800 bg-black/40 p-8 shadow-2xl backdrop-blur-xl">
-        {/* Gradient Border Effect */}
-        <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 opacity-0 blur transition-opacity duration-500 group-hover:opacity-100" />
-
+      {/* Beige Card */}
+      <div className="relative border border-[#1c1c1c]/10 bg-[#f7f4f0] p-8 shadow-xl">
         <div className="relative space-y-6">
           {/* Header */}
           <div className="space-y-2 text-center">
-            <h1 className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-3xl font-bold text-transparent">
+            <h1 className="font-gloock text-3xl text-[#1c1c1c]">
               Welcome Back
             </h1>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-[#5c5c5c]">
               Enter your credentials to access your account
             </p>
           </div>
@@ -37,7 +34,7 @@ export default function SignIn() {
           {/* Form */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-neutral-300">
+              <Label htmlFor="email" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
                 Email
               </Label>
               <Input
@@ -47,19 +44,19 @@ export default function SignIn() {
                 required
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+                className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
                 suppressHydrationWarning
               />
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-neutral-300">
+                <Label htmlFor="password" className="text-sm font-medium uppercase tracking-widest text-[#1c1c1c]">
                   Password
                 </Label>
                 <Link
                   href="/auth/forget-password"
-                  className="text-xs text-blue-400 transition-colors hover:text-blue-300"
+                  className="text-xs text-[#5c5c5c] transition-colors hover:text-[#1c1c1c] uppercase tracking-widest"
                 >
                   Forgot password?
                 </Link>
@@ -71,7 +68,7 @@ export default function SignIn() {
                 autoComplete="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-neutral-700 bg-neutral-900/50 text-white placeholder:text-neutral-500 focus:border-blue-500 focus:ring-blue-500/20"
+                className="border-[#1c1c1c]/20 bg-[#f2efe9] text-[#1c1c1c] placeholder:text-[#5c5c5c]/50 focus:border-[#1c1c1c] focus:ring-0"
                 suppressHydrationWarning
               />
             </div>
@@ -80,16 +77,16 @@ export default function SignIn() {
               <Checkbox
                 id="remember"
                 onClick={() => setRememberMe(!rememberMe)}
-                className="border-neutral-600 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                className="border-[#1c1c1c]/40 data-[state=checked]:bg-[#1c1c1c] data-[state=checked]:border-[#1c1c1c]"
               />
-              <Label htmlFor="remember" className="text-sm text-neutral-400">
+              <Label htmlFor="remember" className="text-sm text-[#5c5c5c]">
                 Remember me for 30 days
               </Label>
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:from-blue-500 hover:to-blue-400"
+              className="w-full border border-[#1c1c1c] bg-[#1c1c1c] text-[#f2efe9] shadow-lg font-medium uppercase tracking-widest transition-all hover:bg-transparent hover:text-[#1c1c1c]"
               suppressHydrationWarning
               disabled={loading}
               onClick={async () => {
@@ -129,10 +126,10 @@ export default function SignIn() {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-neutral-800" />
+                <span className="w-full border-t border-[#1c1c1c]/10" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black/40 px-2 text-neutral-500">
+              <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                <span className="bg-[#f7f4f0] px-2 text-[#5c5c5c]">
                   Or continue with
                 </span>
               </div>
@@ -142,7 +139,7 @@ export default function SignIn() {
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"
-                className="border-neutral-700 bg-neutral-900/50 text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-800/50 hover:text-white"
+                className="border-[#1c1c1c]/20 bg-transparent text-[#1c1c1c] transition-colors hover:border-[#1c1c1c] hover:bg-[#e8e5df]"
                 disabled={loading}
                 onClick={async () => {
                   await signIn.social(
@@ -185,7 +182,7 @@ export default function SignIn() {
               </Button>
               <Button
                 variant="outline"
-                className="border-neutral-700 bg-neutral-900/50 text-neutral-300 transition-colors hover:border-neutral-600 hover:bg-neutral-800/50 hover:text-white"
+                className="border-[#1c1c1c]/20 bg-transparent text-[#1c1c1c] transition-colors hover:border-[#1c1c1c] hover:bg-[#e8e5df]"
                 disabled={loading}
                 onClick={async () => {
                   await signIn.social(
@@ -218,11 +215,11 @@ export default function SignIn() {
           </div>
 
           {/* Footer */}
-          <div className="pt-4 text-center text-sm text-neutral-400">
+          <div className="pt-4 text-center text-sm text-[#5c5c5c]">
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/sign-up"
-              className="font-medium text-blue-400 transition-colors hover:text-blue-300"
+              className="font-medium text-[#1c1c1c] transition-colors hover:underline"
             >
               Sign up
             </Link>

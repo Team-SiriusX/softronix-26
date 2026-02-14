@@ -8,34 +8,23 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-black/[0.96] antialiased">
-      {/* Grid Background */}
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#f2efe9] antialiased selection:bg-[#1c1c1c] selection:text-[#f2efe9]">
+      {/* Subtle Grid Background */}
       <div
         className={cn(
-          "pointer-events-none absolute inset-0 select-none [background-size:40px_40px]",
-          "[background-image:linear-gradient(to_right,#171717_1px,transparent_1px),linear-gradient(to_bottom,#171717_1px,transparent_1px)]",
+          "pointer-events-none absolute inset-0 select-none [background-size:40px_40px] opacity-[0.03]",
+          "[background-image:linear-gradient(to_right,#1c1c1c_1px,transparent_1px),linear-gradient(to_bottom,#1c1c1c_1px,transparent_1px)]",
         )}
-      />
-
-      {/* Spotlight Effects */}
-      <Spotlight
-        className="-top-40 left-0 md:-top-20 md:left-60"
-        fill="white"
-      />
-      <Spotlight
-        className="-top-40 right-0 md:-top-20 md:right-60"
-        fill="white"
-        mirror={true}
       />
 
       {/* Logo/Header */}
       <div className="absolute left-8 top-8 z-50">
         <Link
           href="/"
-          className="group flex items-center gap-3 rounded-xl bg-blue-500/10 px-4 py-2 backdrop-blur-sm transition-all hover:bg-blue-500/20 border border-blue-500/20"
+          className="group flex items-center gap-3 border border-[#1c1c1c]/10 bg-[#f2efe9] px-4 py-2 backdrop-blur-sm transition-all hover:border-[#1c1c1c]/40"
         >
-          <span className="text-xl font-bold tracking-wider text-white">
-            ENTROPY
+          <span className="font-gloock text-xl tracking-wider text-[#1c1c1c]">
+            ECHO
           </span>
         </Link>
       </div>

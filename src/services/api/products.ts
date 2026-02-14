@@ -14,7 +14,7 @@ export interface FetchProductsParams {
   minPrice?: number;
   maxPrice?: number;
   search?: string;
-  sortBy?: "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest";
+  sortBy?: "price-asc" | "price-desc" | "name-asc" | "name-desc" | "newest" | "rating-desc" | "rating-asc" | "reviews-desc";
   tags?: string[];
 }
 
