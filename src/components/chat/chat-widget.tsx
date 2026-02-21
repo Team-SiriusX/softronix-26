@@ -174,7 +174,7 @@ export default function ChatWidget() {
           const errorMessage: Message = {
             role: "assistant",
             content:
-              "Thank you for your interest! Echo was developed as the winning project for the GCU Softronix Hackathon. 🏆 As the competition has concluded, our development team has now decommissioned the live API services.",
+              "Echo was built as a competition entry for the GCU Softronix Hackathon — where it placed first. 🏆\n\nFollowing the conclusion of the event, the live AI services have been intentionally shut down by the development team. The assistant is no longer operational, but the product and codebase remain as a demonstration of what was built.\n\nThank you for checking it out.",
           };
           setMessages((prev) => [...prev, errorMessage]);
         },
