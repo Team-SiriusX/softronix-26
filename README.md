@@ -1,140 +1,75 @@
-# Softronix 4.0 — Intelligent E-Commerce with AI Clerk "Echo"
+# Echo — AI-Powered E-Commerce Platform
 
-![Softronix Banner](public/softronix-banner.png)
-
-> **Winner of the Softronix 4.0 Hackathon (Target/Goal)**
-> An AI-first e-commerce experience featuring a 3D interactive avatar, haggle-capable AI agent, and real-time human-in-the-loop messaging.
+> **🏆 First Place — GCU Softronix Hackathon**
+> Built by Team SiriusX · February 2026
 
 ---
 
-## Overview
-
-**Softronix-26** is not just another e-commerce store. It redefines the shopping experience by integrating a **hyper-intelligent AI Clerk named "Echo"**.
-
-Instead of boring search bars, users talk to **Echo** — a 3D avatar that can:
-- **See** the inventory (via RAG vector search).
-- **Control** the website (filter prices, sort products, highlight items).
-- **Negotiate** prices (Haggle Mode with sentiment analysis).
-- **Speak** to you (Text-to-Speech with lip-sync).
-- **Connect** you to a human (Real-time WebSockets integration).
+> **Note on API Services**
+> Echo was developed as a competition entry for the GCU Softronix Hackathon, where it placed first. Following the conclusion of the event, the live AI services have been intentionally decommissioned by the development team. The assistant is no longer operational, but the full codebase and product remain as a working demonstration of what was built.
 
 ---
 
-## Key Features
+## What Is Echo?
 
-### AI Clerk "Echo"
-- **RAG-Powered Intelligence**: Uses **Upstash Vector** to "read" your product catalog and answer semantic questions like *"Show me something for dry skin under $50"*.
-- **Agentic UI Control**: The AI doesn't just chat; it calls **tools** to update the UI real-time (sorting, filtering, navigating).
-- **Personality Engine**: Echo is warm, witty, and helpful (not a robotic support bot).
+Echo is an AI-first e-commerce platform for grooming products. It replaces the traditional search-and-browse experience with a **conversational AI clerk** — a 3D interactive avatar that can see your inventory, control the UI, negotiate prices, speak to you, and hand off to a human agent in real time.
 
-### Haggle Mode & Dynamic Pricing
-- **Negotiation Logic**: Users can ask for discounts. Echo evaluates their **sentiment** and **reason** (student, birthday, first-time).
-- **Coupon Generation**: If the deal is struck, the AI generates a valid, one-time-use coupon code in the database and applies it to the cart automatically.
-- **Rude User Penalty**: If a user is abusive, Echo can *raise* the price by 5%.
+The project was designed and shipped end-to-end within the hackathon timeline, demonstrating a full production-grade stack with agentic AI at its core.
+
+---
+
+## Core Features
+
+### AI Clerk — "Echo"
+- **RAG-Powered Product Intelligence** — Uses Upstash Vector to semantically search the product catalog. Answers natural language queries like *"something for dry skin under ₨2,000"* with real results.
+- **Agentic UI Control** — Echo doesn't just respond in text; it calls tools to directly manipulate the storefront: filtering products, adjusting sort order, navigating pages, and highlighting items.
+- **Conversational Negotiation (Haggle Mode)** — Users can request discounts. Echo evaluates their sentiment and reason (student, first-time buyer, birthday, etc.) and either generates a valid one-time coupon applied directly to the cart, or declines gracefully.
+- **Dynamic Penalty Pricing** — If a user is abusive or rude, Echo can increase the price of products by a configurable percentage as a deterrent.
+- **Full-Page Chat Experience** — A dedicated `/chat` route with session history, a 3D avatar, voice input, and TTS output.
 
 ### 3D Interactive Avatar
-- **Three.js & R3F**: A fully rendered 3D avatar that floats in the interface.
-- **Lip-Sync**: Real-time phoneme mapping synchronizes the avatar's lips with the TTS audio.
+- Built with **React Three Fiber** and **Three.js**.
+- Real-time **lip-sync** via phoneme (viseme) mapping — the avatar's mouth moves in sync with the Text-to-Speech audio using `MorphTarget` updates on every animation frame.
 
-### Real-Time "Talk to Human"
-- **Pusher Integration**: Seamlessly switch from AI to a human support agent.
-- **Admin Dashboard**: A dedicated panel for admins to view active conversations and reply instantly.
+### Voice Interface
+- **Speech-to-Text** via Groq's Whisper API — tap to speak, get a transcript, auto-send.
+- **Text-to-Speech** — Echo reads its own responses aloud, driving the avatar's lip animation.
 
-### Modern E-Commerce Stack
-- **Serverless Backend**: Powered by **Hono** running on Next.js API routes.
-- **PostgreSQL**: Robust relational data on **Neon**.
-- **Authentication**: **BetterAuth** for secure Google/GitHub/Email sign-ins.
+### Real-Time Human Escalation
+- Powered by **Pusher Channels** (WebSockets).
+- Users can switch from AI to a live human agent mid-conversation.
+- Admins have a dedicated dashboard to see active conversations and respond in real time.
+
+### Full E-Commerce Stack
+- Product catalog, cart, checkout, and order management.
+- Payments via **Stripe**.
+- Authentication with email, Google, and GitHub via **BetterAuth**.
+- File uploads via **UploadThing**.
+- Order emails via **Resend**.
 
 ---
 
 ## Tech Stack
 
-### Frontend
-- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4, SCSS
-- **Animations**: GSAP, Locomotive Scroll
-- **3D**: React Three Fiber, Drei
-
-### Backend & API
-- **API Framework**: [Hono](https://hono.dev/) (mounted on Next.js API routes)
-- **Database**: PostgreSQL (Neon)
-- **ORM**: Prisma IO
-- **Vector DB**: Upstash Vector (for RAG)
-- **Real-Time**: Pusher Channels
-
-### AI & Intelligence
-- **LLM Orchestration**: OpenRouter (Claude 3.5 Sonnet / DeepSeek V3)
-- **Speech-to-Text**: Groq (Whisper)
-- **Tool Calling**: Custom agentic loop capable of multi-step execution
-
----
-
-## Getting Started
-
-### Prerequisites
-- Node.js 20+
-- pnpm (recommended)
-- PostgreSQL database
-- Upstash Vector database
-- OpenRouter API Key
-- Pusher Account
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/softronix-26.git
-   cd softronix-26
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
-
-3. **Set up Environment Variables**
-   Create a `.env` file in the root:
-   ```env
-   # Database
-   DATABASE_URL="postgresql://..."
-
-   # Auth (Better Auth)
-   BETTER_AUTH_SECRET="your_secret"
-   BETTER_AUTH_URL="http://localhost:3000"
-   GOOGLE_CLIENT_ID="..."
-   GOOGLE_CLIENT_SECRET="..."
-   GITHUB_CLIENT_ID="..."
-   GITHUB_CLIENT_SECRET="..."
-
-   # AI Services
-   OPENROUTER_API_KEY="sk-or-..."
-   UPSTASH_VECTOR_REST_URL="..."
-   UPSTASH_VECTOR_REST_TOKEN="..."
-   GROQ_API_KEY="gsk_..."
-
-   # Real-Time (Pusher)
-   PUSHER_APP_ID="..."
-   PUSHER_KEY="..."
-   PUSHER_SECRET="..."
-   PUSHER_CLUSTER="..."
-   NEXT_PUBLIC_PUSHER_KEY="..."
-   NEXT_PUBLIC_PUSHER_CLUSTER="..."
-
-   # Email (Resend)
-   RESEND_API_KEY="..."
-   RESEND_EMAIL="noreply@yourdomain.com"
-   ```
-
-4. **Initialize Database**
-   ```bash
-   npx prisma db push
-   ```
-
-5. **Run Development Server**
-   ```bash
-   pnpm dev
-   ```
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript (Strict) |
+| Styling | Tailwind CSS v4, SCSS Modules |
+| Animations | GSAP, Lenis Smooth Scroll |
+| 3D / Avatar | React Three Fiber, Three.js, Drei |
+| API Framework | Hono (mounted on Next.js route handlers) |
+| Database | PostgreSQL via Neon |
+| ORM | Prisma |
+| Vector DB | Upstash Vector (RAG) |
+| Auth | BetterAuth |
+| Real-Time | Pusher Channels |
+| LLM | OpenRouter (Claude 3.5 Sonnet / DeepSeek V3) |
+| Speech-to-Text | Groq (Whisper) |
+| Payments | Stripe |
+| File Uploads | UploadThing |
+| Email | Resend / Nodemailer |
+| State Management | TanStack Query, Zustand |
 
 ---
 
@@ -143,42 +78,121 @@ Instead of boring search bars, users talk to **Echo** — a 3D avatar that can:
 ```
 src/
 ├── app/
-│   ├── api/routes/          # Hono API Routes
-│   │   ├── (clerk)/         # AI Agent Logic
-│   │   ├── (store)/         # E-commerce Logic (Cart, Orders)
-│   │   └── (messages)/      # Real-time Chat Logic
-│   ├── chat/                # Chat Interface Page
-│   └── (store)/             # Storefront Pages
+│   ├── api/[[...route]]/    # Hono API (clerk, store, messages, auth)
+│   ├── chat/                # Full-page chat UI with 3D avatar
+│   ├── (root)/              # Landing page
+│   ├── cart/                # Shopping cart
+│   ├── checkout/            # Stripe checkout
+│   ├── orders/              # Order history
+│   ├── profile/             # User profile
+│   └── admin/               # Admin dashboard (human chat panel)
 ├── components/
-│   ├── chat/                # Avatar, ChatWidget, Recommendations
-│   └── landing/             # Hero, Features, GSAP Animations
+│   ├── chat/                # ChatWidget, AvatarCanvas, ChatInput, TTS, Voice
+│   ├── landing/             # GSAP entrance animation, hero, sections
+│   ├── cart/                # Cart UI components
+│   ├── product/             # Product cards and detail
+│   └── ui/                  # shadcn/ui component library
 ├── lib/
-│   ├── auth.ts              # Better Auth Config
-│   ├── db.ts                # Prisma Client
-│   └── pusher.ts            # WebSocket Utils
-└── hooks/
-    ├── use-cart-store.ts    # Zustand Cart State
-    └── use-tts.ts           # Text-to-Speech Hook
+│   ├── auth.ts              # BetterAuth config
+│   ├── db.ts                # Prisma client
+│   ├── pusher.ts            # Pusher server instance
+│   ├── pusher-client.ts     # Pusher client instance
+│   ├── vector.ts            # RAG / Upstash Vector utils
+│   └── stripe.ts            # Stripe config
+├── hooks/
+│   ├── use-tts.ts           # Text-to-Speech with viseme output
+│   ├── use-voice-recorder.ts # Mic recording → Groq transcription
+│   ├── use-chat-history.ts  # Local session history management
+│   └── use-cart-store.tsx   # Zustand cart state
+└── services/                # TanStack Query API hooks
 ```
 
 ---
 
-## Contributing
+## Running Locally
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+> The live AI services are offline. To run the project locally you will need to supply your own API keys.
 
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Prerequisites
+
+- Node.js 20+
+- pnpm
+- A PostgreSQL database (e.g. Neon)
+- An Upstash Vector index
+- OpenRouter API key
+- Groq API key
+- Pusher account
+- Stripe account
+
+### Setup
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/yourusername/softronix-26.git
+cd softronix-26
+
+# 2. Install dependencies
+pnpm install
+
+# 3. Create your .env file
+cp .env.example .env
+# Fill in the values below
+
+# 4. Push the database schema
+pnpm prisma db push
+
+# 5. Start the dev server
+pnpm dev
+```
+
+### Environment Variables
+
+```env
+# Database
+DATABASE_URL="postgresql://..."
+
+# BetterAuth
+BETTER_AUTH_SECRET="your_secret"
+BETTER_AUTH_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GITHUB_CLIENT_ID="..."
+GITHUB_CLIENT_SECRET="..."
+
+# AI Services
+OPENROUTER_API_KEY="sk-or-..."
+UPSTASH_VECTOR_REST_URL="..."
+UPSTASH_VECTOR_REST_TOKEN="..."
+GROQ_API_KEY="gsk_..."
+
+# Real-Time
+PUSHER_APP_ID="..."
+PUSHER_KEY="..."
+PUSHER_SECRET="..."
+PUSHER_CLUSTER="..."
+NEXT_PUBLIC_PUSHER_KEY="..."
+NEXT_PUBLIC_PUSHER_CLUSTER="..."
+
+# Payments
+STRIPE_SECRET_KEY="sk_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+
+# Email
+RESEND_API_KEY="..."
+RESEND_EMAIL="noreply@yourdomain.com"
+
+# UploadThing
+UPLOADTHING_SECRET="sk_..."
+UPLOADTHING_APP_ID="..."
+```
 
 ---
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License.
 
 ---
 
-> Built with love by **Team Softronix**
+> **Team SiriusX** — GCU Softronix Hackathon, February 2026
