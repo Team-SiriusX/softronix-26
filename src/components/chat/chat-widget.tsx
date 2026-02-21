@@ -174,7 +174,7 @@ export default function ChatWidget() {
           const errorMessage: Message = {
             role: "assistant",
             content:
-              "I apologize, but I'm having trouble right now. Please try again in a moment.",
+              "Thank you for your interest! Echo was developed as the winning project for the GCU Softronix Hackathon. 🏆 As the competition has concluded, our development team has now decommissioned the live API services.",
           };
           setMessages((prev) => [...prev, errorMessage]);
         },
