@@ -38,7 +38,7 @@ import Image from "next/image";
 const AvatarCanvas = dynamic(() => import("@/components/chat/avatar-canvas"), {
     ssr: false,
     loading: () => (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#e8e5df] to-[#d5d0c8]">
+        <div className="w-full h-full flex items-center justify-center bg-linear-to-b from-[#e8e5df] to-[#d5d0c8]">
             <div className="flex flex-col items-center gap-3">
                 <Loader2 className="w-8 h-8 animate-spin text-[#1c1c1c]/30" />
                 <span className="text-xs uppercase tracking-widest text-[#1c1c1c]/40 font-medium">Loading Avatar</span>
@@ -254,9 +254,9 @@ export default function FullChatPage() {
             className="h-screen w-full bg-[#f2efe9] flex flex-col lg:flex-row overflow-hidden opacity-0"
         >
             {/* ── LEFT: 3D Avatar ── */}
-            <div className="relative w-full lg:w-[45%] h-[35vh] lg:h-full flex-shrink-0 bg-gradient-to-b from-[#e8e5df] to-[#d5d0c8] overflow-hidden">
+            <div className="relative w-full lg:w-[45%] h-[35vh] lg:h-full shrink-0 bg-linear-to-b from-[#e8e5df] to-[#d5d0c8] overflow-hidden">
                 {/* Gradient overlay at top */}
-                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#e8e5df] to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-24 bg-linear-to-b from-[#e8e5df] to-transparent z-10 pointer-events-none" />
 
                 {/* Back button */}
                 <div className="absolute top-6 left-6 z-20">
@@ -299,7 +299,7 @@ export default function FullChatPage() {
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
                     <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-white/50">
                         <Sparkles className="w-4 h-4 text-[#1c1c1c]/50" />
-                        <span className="text-sm font-bold tracking-tight text-[#1c1c1c] font-[family-name:var(--font-gloock)]">
+                        <span className="text-sm font-bold tracking-tight text-[#1c1c1c] font-gloock">
                             Echo
                         </span>
                         {isSpeaking && (
@@ -325,10 +325,10 @@ export default function FullChatPage() {
                 <AgentWorkingOverlay isActive={isPending} variant="full" />
 
                 {/* Chat header */}
-                <header className="flex-shrink-0 border-b border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9] z-30">
+                <header className="shrink-0 border-b border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9] z-30">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-lg font-bold text-[#1c1c1c] tracking-tight font-[family-name:var(--font-gloock)]">
+                            <h1 className="text-lg font-bold text-[#1c1c1c] tracking-tight font-gloock">
                                 Conversation
                             </h1>
                             <p className="text-[9px] uppercase tracking-[0.2em] text-[#1c1c1c]/35 font-medium mt-0.5">
@@ -368,7 +368,7 @@ export default function FullChatPage() {
 
                 {/* ── History Panel (slides over messages) ── */}
                 {showHistory && (
-                    <div className="absolute inset-0 top-[61px] z-20 bg-[#f2efe9] flex flex-col animate-in slide-in-from-right-4 duration-200">
+                    <div className="absolute inset-0 top-15.25 z-20 bg-[#f2efe9] flex flex-col animate-in slide-in-from-right-4 duration-200">
                         {/* History header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-[#1c1c1c]/8">
                             <div>
@@ -416,7 +416,7 @@ export default function FullChatPage() {
                                                     "group flex items-center gap-3 px-6 py-3.5 cursor-pointer transition-colors",
                                                     isActive
                                                         ? "bg-[#1c1c1c]/5"
-                                                        : "hover:bg-[#1c1c1c]/[0.03]"
+                                                        : "hover:bg-[#1c1c1c]/3"
                                                 )}
                                                 onClick={() => loadSession(session.id)}
                                             >
@@ -498,7 +498,7 @@ export default function FullChatPage() {
                                             <Link
                                                 key={idx}
                                                 href={`/products/${product.id}`}
-                                                className="flex-shrink-0 w-40 group"
+                                                className="shrink-0 w-40 group"
                                             >
                                                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#e8e5df] shadow-sm">
                                                     {product.images?.[0] && (
@@ -551,7 +551,7 @@ export default function FullChatPage() {
 
                 {/* Recording state */}
                 {isRecording && (
-                    <div className="flex-shrink-0 bg-[#1c1c1c] text-[#f2efe9] px-6 py-4">
+                    <div className="shrink-0 bg-[#1c1c1c] text-[#f2efe9] px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
@@ -574,7 +574,7 @@ export default function FullChatPage() {
 
                 {/* Transcribing state */}
                 {isTranscribing && (
-                    <div className="flex-shrink-0 bg-[#1c1c1c] text-[#f2efe9] px-6 py-4">
+                    <div className="shrink-0 bg-[#1c1c1c] text-[#f2efe9] px-6 py-4">
                         <div className="flex items-center gap-3">
                             <Loader2 className="w-4 h-4 animate-spin" />
                             <span className="text-sm font-medium">Transcribing...</span>
@@ -584,14 +584,14 @@ export default function FullChatPage() {
 
                 {/* Input */}
                 {!isRecording && !isTranscribing && (
-                    <div className="flex-shrink-0 border-t border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9]">
+                    <div className="shrink-0 border-t border-[#1c1c1c]/8 px-6 py-4 bg-[#f2efe9]">
                         <div className="flex items-end gap-3">
                             {/* Mic */}
                             <button
                                 onClick={handleVoiceToggle}
                                 disabled={isPending}
                                 className={cn(
-                                    "flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300",
+                                    "shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300",
                                     "bg-[#1c1c1c]/5 hover:bg-[#1c1c1c]/10 text-[#1c1c1c]",
                                     "disabled:opacity-30 disabled:cursor-not-allowed"
                                 )}
@@ -620,7 +620,7 @@ export default function FullChatPage() {
                                         "border border-[#1c1c1c]/8 focus:border-[#1c1c1c]/25",
                                         "focus:outline-none focus:ring-2 focus:ring-[#1c1c1c]/8",
                                         "transition-all duration-200 placeholder:text-[#1c1c1c]/25",
-                                        "disabled:opacity-50 max-h-[140px]"
+                                        "disabled:opacity-50 max-h-35"
                                     )}
                                 />
                             </div>
@@ -630,7 +630,7 @@ export default function FullChatPage() {
                                 onClick={() => handleSend(input)}
                                 disabled={!input.trim() || isPending}
                                 className={cn(
-                                    "flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300",
+                                    "shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300",
                                     "bg-[#1c1c1c] text-[#f2efe9]",
                                     "hover:bg-[#333] active:scale-95",
                                     "disabled:opacity-20 disabled:cursor-not-allowed"
